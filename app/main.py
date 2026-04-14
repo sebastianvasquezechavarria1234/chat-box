@@ -21,5 +21,6 @@ def health():
 
 @app.post("/ask")
 def ask(data: QuestionRequest):
+    print(f"Pregunta recibida de {data.name}: {data.question}")
     answer = ask_groq(data.name, data.question)
     return {"answer": answer}
