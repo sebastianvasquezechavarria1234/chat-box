@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="API con Groq IA")
+app = FastAPI(title="API con Groq IA", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
