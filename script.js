@@ -16,7 +16,7 @@ $("questionInput").addEventListener("keydown", e => e.key === "Enter" && sendMes
  */
 function startChat() {
   const name = $("nameInput").value.trim();
-  if (!name) return alert("Escribe tu nombre");
+  if (name.length < 2) return alert("Por favor, ingresa un nombre válido (mínimo 2 caracteres)");
   userName = name;
   $("activeName").textContent = name;
   $("modal").style.display = "none";
