@@ -18,6 +18,7 @@ function startChat() {
   const name = $("nameInput").value.trim();
   if (name.length < 2) return alert("Por favor, ingresa un nombre válido (mínimo 2 caracteres)");
   userName = name;
+  localStorage.setItem("userName", name);
   $("activeName").textContent = name;
   $("modal").style.display = "none";
   $("questionInput").focus();
