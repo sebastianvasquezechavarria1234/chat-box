@@ -195,18 +195,27 @@ export default function Home() {
           </div>
           
           <div className="flex items-center gap-3">
+            <a 
+              href="https://sebas-dev.vercel.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 dark:bg-white text-xs font-medium text-white dark:text-zinc-900 hover:opacity-90 transition-all"
+            >
+              Portfolio Web
+            </a>
+            <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs font-medium text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all">
+              <Share2 size={14} />
+              Compartir
+            </button>
             <button 
               onClick={() => setShowInfo(true)}
-              className="flex items-center gap-2 px-4 py-2 border border-zinc-100 dark:border-zinc-800 rounded-full text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all shadow-sm"
+              className="p-1.5 rounded-full text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
             >
-              <Settings size={14} /> Configuración
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 border border-zinc-100 dark:border-zinc-800 rounded-full text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all shadow-sm">
-              <Share2 size={14} /> Compartir
+              <Settings size={18} />
             </button>
             <button 
               onClick={newChat}
-              className="flex items-center gap-2 px-4 py-2 bg-[#0F172A] text-white rounded-full text-xs font-bold hover:bg-zinc-800 transition-all shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-[#0F172A] text-white rounded-full text-xs font-medium hover:bg-zinc-800 transition-all shadow-sm"
             >
               Nuevo Chat <Zap size={12} className="fill-white" />
             </button>
