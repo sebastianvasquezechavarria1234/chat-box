@@ -2,6 +2,9 @@
 
 import type { Message } from './types';
 import { useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface Props {
   messages: Message[];
@@ -15,24 +18,49 @@ export default function ChatMessages({ messages }: Props) {
   }, [messages]);
 
   return (
-    <div className="flex flex-col gap-3 p-4 flex-1 pb-[180px]">
+    <div className="flex flex-col gap-6 p-4 flex-1 pb-[180px]">
       {messages.map((msg, i) =>
         msg.t === 'u' ? (
           <div
             key={i}
-            style={{ alignSelf: 'flex-end', background: '#00000016', padding: '14px 18px', borderRadius: '30px 0 30px 30px', maxWidth: 320, fontSize: 15 }}
+            className="self-end bg-black/5 dark:bg-white/10 px-5 py-3 rounded-2xl rounded-tr-none max-w-[85%] text-[15px] shadow-sm"
           >
             {msg.x}
           </div>
         ) : (
           <div
             key={i}
-            style={{ alignSelf: 'flex-start', display: 'flex', alignItems: 'flex-start', gap: 10, maxWidth: 600 }}
+            className="self-start flex gap-4 max-w-[90%]"
           >
-            <span style={{ minWidth: 10, height: 10, borderRadius: '50%', marginTop: 6, flexShrink: 0, background: '#b439fbe8' }} />
-            <span style={{ fontSize: 15, color: '#1f2937', lineHeight: 1.7 }}>
-              {msg.x}
-            </span>
+            <div className="w-8 h-8 rounded-full bg-purple-600 flex-shrink-0 flex items-center justify-center text-white text-xs font-bold">
+              IA
+            </div>
+            <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed text-[15px] text-gray-800 dark:text-gray-200">
+              <ReactMarkdown
+                components={{
+                  code({ node, inline, className, children, ...props }: any) {
+                    const match = /language-(\w+)/.exec(className || '');
+                    return !inline && match ? (
+                      <SyntaxHighlighter
+                        style={vscDarkPlus as any}
+                        language={match[1]}
+                        PreTag="div"
+                        className="rounded-lg my-4"
+                        {...props}
+                      >
+                        {String(children).replace(/\n$/, '')}
+                      </SyntaxHighlighter>
+                    ) : (
+                      <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded text-purple-600 dark:text-purple-400" {...props}>
+                        {children}
+                      </code>
+                    );
+                  }
+                }}
+              >
+                {msg.x}
+              </ReactMarkdown>
+            </div>
           </div>
         )
       )}

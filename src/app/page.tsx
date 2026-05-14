@@ -123,7 +123,8 @@ export default function Home() {
 
       {showWelcome && <WelcomeModal onStart={startChat} />}
 
-      <div className="ml-[250px] mr-2.5 max-w-[800px] min-h-screen flex flex-col mx-auto">
+      <div className="pl-[250px] pr-2.5 min-h-screen">
+        <div className="max-w-[800px] min-h-screen flex flex-col mx-auto">
         <div className="py-3 px-4 flex items-center justify-between border-b border-gray-200">
           <span className="text-base font-medium italic text-gray-500">
             Chateando como: <strong className="text-gray-800">{userName || '...'}</strong>
@@ -155,6 +156,7 @@ export default function Home() {
         {currentMsgs.length === 0 && <Suggestions onSuggestion={handleSuggestion} />}
 
         <InputBar onSend={sendMessage} disabled={sending} />
+        </div>
       </div>
 
       <InfoModal show={showInfo} onClose={() => setShowInfo(false)} />
