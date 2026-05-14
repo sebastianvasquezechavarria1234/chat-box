@@ -10,6 +10,7 @@
   box-sizing: border-box;
   color: #333;
   scroll-behavior: smooth;
+  letter-spacing: -0.03em;
 }
 
 body {
