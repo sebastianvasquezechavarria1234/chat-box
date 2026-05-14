@@ -8,10 +8,18 @@ load_dotenv()
 
 app = FastAPI(title="API con Groq IA", version="1.0.0")
 
+# Definir orígenes permitidos (ajustar para producción)
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://chat-box-seven-zeta.vercel.app", # Ejemplo de URL de Vercel
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
