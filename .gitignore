@@ -19,6 +19,9 @@ package-lock.json
 input.css
 .parcel-cache
 
+# Next.js
+.next/
+
 # IDEs
 .vscode/
 .idea/
