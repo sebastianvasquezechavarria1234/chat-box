@@ -1,3 +1,5 @@
+'use client';
+
 import type { Chat } from './types';
 import { useState, useEffect } from 'react';
 import { Moon, Sun } from 'lucide-react';
