@@ -70,7 +70,7 @@ export default function Suggestions({ onSuggestion }: Props) {
              <MoreHorizontal size={18} className="text-zinc-300" />
            </div>
            <p className="text-[15px] text-zinc-800 dark:text-zinc-100 font-light leading-relaxed flex-1">
-             "¿Cómo puede Zenith GPT ayudarme a optimizar mis tareas diarias y mejorar la calidad de mis entregas?"
+             &ldquo;¿Cómo puede Zenith GPT ayudarme a optimizar mis tareas diarias y mejorar la calidad de mis entregas?&rdquo;
            </p>
            <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Hacer esta pregunta</div>
         </div>
