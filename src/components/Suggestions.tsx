@@ -1,48 +1,92 @@
 'use client';
 
+import { 
+  Calendar, 
+  Layers, 
+  FileText, 
+  CheckCircle2, 
+  MessageSquarePlus, 
+  MoreHorizontal,
+  Layout
+} from 'lucide-react';
+
 interface Props {
   onSuggestion: (text: string) => void;
 }
 
-const suggestions = [
-  { emoji: '🧠', text: '¿Cuánto es 5 + 5?' },
-  { emoji: '🌍', text: '¿Cuál es el país más grande?' },
-  { emoji: '🚀', text: '¿Qué es la IA?' },
-  { emoji: '⭐', text: 'Cuéntame una curiosidad' },
-];
-
 export default function Suggestions({ onSuggestion }: Props) {
   return (
-    <div className="fixed bottom-[110px] left-[250px] right-[10px] max-w-[800px] mx-auto px-4 py-4">
-      <h1 className="welcome-title relative text-center block text-[2.5rem] font-extralight leading-[1.1] text-gray-800 dark:text-zinc-200 pb-10">
-        Hola<br />¿En qué puedo ayudarte?
-        <span className="w-full absolute flex justify-center block">
-          <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width="311" height="16" viewBox="0 0 311 16" fill="none">
-            <mask id="mask0_1552_2763" style={{ maskType: 'alpha' }} maskUnits="userSpaceOnUse" x="0" y="0" width="311" height="16">
-              <path d="M0 0H311V16H0V0Z" fill="url(#pattern0)"/>
-            </mask>
-            <g mask="url(#mask0_1552_2763)">
-              <path d="M0 0H311V16H0V0Z" fill="#9A4292"/>
-            </g>
-            <defs>
-              <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
-                <use xlinkHref="#image0_1552_2763" transform="scale(0.00337 0.05556)"/>
-              </pattern>
-              <image id="image0_1552_2763" width="297" height="18" xlinkHref="data:image/png;base64,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"/>
-            </defs>
-          </svg>
-        </span>
-      </h1>
-      <div className="flex flex-wrap justify-center gap-2">
-        {suggestions.map((s, i) => (
-          <button
-            key={i}
-            onClick={() => onSuggestion(`${s.emoji} ${s.text}`)}
-            className="py-4 px-5 bg-white dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded-full border border-gray-100 dark:border-zinc-700 transition text-gray-700 dark:text-zinc-300"
-          >
-            {s.emoji} {s.text}
-          </button>
-        ))}
+    <div className="flex-1 flex flex-col items-center justify-center px-4 max-w-[1000px] mx-auto w-full py-12">
+      <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-400 to-purple-400 blur-[2px] mb-8 opacity-70" />
+      <h1 className="text-4xl font-bold text-zinc-900 dark:text-white mb-2 tracking-tight">Hi, there 👋</h1>
+      <p className="text-zinc-400 dark:text-zinc-500 text-lg mb-12 font-medium">Tell us what you need, and we'll handle the rest.</p>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full mb-10">
+        {/* Assistant Card */}
+        <div className="bg-[#0F172A] rounded-[32px] p-7 text-white flex flex-col h-[220px] shadow-xl shadow-blue-900/10 transition-transform hover:scale-[1.02]">
+           <div className="flex items-center justify-between mb-5">
+             <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold">S</div>
+                <span className="text-sm font-semibold">Sam Lee</span>
+             </div>
+             <span className="bg-blue-600/30 text-blue-300 text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-widest border border-blue-500/20">Data Assistant</span>
+           </div>
+           <p className="text-sm text-zinc-300 leading-relaxed flex-1 font-medium">
+             Designed to help manage sales processes and maximize customer engagement.
+           </p>
+        </div>
+
+        {/* Tasks Card */}
+        <div className="bg-white dark:bg-zinc-900/50 rounded-[32px] p-7 border border-gray-100 dark:border-zinc-800 flex flex-col h-[220px] shadow-sm hover:shadow-md transition-all">
+           <div className="flex items-center gap-2 mb-5 text-zinc-400">
+             <Layers size={16} />
+             <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Tasks</span>
+           </div>
+           <div className="flex flex-col gap-4 flex-1">
+             <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-300 font-medium">
+               <FileText size={16} className="text-zinc-300" />
+               <span>Answer RFP documentation</span>
+             </div>
+             <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-300 font-medium">
+               <CheckCircle2 size={16} className="text-zinc-300" />
+               <span>Conduct a competitor analysis</span>
+             </div>
+             <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-300 font-medium">
+               <MessageSquarePlus size={16} className="text-zinc-300" />
+               <span>Provide feedback on communication</span>
+             </div>
+           </div>
+           <button className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest text-right hover:text-blue-500 transition-colors">View All</button>
+        </div>
+
+        {/* Suggested Prompt Card */}
+        <div 
+          className="bg-white dark:bg-zinc-900/50 rounded-[32px] p-7 border border-gray-100 dark:border-zinc-800 flex flex-col h-[220px] shadow-sm group cursor-pointer hover:border-blue-100 transition-all" 
+          onClick={() => onSuggestion('What are the key benefits of Product 1?')}
+        >
+           <div className="flex items-center justify-between mb-5">
+             <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">Suggested prompt</span>
+             <MoreHorizontal size={18} className="text-zinc-300" />
+           </div>
+           <p className="text-[15px] text-zinc-800 dark:text-zinc-100 font-semibold leading-relaxed flex-1">
+             What are the key benefits of Product 1 that I should highlight to potential clients?
+           </p>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-3 justify-center">
+        <button className="flex items-center gap-2.5 px-5 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-semibold text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all active:scale-95">
+          <Calendar size={14} className="text-red-400" /> Connect Calendar
+        </button>
+        <button className="flex items-center gap-2.5 px-5 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-semibold text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all active:scale-95">
+          <Layers size={14} className="text-blue-400" /> Demo Task
+        </button>
+        <button className="flex items-center gap-2.5 px-5 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-semibold text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all active:scale-95">
+          <Layout size={14} className="text-orange-400" /> Browse Integrations
+        </button>
+        <button className="flex items-center gap-2.5 px-5 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-semibold text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all active:scale-95">
+          <FileText size={14} className="text-green-400" /> Shared in Notes
+        </button>
       </div>
     </div>
   );

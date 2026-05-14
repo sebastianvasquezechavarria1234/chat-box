@@ -16,23 +16,6 @@ body {
   overflow-y: auto;
 }
 
-h1 {
-  white-space: nowrap;
-}
-
-a, p {
-  font-size: 18px;
-  opacity: 0.8;
-}
-
-input {
-  font-size: 18px;
-}
-
-input:focus {
-  box-shadow: 0 0 0 1px #b439fbe8;
-}
-
 ::-webkit-scrollbar {
   width: 5px;
 }
