@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Paperclip, Mic, Send, ChevronDown } from 'lucide-react';
 
 interface Props {
@@ -12,6 +12,11 @@ export default function InputBar({ onSend, disabled }: Props) {
   const [question, setQuestion] = useState('');
   const [personality, setPersonality] = useState('casual');
   const [showPersonalities, setShowPersonalities] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    textareaRef.current?.focus();
+  }, []);
 
   const handleSend = () => {
     const q = question.trim();
@@ -26,6 +31,7 @@ export default function InputBar({ onSend, disabled }: Props) {
     <div className="fixed bottom-8 left-[340px] right-8 flex flex-col items-center">
       <div className="w-full max-w-[1000px] bg-white dark:bg-zinc-900 rounded-[32px] shadow-2xl shadow-zinc-200/50 dark:shadow-none border border-gray-100 dark:border-zinc-800 p-3 flex flex-col gap-2 transition-all hover:border-zinc-200 dark:hover:border-zinc-700">
         <textarea
+          ref={textareaRef}
           value={question}
           onChange={e => setQuestion(e.target.value)}
           onKeyDown={e => {
@@ -45,7 +51,7 @@ export default function InputBar({ onSend, disabled }: Props) {
             <div className="relative">
               <button 
                 onClick={() => setShowPersonalities(!showPersonalities)}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-xs font-bold text-zinc-500 dark:text-zinc-400"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-xs font-medium text-zinc-500 dark:text-zinc-400"
               >
                 Personalidad <ChevronDown size={14} />
               </button>
@@ -78,7 +84,7 @@ export default function InputBar({ onSend, disabled }: Props) {
             <button
               onClick={handleSend}
               disabled={disabled || !question.trim()}
-              className="bg-[#0F172A] hover:bg-zinc-800 disabled:bg-zinc-200 dark:disabled:bg-zinc-800 disabled:text-zinc-400 text-white rounded-full px-6 py-2.5 flex items-center gap-2 text-xs font-bold transition-all shadow-md active:scale-95"
+              className="bg-[#0F172A] hover:bg-zinc-800 disabled:bg-zinc-200 dark:disabled:bg-zinc-800 disabled:text-zinc-400 text-white rounded-full px-6 py-2.5 flex items-center gap-2 text-xs font-medium transition-all shadow-md active:scale-95"
             >
               <Send size={16} /> Enviar
             </button>
