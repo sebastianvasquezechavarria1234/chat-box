@@ -52,6 +52,22 @@ export default function Home() {
 
   const loadChat = (id: string) => setCurrentId(id);
 
+  const toggleFavorite = (id: string) => {
+    const updated = chats.map(c => c.id === id ? { ...c, favorite: !c.favorite } : c);
+    save(updated);
+  };
+
+  const deleteChat = (id: string) => {
+    const updated = chats.filter(c => c.id !== id);
+    save(updated);
+    if (currentId === id) setCurrentId(null);
+  };
+
+  const renameChat = (id: string, title: string) => {
+    const updated = chats.map(c => c.id === id ? { ...c, title } : c);
+    save(updated);
+  };
+
   const currentChat = chats.find(c => c.id === currentId);
   const currentMsgs = currentChat ? currentChat.msgs : [];
 
@@ -162,7 +178,10 @@ export default function Home() {
         chats={chats} 
         currentId={currentId} 
         onNewChat={newChat} 
-        onLoadChat={loadChat} 
+        onLoadChat={loadChat}
+        onToggleFavorite={toggleFavorite}
+        onDeleteChat={deleteChat}
+        onRenameChat={renameChat}
       />
 
       {showWelcome && <WelcomeModal onStart={startChat} />}
@@ -171,8 +190,8 @@ export default function Home() {
         {/* Encabezado */}
         <header className="flex items-center justify-between px-8 py-4 border-b border-gray-50 dark:border-zinc-900 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-zinc-900 dark:text-white">Orbita</span>
-            <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Plus</span>
+            <span className="text-sm font-bold text-zinc-900 dark:text-white">Genesis AI</span>
+            <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">PRO</span>
           </div>
           
           <div className="flex items-center gap-3">

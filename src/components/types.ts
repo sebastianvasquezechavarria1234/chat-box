@@ -8,4 +8,5 @@ export interface Chat {
   title: string;
   msgs: Message[];
   userName: string;
+  favorite?: boolean;
 }
