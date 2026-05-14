@@ -17,9 +17,11 @@ interface Props {
 export default function Suggestions({ onSuggestion }: Props) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-4 max-w-[1000px] mx-auto w-full py-12">
-      <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-400 to-purple-400 blur-[2px] mb-8 opacity-70" />
-      <h1 className="text-4xl font-bold text-zinc-900 dark:text-white mb-2 tracking-tight">¡Hola! 👋</h1>
-      <p className="text-zinc-400 dark:text-zinc-500 text-lg mb-12 font-medium">Cuéntanos qué necesitas y nosotros nos encargamos.</p>
+      <div className="w-16 h-16 rounded-2xl bg-zinc-900 dark:bg-white flex items-center justify-center mb-8 shadow-sm">
+        <Layout className="text-white dark:text-zinc-900" size={32} />
+      </div>
+      <h1 className="text-4xl font-medium text-zinc-900 dark:text-white mb-2 tracking-tight">¡Hola! 👋</h1>
+      <p className="text-zinc-400 dark:text-zinc-500 text-lg mb-12 font-light">Cuéntanos qué necesitas y nosotros nos encargamos.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full mb-10">
         {/* Assistant Card */}
