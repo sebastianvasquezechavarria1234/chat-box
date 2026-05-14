@@ -38,6 +38,7 @@ export function MiniSidebar() {
   );
 }
 
+import { useState } from 'react';
 import type { Chat } from './types';
 
 interface SidebarProps {
@@ -48,11 +49,34 @@ interface SidebarProps {
 }
 
 export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat }: SidebarProps) {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filtered = searchQuery
+    ? chats.filter(c => c.title.toLowerCase().includes(searchQuery.toLowerCase()))
+    : chats;
+
   return (
     <div className="fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 p-4 flex flex-col z-20">
       <div className="flex items-center justify-between mb-6 px-2">
-        <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Charlas</h2>
-        <Search size={16} className="text-zinc-400 cursor-pointer" />
+        {searchOpen ? (
+          <div className="flex items-center gap-2 w-full">
+            <input
+              autoFocus
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
+              placeholder="Buscar charlas..."
+              className="w-full bg-transparent border-none outline-none text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
+            />
+            <Search size={16} className="text-zinc-400 cursor-pointer" onClick={() => { setSearchOpen(false); setSearchQuery(''); }} />
+          </div>
+        ) : (
+          <>
+            <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Charlas</h2>
+            <Search size={16} className="text-zinc-400 cursor-pointer" onClick={() => setSearchOpen(true)} />
+          </>
+        )}
       </div>
 
       <button
@@ -89,7 +113,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat }: Sidebar
           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Hoy</span>
         </div>
         
-        {chats.map(c => (
+        {filtered.map(c => (
           <button
             key={c.id}
             onClick={() => onLoadChat(c.id)}
