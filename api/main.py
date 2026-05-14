@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="Genesis AI API", version="1.0.0")
+app = FastAPI(title="Zenith GPT API", version="1.0.0")
 
 # Configuración de CORS permitiendo todos los orígenes
 app.add_middleware(

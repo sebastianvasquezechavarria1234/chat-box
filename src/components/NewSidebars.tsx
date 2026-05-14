@@ -231,7 +231,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
 
       <div className="mt-auto pt-4">
         <div className="bg-white dark:bg-zinc-800 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-700 shadow-sm">
-          <p className="text-xs text-zinc-500 mb-3">Get smarter with Genesis AI PRO</p>
+          <p className="text-xs text-zinc-500 mb-3">Get smarter with Zenith GPT PRO</p>
           <button className="w-full py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 text-xs font-bold text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-all">
             Upgrade to Pro
           </button>
