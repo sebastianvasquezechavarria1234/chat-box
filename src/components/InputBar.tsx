@@ -36,7 +36,7 @@ export default function InputBar({ onSend, disabled }: Props) {
         <select
           value={personality}
           onChange={e => setPersonality(e.target.value)}
-          className="absolute top-1.5 right-16 bg-purple-200 py-2.5 px-4 rounded-full border border-gray-100 text-sm cursor-pointer outline-none"
+          className="absolute top-1.5 right-16 bg-purple-200 py-2.5 px-4 rounded-full border border-gray-200 text-sm cursor-pointer outline-none"
           style={{ height: 55 }}
         >
           {personalities.map(p => (

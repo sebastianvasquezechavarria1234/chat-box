@@ -21,7 +21,7 @@ export default function InfoModal({ show, onClose }: Props) {
       >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl text-gray-800">Documentación del Proyecto</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl font-bold bg-transparent border-none cursor-pointer">&times;</button>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl font-bold bg-transparent border-none cursor-pointer">✕</button>
         </div>
 
         <section className="mb-6">

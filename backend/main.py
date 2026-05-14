@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.schemas import QuestionRequest
-from app.groq_service import ask_groq
+from backend.schemas import QuestionRequest
+from backend.groq_service import ask_groq
 from dotenv import load_dotenv
 
 load_dotenv()
