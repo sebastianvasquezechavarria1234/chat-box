@@ -131,10 +131,10 @@ export default function Home() {
       {showWelcome && <WelcomeModal onStart={startChat} />}
 
       <main className="flex-1 ml-[320px] flex flex-col relative h-screen overflow-hidden">
-        {/* Header */}
+        {/* Encabezado */}
         <header className="flex items-center justify-between px-8 py-4 border-b border-gray-50 dark:border-zinc-900 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-zinc-900 dark:text-white">Orbita GPT</span>
+            <span className="text-sm font-bold text-zinc-900 dark:text-white">Orbita</span>
             <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Plus</span>
           </div>
           
@@ -143,21 +143,21 @@ export default function Home() {
               onClick={() => setShowInfo(true)}
               className="flex items-center gap-2 px-4 py-2 border border-zinc-100 dark:border-zinc-800 rounded-full text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all shadow-sm"
             >
-              <Settings size={14} /> Configuration
+              <Settings size={14} /> Configuración
             </button>
             <button className="flex items-center gap-2 px-4 py-2 border border-zinc-100 dark:border-zinc-800 rounded-full text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all shadow-sm">
-              <Share2 size={14} /> Share
+              <Share2 size={14} /> Compartir
             </button>
             <button 
               onClick={newChat}
               className="flex items-center gap-2 px-4 py-2 bg-[#0F172A] text-white rounded-full text-xs font-bold hover:bg-zinc-800 transition-all shadow-sm"
             >
-              New Chat <Zap size={12} className="fill-white" />
+              Nuevo Chat <Zap size={12} className="fill-white" />
             </button>
           </div>
         </header>
 
-        {/* Content */}
+        {/* Contenido */}
         <div className="flex-1 overflow-y-auto scroll-smooth flex flex-col">
           {currentMsgs.length === 0 ? (
             <Suggestions onSuggestion={handleSuggestion} />

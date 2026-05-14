@@ -34,7 +34,7 @@ export default function InputBar({ onSend, disabled }: Props) {
               handleSend();
             }
           }}
-          placeholder="Ask me anything..."
+          placeholder="Pregúntame cualquier cosa..."
           rows={1}
           disabled={disabled}
           className="w-full bg-transparent border-none outline-none resize-none px-4 py-2 text-[16px] text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 font-medium"
@@ -47,7 +47,7 @@ export default function InputBar({ onSend, disabled }: Props) {
                 onClick={() => setShowPersonalities(!showPersonalities)}
                 className="flex items-center gap-2 px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-xs font-bold text-zinc-500 dark:text-zinc-400"
               >
-                Select Source <ChevronDown size={14} />
+                Personalidad <ChevronDown size={14} />
               </button>
               {showPersonalities && (
                 <div className="absolute bottom-full mb-2 left-0 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-2xl shadow-xl p-1 z-50 min-w-[140px]">
@@ -70,23 +70,23 @@ export default function InputBar({ onSend, disabled }: Props) {
 
           <div className="flex items-center gap-2">
             <button className="p-2.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors flex items-center gap-2 text-xs font-bold">
-              <Paperclip size={18} /> Attach
+              <Paperclip size={18} /> Adjuntar
             </button>
             <button className="p-2.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors flex items-center gap-2 text-xs font-bold">
-              <Mic size={18} /> Voice
+              <Mic size={18} /> Voz
             </button>
             <button
               onClick={handleSend}
               disabled={disabled || !question.trim()}
               className="bg-[#0F172A] hover:bg-zinc-800 disabled:bg-zinc-200 dark:disabled:bg-zinc-800 disabled:text-zinc-400 text-white rounded-full px-6 py-2.5 flex items-center gap-2 text-xs font-bold transition-all shadow-md active:scale-95"
             >
-              <Send size={16} /> Send
+              <Send size={16} /> Enviar
             </button>
           </div>
         </div>
       </div>
       <p className="mt-4 text-[10px] text-zinc-400 font-medium">
-        Orbita may display inaccurate info, so please double check the response. <span className="underline cursor-pointer">Your Privacy & Orbita GPT</span>
+        Orbita puede mostrar información imprecisa, por favor verifica la respuesta. <span className="underline cursor-pointer">Tu privacidad y Orbita</span>
       </p>
     </div>
   );
