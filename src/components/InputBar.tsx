@@ -14,22 +14,26 @@ export default function InputBar({ onSend, disabled }: Props) {
   const [showPersonalities, setShowPersonalities] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Autoenfoque al cargar y después de que la IA responda
   useEffect(() => {
-    textareaRef.current?.focus();
-  }, []);
+    if (!disabled) {
+      textareaRef.current?.focus();
+    }
+  }, [disabled]);
 
   const handleSend = () => {
     const q = question.trim();
     if (!q || disabled) return;
     onSend(q, personality);
     setQuestion('');
+    // El foco regresará automáticamente gracias al useEffect cuando disabled sea false
   };
 
   const personalities = ['casual', 'tutor', 'profesional', 'tecnico'];
 
   return (
-    <div className="fixed bottom-8 left-[340px] right-8 flex flex-col items-center">
-      <div className="w-full max-w-[1000px] bg-white dark:bg-zinc-900 rounded-[32px] shadow-2xl shadow-zinc-200/50 dark:shadow-none border border-gray-100 dark:border-zinc-800 p-3 flex flex-col gap-2 transition-all hover:border-zinc-200 dark:hover:border-zinc-700">
+    <div className="fixed bottom-6 left-[340px] right-8 flex flex-col items-center">
+      <div className="w-full max-w-[1000px] bg-white dark:bg-zinc-900 rounded-[32px] shadow-2xl shadow-zinc-200/50 dark:shadow-none border border-gray-100 dark:border-zinc-800 p-3 flex flex-col gap-2 transition-all hover:border-zinc-200 dark:hover:border-zinc-700 focus-within:border-indigo-200 dark:focus-within:border-indigo-900/50">
         <textarea
           ref={textareaRef}
           value={question}
@@ -43,7 +47,7 @@ export default function InputBar({ onSend, disabled }: Props) {
           placeholder="Pregúntame cualquier cosa..."
           rows={1}
           disabled={disabled}
-          className="w-full bg-transparent border-none outline-none resize-none px-4 py-2 text-[16px] text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 font-medium"
+          className="w-full bg-transparent border-none outline-none resize-none px-4 py-2 text-[16px] text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 font-light"
         />
         
         <div className="flex items-center justify-between mt-1 px-2 pb-1">
@@ -51,7 +55,7 @@ export default function InputBar({ onSend, disabled }: Props) {
             <div className="relative">
               <button 
                 onClick={() => setShowPersonalities(!showPersonalities)}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-xs font-medium text-zinc-500 dark:text-zinc-400"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-xs font-light text-zinc-500 dark:text-zinc-400"
               >
                 Personalidad <ChevronDown size={14} />
               </button>
@@ -64,7 +68,7 @@ export default function InputBar({ onSend, disabled }: Props) {
                         setPersonality(p);
                         setShowPersonalities(false);
                       }}
-                      className="w-full text-left px-4 py-2 text-xs font-medium hover:bg-zinc-50 dark:hover:bg-zinc-700 rounded-xl transition-colors text-zinc-600 dark:text-zinc-300"
+                      className="w-full text-left px-4 py-2 text-xs font-light hover:bg-zinc-50 dark:hover:bg-zinc-700 rounded-xl transition-colors text-zinc-600 dark:text-zinc-300"
                     >
                       {p.charAt(0).toUpperCase() + p.slice(1)}
                     </button>
@@ -75,25 +79,22 @@ export default function InputBar({ onSend, disabled }: Props) {
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="p-2.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors flex items-center gap-2 text-xs font-bold">
+            <button className="p-2.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors flex items-center gap-2 text-xs font-light">
               <Paperclip size={18} /> Adjuntar
             </button>
-            <button className="p-2.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors flex items-center gap-2 text-xs font-bold">
+            <button className="p-2.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors flex items-center gap-2 text-xs font-light">
               <Mic size={18} /> Voz
             </button>
             <button
               onClick={handleSend}
               disabled={disabled || !question.trim()}
-              className="bg-[#0F172A] hover:bg-zinc-800 disabled:bg-zinc-200 dark:disabled:bg-zinc-800 disabled:text-zinc-400 text-white rounded-full px-6 py-2.5 flex items-center gap-2 text-xs font-medium transition-all shadow-md active:scale-95"
+              className="bg-zinc-950 dark:bg-white dark:text-zinc-950 hover:opacity-90 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 disabled:text-zinc-400 text-white rounded-full px-6 py-2.5 flex items-center gap-2 text-xs font-medium transition-all shadow-md active:scale-95"
             >
               <Send size={16} /> Enviar
             </button>
           </div>
         </div>
       </div>
-      <p className="mt-4 text-[10px] text-zinc-400 font-medium">
-        Orbita puede mostrar información imprecisa, por favor verifica la respuesta. <span className="underline cursor-pointer">Tu privacidad y Orbita</span>
-      </p>
     </div>
   );
 }
