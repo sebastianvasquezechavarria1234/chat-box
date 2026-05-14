@@ -24,10 +24,10 @@ export default function ChatMessages({ messages, chatId }: Props) {
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={chatId || 'empty'}
-          initial={{ opacity: 0, filter: 'blur(8px)' }}
-          animate={{ opacity: 1, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, filter: 'blur(8px)' }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
+          initial={{ opacity: 0, y: 40, filter: 'blur(6px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, y: -40, filter: 'blur(6px)' }}
+          transition={{ duration: 0.18, ease: 'easeOut' }}
           className="flex flex-col gap-6"
         >
           {messages.map((msg, i) =>
