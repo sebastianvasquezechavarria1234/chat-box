@@ -34,20 +34,22 @@ personalidades = {
     - Si el código es largo, usa comentarios explicativos."""
 }
 
-def ask_groq(name: str, question: str, personality: str = "casual") -> str:
+def ask_groq(name: str, question: str, personality: str = "casual"):
     """
-    Solicita una respuesta a la API de Groq basada en el nombre del usuario, 
-    la pregunta y la personalidad seleccionada.
+    Solicita una respuesta en streaming a la API de Groq.
     """
-    response = client.chat.completions.create(
+    stream = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-
-
         temperature=0.7,
         max_tokens=1024,
         messages=[
             {"role": "system", "content": personalidades[personality]},
             {"role": "user",   "content": f"{name} pregunta: {question}"}
-        ]
+        ],
+        stream=True,
     )
-    return response.choices[0].message.content
+    
+    for chunk in stream:
+        content = chunk.choices[0].delta.content
+        if content:
+            yield content

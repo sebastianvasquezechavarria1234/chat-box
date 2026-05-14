@@ -88,7 +88,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat }: Sidebar
         <Zap size={14} className="fill-white" />
       </button>
 
-      <div className="flex flex-col gap-1 flex-1 overflow-y-auto">
+      <div className="flex flex-col gap-1 flex-1 overflow-y-auto overflow-x-hidden pr-1">
         <div className="px-2 mb-2">
           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-1">
             <Star size={10} /> Guardados
@@ -113,19 +113,37 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat }: Sidebar
           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Hoy</span>
         </div>
         
-        {filtered.map(c => (
-          <button
-            key={c.id}
-            onClick={() => onLoadChat(c.id)}
-            className={`block w-full py-2.5 px-3 rounded-xl text-sm text-left transition-all truncate ${
-              c.id === currentId 
-                ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-900 dark:text-white font-medium' 
-                : 'text-zinc-500 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'
-            }`}
-          >
-            {c.title}
-          </button>
-        ))}
+        {filtered.map(c => {
+          const initial = c.title.charAt(0).toUpperCase();
+          const colors = [
+            'bg-blue-100 dark:bg-blue-900/30 text-blue-600',
+            'bg-orange-100 dark:bg-orange-900/30 text-orange-600',
+            'bg-green-100 dark:bg-green-900/30 text-green-600',
+            'bg-purple-100 dark:bg-purple-900/30 text-purple-600',
+            'bg-pink-100 dark:bg-pink-900/30 text-pink-600',
+            'bg-teal-100 dark:bg-teal-900/30 text-teal-600',
+            'bg-rose-100 dark:bg-rose-900/30 text-rose-600',
+            'bg-amber-100 dark:bg-amber-900/30 text-amber-600',
+          ];
+          const colorIdx = c.id.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % colors.length;
+          return (
+            <button
+              key={c.id}
+              onClick={() => onLoadChat(c.id)}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-left transition-all ${
+                c.id === currentId 
+                  ? 'bg-white dark:bg-zinc-800 shadow-sm' 
+                  : 'hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'
+              }`}
+            >
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold ${colors[colorIdx]}`}>{initial}</div>
+              <span className={`flex-1 truncate ${
+                c.id === currentId ? 'text-zinc-900 dark:text-white font-medium' : 'text-zinc-500'
+              }`}>{c.title}</span>
+              <MoreHorizontal size={14} className="text-zinc-300" />
+            </button>
+          );
+        })}
       </div>
 
       <div className="mt-auto pt-4">

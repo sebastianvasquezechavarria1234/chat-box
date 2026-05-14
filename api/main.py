@@ -26,13 +26,17 @@ async def global_exception_handler(request, exc):
 def health():
     return {"status": "ok"}
 
+from fastapi.responses import StreamingResponse
+
 @app.post("/ask")
-def ask(data: QuestionRequest):
+async def ask(data: QuestionRequest):
     print(f"Pregunta recibida de {data.name}: {data.question} (Modo: {data.personality})")
     try:
-        answer = ask_groq(data.name, data.question, data.personality)
-        print(f"Respuesta generada para {data.name}")
-        return {"answer": answer}
+        # Devolvemos un StreamingResponse para que el cliente reciba los datos poco a poco
+        return StreamingResponse(
+            ask_groq(data.name, data.question, data.personality), 
+            media_type="text/plain"
+        )
     except Exception as e:
-        print(f"Error al llamar a Groq: {e}")
+        print(f"Error al iniciar streaming: {e}")
         return {"error": "Error al procesar la respuesta de la IA", "details": str(e)}

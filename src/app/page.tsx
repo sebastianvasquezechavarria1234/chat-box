@@ -98,18 +98,54 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: userName, question, personality }),
       });
-      const data = await res.json();
-      
-      const botMsg: Message = { t: 'b', x: data.answer || 'Error en respuesta' };
-      // Usar el estado más reciente de chats para evitar problemas de concurrencia
-      setChats(prev => prev.map(c => c.id === activeId ? { ...c, msgs: [...c.msgs, botMsg] } : c));
-      
-      // Persistir el cambio (obteniendo el estado actualizado después del mapeo)
+
+      if (!res.ok) throw new Error('Error en la respuesta del servidor');
+      if (!res.body) throw new Error('Cuerpo de respuesta vacío');
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let botAnswer = '';
+
+      // Añadimos un mensaje vacío del bot que iremos rellenando
+      setChats(prev => prev.map(c => 
+        c.id === activeId ? { ...c, msgs: [...c.msgs, { t: 'b', x: '' }] } : c
+      ));
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value, { stream: true });
+        botAnswer += chunk;
+
+        // Actualizamos el último mensaje (el del bot) con el texto acumulado
+        setChats(prev => prev.map(c => 
+          c.id === activeId 
+            ? { 
+                ...c, 
+                msgs: c.msgs.map((m, idx) => 
+                  idx === c.msgs.length - 1 ? { ...m, x: botAnswer } : m
+                ) 
+              } 
+            : c
+        ));
+      }
+
+      // Guardar en localStorage al finalizar el stream
       setTimeout(() => {
         const finalSaved = JSON.parse(localStorage.getItem('nexus_chats') || '[]');
-        const withBot = finalSaved.map((c: any) => c.id === activeId ? { ...c, msgs: [...c.msgs, botMsg] } : c);
-        localStorage.setItem('nexus_chats', JSON.stringify(withBot));
-      }, 100);
+        const updatedWithFullBot = finalSaved.map((c: any) => 
+          c.id === activeId 
+            ? { 
+                ...c, 
+                msgs: c.msgs.map((m: any, idx: number) => 
+                  idx === c.msgs.length - 1 ? { ...m, x: botAnswer } : m
+                ) 
+              } 
+            : c
+        );
+        localStorage.setItem('nexus_chats', JSON.stringify(updatedWithFullBot));
+      }, 500);
 
     } catch (err) {
       const errorMsg: Message = { t: 'b', x: 'No se pudo conectar con la IA. Verifica tu conexión.' };
@@ -164,10 +200,10 @@ export default function Home() {
             {currentMsgs.length === 0 ? (
               <motion.div
                 key="suggestions"
-                initial={{ opacity: 0, y: 20, filter: 'blur(4px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, y: -20, filter: 'blur(4px)' }}
-                transition={{ duration: 0.18, ease: 'easeOut' }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
                 className="flex-1"
               >
                 <Suggestions onSuggestion={handleSuggestion} />
@@ -175,10 +211,10 @@ export default function Home() {
             ) : (
               <motion.div
                 key="chat"
-                initial={{ opacity: 0, y: 30, filter: 'blur(6px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, y: -30, filter: 'blur(6px)' }}
-                transition={{ duration: 0.18, ease: 'easeOut' }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
                 className="max-w-[900px] mx-auto w-full py-8"
               >
                 <ChatMessages messages={currentMsgs} chatId={currentId} />
