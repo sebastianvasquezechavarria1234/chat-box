@@ -68,10 +68,19 @@ export default function Home() {
   };
 
   const sendMessage = async (question: string, personality: string, chatId?: string, chatList?: Chat[]) => {
-    const activeId = chatId || currentId;
-    const activeList = chatList || chats;
+    let activeId = chatId || currentId;
+    let activeList = chatList || chats;
     
-    if (!activeId) return;
+    // Si no hay chat activo, crear uno automáticamente
+    if (!activeId) {
+      const id = uuidv4();
+      const nc: Chat = { id, title: question.slice(0, 30), msgs: [], userName };
+      activeList = [nc, ...chats];
+      activeId = id;
+      setCurrentId(id);
+      save(activeList);
+    }
+    
     setSending(true);
 
     const userMsg: Message = { t: 'u', x: question };
@@ -91,10 +100,19 @@ export default function Home() {
       const data = await res.json();
       
       const botMsg: Message = { t: 'b', x: data.answer || 'Error en respuesta' };
-      save(updated.map(c => c.id === activeId ? { ...c, msgs: [...c.msgs, botMsg] } : c));
+      // Usar el estado más reciente de chats para evitar problemas de concurrencia
+      setChats(prev => prev.map(c => c.id === activeId ? { ...c, msgs: [...c.msgs, botMsg] } : c));
+      
+      // Persistir el cambio (obteniendo el estado actualizado después del mapeo)
+      setTimeout(() => {
+        const finalSaved = JSON.parse(localStorage.getItem('nexus_chats') || '[]');
+        const withBot = finalSaved.map((c: any) => c.id === activeId ? { ...c, msgs: [...c.msgs, botMsg] } : c);
+        localStorage.setItem('nexus_chats', JSON.stringify(withBot));
+      }, 100);
+
     } catch (err) {
       const errorMsg: Message = { t: 'b', x: 'No se pudo conectar con la IA. Verifica tu conexión.' };
-      save(updated.map(c => c.id === activeId ? { ...c, msgs: [...c.msgs, errorMsg] } : c));
+      setChats(prev => prev.map(c => c.id === activeId ? { ...c, msgs: [...c.msgs, errorMsg] } : c));
     } finally {
       setSending(false);
     }
