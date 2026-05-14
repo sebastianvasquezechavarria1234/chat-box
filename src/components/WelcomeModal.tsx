@@ -20,9 +20,9 @@ export default function WelcomeModal({ onStart }: Props) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50" style={{ background: 'rgba(0,0,0,0.119)', backdropFilter: 'blur(8px)' }}>
-      <div style={{ borderRadius: 30 }} className="bg-white w-[520px] p-12 flex flex-col gap-4 shadow-2xl">
-        <h1 className="text-center italic text-3xl font-light text-gray-800">¡Bienvenido!</h1>
-        <p className="text-center text-gray-500 text-sm">
+      <div style={{ borderRadius: 30 }} className="bg-white dark:bg-zinc-900 w-[520px] p-12 flex flex-col gap-4 shadow-2xl dark:border dark:border-zinc-800">
+        <h1 className="text-center italic text-3xl font-light text-gray-800 dark:text-zinc-200">¡Bienvenido!</h1>
+        <p className="text-center text-gray-500 dark:text-zinc-400 text-sm">
           La API de este chat está desplegada en Render, el servidor entra en reposo automáticamente — la primera consulta lo reactiva, lo que puede tomar entre 30 y 60 segundos. Las siguientes respuestas serán inmediatas.
         </p>
         <div className="relative">
@@ -31,7 +31,7 @@ export default function WelcomeModal({ onStart }: Props) {
             onChange={e => setName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleStart()}
             placeholder="Tu nombre..."
-            className="w-full rounded-full border border-gray-200 outline-none bg-white"
+            className="w-full rounded-full border border-gray-200 dark:border-zinc-700 outline-none bg-white dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 placeholder:text-gray-400 dark:placeholder:text-zinc-500"
             style={{ padding: '20px 60px 20px 20px', fontSize: 18 }}
           />
           <button

@@ -30,13 +30,13 @@ export default function InputBar({ onSend, disabled }: Props) {
           maxLength={500}
           placeholder="Pregúntame algo..."
           disabled={disabled}
-          className="w-full rounded-full border border-gray-200 shadow-xl outline-none bg-white"
+          className="w-full rounded-full border border-gray-200 dark:border-zinc-700 shadow-xl outline-none bg-white dark:bg-zinc-900 text-gray-800 dark:text-zinc-200 placeholder:text-gray-400 dark:placeholder:text-zinc-500"
           style={{ padding: '20px 200px 20px 20px', fontSize: 18 }}
         />
         <select
           value={personality}
           onChange={e => setPersonality(e.target.value)}
-          className="absolute top-1.5 right-16 bg-purple-200 py-2.5 px-4 rounded-full border border-gray-200 text-sm cursor-pointer outline-none"
+          className="absolute top-1.5 right-16 bg-purple-200 dark:bg-purple-900/40 py-2.5 px-4 rounded-full border border-gray-200 dark:border-zinc-700 text-sm cursor-pointer outline-none text-gray-800 dark:text-zinc-200"
           style={{ height: 55 }}
         >
           {personalities.map(p => (
@@ -62,7 +62,7 @@ export default function InputBar({ onSend, disabled }: Props) {
         href="https://sebas-dev.vercel.app/"
         target="_blank"
         rel="noopener noreferrer"
-        className="text-xs text-gray-400 hover:underline text-center"
+        className="text-xs text-gray-400 dark:text-zinc-600 hover:underline text-center"
       >
         © 2026 Desarrollado por: Sebastian Vasquez Echavarria
       </a>

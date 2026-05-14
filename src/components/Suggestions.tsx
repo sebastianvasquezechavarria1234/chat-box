@@ -14,7 +14,7 @@ const suggestions = [
 export default function Suggestions({ onSuggestion }: Props) {
   return (
     <div className="fixed bottom-[110px] left-[250px] right-[10px] max-w-[800px] mx-auto px-4 py-4">
-      <h1 className="welcome-title relative text-center block text-[2.5rem] font-extralight leading-[1.1] text-gray-800 pb-10">
+      <h1 className="welcome-title relative text-center block text-[2.5rem] font-extralight leading-[1.1] text-gray-800 dark:text-zinc-200 pb-10">
         Hola<br />¿En qué puedo ayudarte?
         <span className="w-full absolute flex justify-center block">
           <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width="311" height="16" viewBox="0 0 311 16" fill="none">
@@ -38,7 +38,7 @@ export default function Suggestions({ onSuggestion }: Props) {
           <button
             key={i}
             onClick={() => onSuggestion(`${s.emoji} ${s.text}`)}
-            className="py-4 px-5 bg-white hover:bg-gray-200 rounded-full border border-gray-100 transition"
+            className="py-4 px-5 bg-white dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded-full border border-gray-100 dark:border-zinc-700 transition text-gray-700 dark:text-zinc-300"
           >
             {s.emoji} {s.text}
           </button>
