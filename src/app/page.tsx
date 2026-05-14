@@ -9,7 +9,7 @@ import Suggestions from '@/components/Suggestions';
 import InputBar from '@/components/InputBar';
 import InfoModal from '@/components/InfoModal';
 
-const API_URL = 'https://python-api-render-ubr9.onrender.com/ask';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://python-api-render-ubr9.onrender.com/ask';
 
 export default function Home() {
   const [userName, setUserName] = useState('');
