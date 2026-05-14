@@ -124,32 +124,30 @@ export default function Home() {
       {showWelcome && <WelcomeModal onStart={startChat} />}
 
       <div className="pl-[250px] pr-2.5 min-h-screen">
-        <div className="max-w-[800px] min-h-screen flex flex-col mx-auto">
-        <div className="py-3 px-4 flex items-center justify-between border-b border-gray-200">
-          <span className="text-base font-medium italic text-gray-500">
-            Chateando como: <strong className="text-gray-800">{userName || '...'}</strong>
+        <div className="ml-[240px] max-w-[900px] min-h-screen flex flex-col mx-auto transition-all duration-300">
+        <div className="py-3 px-6 flex items-center justify-between border-b border-gray-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-950/50 backdrop-blur-md sticky top-0 z-10">
+          <span className="text-sm font-medium italic text-gray-500 dark:text-zinc-500">
+            Chateando como: <strong className="text-gray-800 dark:text-zinc-200 not-italic ml-1">{userName || '...'}</strong>
           </span>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-3 items-center">
             <button
               onClick={() => setShowInfo(true)}
-              className="bg-purple-200 hover:bg-purple-100 italic text-purple-700 flex items-center gap-2 py-4 px-6 rounded-full transition border border-purple-300"
+              className="bg-purple-100 dark:bg-purple-900/20 hover:bg-purple-200 dark:hover:bg-purple-900/40 text-purple-700 dark:text-purple-400 text-xs font-bold py-2.5 px-5 rounded-full transition-all border border-purple-200 dark:border-purple-800/30"
             >
-              <span className="block w-2 h-2 bg-purple-500 rounded-full" />
-              Documentacion
+              Documentación
             </button>
             <a
               href="https://sebas-dev.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-purple-600 hover:bg-purple-400 italic flex items-center gap-2 py-4 px-6 rounded-full transition border border-purple-300 text-white"
+              className="bg-zinc-900 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-black text-xs font-bold py-2.5 px-5 rounded-full transition-all flex items-center gap-2"
             >
-              <span className="block w-2 h-2 bg-white rounded-full" />
-              Portafolio web
+              Portafolio
             </a>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto" style={{ paddingBottom: 200 }}>
+        <div className="flex-1 overflow-y-auto" style={{ paddingBottom: 220 }}>
           <ChatMessages messages={currentMsgs} />
         </div>
 
