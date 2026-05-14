@@ -148,7 +148,7 @@ export default function Home() {
         </div>
 
         <div className="flex-1 overflow-y-auto" style={{ paddingBottom: 220 }}>
-          <ChatMessages messages={currentMsgs} />
+          <ChatMessages messages={currentMsgs} chatId={currentId} />
         </div>
 
         {currentMsgs.length === 0 && <Suggestions onSuggestion={handleSuggestion} />}
