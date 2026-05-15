@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, Share2, Plus, Zap } from 'lucide-react';
+import { Zap } from 'lucide-react';
 import { MiniSidebar, ChatSidebar } from '@/components/NewSidebars';
 import ChatMessages from '@/components/ChatMessages';
 import InputBar from '@/components/InputBar';
@@ -195,6 +195,13 @@ export default function Home() {
           </div>
           
           <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setShowInfo(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs font-medium text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              Documentación
+            </button>
             <a 
               href="https://sebas-dev.vercel.app/" 
               target="_blank" 
@@ -203,16 +210,6 @@ export default function Home() {
             >
               Portfolio Web
             </a>
-            <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs font-medium text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all">
-              <Share2 size={14} />
-              Compartir
-            </button>
-            <button 
-              onClick={() => setShowInfo(true)}
-              className="p-1.5 rounded-full text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
-            >
-              <Settings size={18} />
-            </button>
             <button 
               onClick={newChat}
               className="flex items-center gap-2 px-4 py-2 bg-[#0F172A] text-white rounded-full text-xs font-medium hover:bg-zinc-800 transition-all shadow-sm"

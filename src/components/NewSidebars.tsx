@@ -213,7 +213,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
         className="w-full bg-[#0F172A] hover:bg-zinc-800 text-white rounded-2xl py-3 px-4 flex items-center justify-center gap-2 text-sm font-normal transition-all shadow-sm mb-6"
       >
         Nuevo chat
-        <Sparkles size={14} className="fill-white" />
+        <Sparkles size={14} className="fill-white" strokeWidth={1.5} />
       </button>
 
       <div className="flex flex-col gap-1 flex-1 overflow-y-auto overflow-x-hidden pr-1">
