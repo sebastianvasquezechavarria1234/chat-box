@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Menu, X } from 'lucide-react';
+import { Sparkles, Menu, X, ExternalLink } from 'lucide-react';
 import { MiniSidebar, ChatSidebar } from '@/components/NewSidebars';
 import ChatMessages from '@/components/ChatMessages';
 import InputBar from '@/components/InputBar';
@@ -222,6 +222,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 dark:bg-white text-xs font-normal text-white dark:text-zinc-900 hover:opacity-90 transition-all"
             >
+              <ExternalLink size={14} strokeWidth={1.5} />
               Portfolio Web
             </a>
             <button 

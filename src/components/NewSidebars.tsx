@@ -91,15 +91,15 @@ function ChatMenu({ chat, onClose, onToggleFavorite, onDeleteChat, onRenameChat 
   }, [onClose]);
 
   return (
-    <div ref={ref} className="absolute right-0 top-full mt-1 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-xl shadow-xl z-50 py-1 min-w-[160px]" onClick={e => e.stopPropagation()}>
-      <button onClick={() => { onToggleFavorite(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
+    <div ref={ref} className="absolute right-0 top-full mt-1 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-xl shadow-xl z-50 py-1 min-w-[160px]">
+      <button type="button" onClick={(e) => { e.stopPropagation(); onToggleFavorite(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
         <Star size={14} /> {chat.favorite ? 'Quitar de favoritos' : 'Favorito'}
       </button>
-      <button onClick={() => { onRenameChat(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
+      <button type="button" onClick={(e) => { e.stopPropagation(); onRenameChat(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
         Editar nombre
       </button>
-      <button onClick={() => { onDeleteChat(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+      <button type="button" onClick={(e) => { e.stopPropagation(); onDeleteChat(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
         Eliminar
       </button>
