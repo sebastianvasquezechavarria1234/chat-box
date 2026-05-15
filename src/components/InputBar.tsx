@@ -80,14 +80,14 @@ export default function InputBar({ onSend, disabled }: Props) {
                 {isActive && (
                   <motion.div
                     layoutId="personality-bg"
-                    className="absolute inset-0 rounded-lg bg-zinc-900 dark:bg-white shadow-sm"
+                    className="absolute inset-0 rounded-lg bg-zinc-100 dark:bg-zinc-800"
                     transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                   />
                 )}
-                <span className={`relative z-10 ${isActive ? 'text-white dark:text-zinc-900' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                <span className={`relative z-10 ${isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
                   <PIcon size={13} />
                 </span>
-                <span className={`relative z-10 ${isActive ? 'text-white dark:text-zinc-900' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                <span className={`relative z-10 ${isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
                   {p.label}
                 </span>
               </button>

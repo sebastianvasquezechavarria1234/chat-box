@@ -121,6 +121,8 @@ export default function Home() {
     
     setSending(true);
 
+    const history = activeList.find(c => c.id === activeId)?.msgs || [];
+
     const userMsg: Message = { t: 'u', x: question };
     const updated = activeList.map(c => 
       c.id === activeId 
@@ -133,7 +135,7 @@ export default function Home() {
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: userName, question, personality }),
+        body: JSON.stringify({ name: userName, question, personality, history }),
       });
 
       if (!res.ok) throw new Error('Error en la respuesta del servidor');

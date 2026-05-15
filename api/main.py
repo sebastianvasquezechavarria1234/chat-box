@@ -27,7 +27,7 @@ async def ask(data: QuestionRequest):
     print(f"Pregunta recibida de {data.name}: {data.question} (Modo: {data.personality})")
     try:
         return StreamingResponse(
-            ask_groq(data.name, data.question, data.personality), 
+            ask_groq(data.name, data.question, data.personality, data.history), 
             media_type="text/plain"
         )
     except Exception as e:
