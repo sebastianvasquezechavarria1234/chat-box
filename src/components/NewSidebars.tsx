@@ -15,11 +15,12 @@ import {
   Sun,
   Moon
 } from 'lucide-react';
+import AIOrb from './AIOrb';
 
  export function MiniSidebar({ isDark, onToggleTheme }: { isDark: boolean, onToggleTheme: () => void }) {
   return (
     <div className="fixed left-0 top-0 w-[60px] h-screen bg-white dark:bg-zinc-950 border-r border-gray-100 dark:border-zinc-900 flex flex-col items-center py-6 z-30">
-      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 mb-8" />
+      <AIOrb size="sm" />
       
       <div className="flex flex-col gap-6 flex-1">
         <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors"><MessageSquare size={20} /></button>
