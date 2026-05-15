@@ -23,6 +23,7 @@ function OrbMesh() {
   const targetColor = useRef(new Color('#7c3aed'));
   const targetEmissive = useRef(new Color('#4f46e5'));
   const mouseTarget = useRef({ x: 0, y: 0 });
+  const smoothMouse = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleMouse = (e: MouseEvent) => {
@@ -53,10 +54,22 @@ function OrbMesh() {
     const mx = mouseTarget.current.x;
     const my = mouseTarget.current.y;
 
-    ref.current.rotation.x += (my * 1.5 - ref.current.rotation.x) * 0.1;
-    ref.current.rotation.y += (mx * 1.5 - ref.current.rotation.y) * 0.1;
-    ref.current.position.y = Math.sin(t * 1.8) * 0.06;
-    ref.current.position.x = Math.sin(t * 0.7) * 0.03;
+    smoothMouse.current.x += (mx - smoothMouse.current.x) * 0.08;
+    smoothMouse.current.y += (my - smoothMouse.current.y) * 0.08;
+
+    const smx = smoothMouse.current.x;
+    const smy = smoothMouse.current.y;
+
+    ref.current.rotation.x = smy * 1.2;
+    ref.current.rotation.y = smx * 1.2;
+    ref.current.rotation.z = smx * smy * 0.3;
+
+    ref.current.scale.x = 1 + smx * 0.15 + Math.abs(smx) * 0.1;
+    ref.current.scale.y = 1 - Math.abs(smx) * 0.1 + smy * 0.12;
+    ref.current.scale.z = 1 - Math.abs(smx) * 0.08;
+
+    ref.current.position.y = Math.sin(t * 1.8) * 0.06 + smy * 0.1;
+    ref.current.position.x = Math.sin(t * 0.7) * 0.03 + smx * 0.1;
   });
 
   return (
