@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { ArrowUp, MessageSquare, GraduationCap, Briefcase, Settings } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Send, MessageSquare, GraduationCap, Briefcase, Settings } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface Props {
   onSend: (question: string, personality: string) => void;
@@ -10,16 +10,15 @@ interface Props {
 }
 
 const personalities = [
-  { id: 'casual',      label: 'Casual',       icon: MessageSquare,  gradient: 'from-blue-400 to-blue-600' },
-  { id: 'tutor',       label: 'Tutor',         icon: GraduationCap, gradient: 'from-emerald-400 to-emerald-600' },
-  { id: 'profesional', label: 'Profesional',   icon: Briefcase,     gradient: 'from-violet-400 to-violet-600' },
-  { id: 'tecnico',     label: 'Técnico',       icon: Settings,      gradient: 'from-orange-400 to-orange-600' },
+  { id: 'casual',      label: 'Casual',       icon: MessageSquare },
+  { id: 'tutor',       label: 'Tutor',         icon: GraduationCap },
+  { id: 'profesional', label: 'Profesional',   icon: Briefcase },
+  { id: 'tecnico',     label: 'Técnico',       icon: Settings },
 ];
 
 export default function InputBar({ onSend, disabled }: Props) {
   const [question, setQuestion] = useState('');
   const [personality, setPersonality] = useState('casual');
-  const [showPersonalities, setShowPersonalities] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -27,14 +26,6 @@ export default function InputBar({ onSend, disabled }: Props) {
       textareaRef.current?.focus();
     }
   }, [disabled]);
-
-  useEffect(() => {
-    if (showPersonalities) {
-      const handle = () => setShowPersonalities(false);
-      window.addEventListener('click', handle);
-      return () => window.removeEventListener('click', handle);
-    }
-  }, [showPersonalities]);
 
   const handleSend = () => {
     const q = question.trim();
@@ -47,10 +38,9 @@ export default function InputBar({ onSend, disabled }: Props) {
   const CurrentIcon = currentP.icon;
 
   return (
-    <div className="fixed bottom-20 lg:bottom-8 left-4 lg:left-[340px] right-4 lg:right-8 flex flex-col items-center">
-      <div className="w-full max-w-[900px] bg-white dark:bg-zinc-900 rounded-2xl shadow-lg ring-1 ring-zinc-200 dark:ring-zinc-800 focus-within:ring-2 focus-within:ring-indigo-400/50 dark:focus-within:ring-indigo-500/50 transition-all duration-300">
-        
-        <div className="flex items-end gap-2 px-4 pt-4 pb-3">
+    <div className="fixed bottom-20 lg:bottom-6 left-4 lg:left-[340px] right-4 lg:right-8 flex flex-col items-center">
+      <div className="w-full max-w-[1000px] bg-white dark:bg-zinc-900 rounded-[32px] shadow-2xl shadow-zinc-200/50 dark:shadow-black/20 border border-gray-100 dark:border-zinc-800 p-3 flex flex-col gap-2 transition-all hover:border-zinc-200 dark:hover:border-zinc-700 focus-within:border-indigo-200 dark:focus-within:border-indigo-900/50">
+        <div className="flex items-end gap-3 px-2 pt-1">
           <textarea
             ref={textareaRef}
             value={question}
@@ -61,39 +51,45 @@ export default function InputBar({ onSend, disabled }: Props) {
                 handleSend();
               }
             }}
-            placeholder="Escribe tu mensaje..."
+            placeholder="Pregúntame cualquier cosa..."
             rows={1}
             disabled={disabled}
-            className="flex-1 bg-transparent border-none outline-none resize-none text-[15px] text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 leading-relaxed max-h-32"
-            style={{ minHeight: '24px' }}
+            className="flex-1 bg-transparent border-none outline-none resize-none px-2 py-3 text-[16px] text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 font-light leading-relaxed"
           />
 
           <motion.button
             onClick={handleSend}
             disabled={disabled || !question.trim()}
             whileTap={{ scale: 0.9 }}
-            className="p-2.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:opacity-90 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 disabled:text-zinc-300 dark:disabled:text-zinc-600 transition-all shadow-sm shrink-0"
+            className="mb-1 p-3 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:opacity-90 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 disabled:text-zinc-300 dark:disabled:text-zinc-600 transition-all shadow-md shrink-0"
           >
-            <ArrowUp size={18} strokeWidth={2.5} />
+            <Send size={16} />
           </motion.button>
         </div>
 
-        <div className="flex items-center gap-1.5 px-4 pb-3 overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-1.5 px-2 pb-1 overflow-x-auto scrollbar-none">
           {personalities.map(p => {
             const PIcon = p.icon;
             const isActive = personality === p.id;
             return (
               <button
                 key={p.id}
-                onClick={(e) => { e.stopPropagation(); setPersonality(p.id); }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all shrink-0 ${
-                  isActive
-                    ? `bg-gradient-to-r ${p.gradient} text-white shadow-sm`
-                    : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                }`}
+                onClick={() => setPersonality(p.id)}
+                className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium shrink-0"
               >
-                <PIcon size={13} />
-                <span>{p.label}</span>
+                {isActive && (
+                  <motion.div
+                    layoutId="personality-bg"
+                    className="absolute inset-0 rounded-lg bg-zinc-900 dark:bg-white shadow-sm"
+                    transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                  />
+                )}
+                <span className={`relative z-10 ${isActive ? 'text-white dark:text-zinc-900' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                  <PIcon size={13} />
+                </span>
+                <span className={`relative z-10 ${isActive ? 'text-white dark:text-zinc-900' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                  {p.label}
+                </span>
               </button>
             );
           })}
