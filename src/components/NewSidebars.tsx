@@ -3,7 +3,8 @@
 import { 
   MessageSquare, 
   Clock, 
-  Zap, 
+  Zap,
+  Sparkles, 
   LayoutGrid, 
   Archive, 
   Settings, 
@@ -209,11 +210,10 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
 
       <button
         onClick={onNewChat}
-        className="w-full bg-[#0F172A] hover:bg-zinc-800 text-white rounded-2xl py-3 px-4 flex items-center justify-center gap-2 text-sm font-medium transition-all shadow-sm mb-6"
+        className="w-full bg-[#0F172A] hover:bg-zinc-800 text-white rounded-2xl py-3 px-4 flex items-center justify-center gap-2 text-sm font-normal transition-all shadow-sm mb-6"
       >
-        <Plus size={16} />
         Nuevo chat
-        <Zap size={14} className="fill-white" />
+        <Sparkles size={14} className="fill-white" />
       </button>
 
       <div className="flex flex-col gap-1 flex-1 overflow-y-auto overflow-x-hidden pr-1">
