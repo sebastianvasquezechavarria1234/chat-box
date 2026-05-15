@@ -33,19 +33,16 @@ export default function ChatMessages({ messages, chatId }: Props) {
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={chatId || 'empty'}
-          initial={{ opacity: 0, y: 40, filter: 'blur(6px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, y: -40, filter: 'blur(6px)' }}
-          transition={{ duration: 0.18, ease: 'easeOut' }}
+          initial={{ opacity: 0, filter: 'blur(10px)' }}
+          animate={{ opacity: 1, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, filter: 'blur(10px)' }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
           className="flex flex-col gap-6"
         >
           {messages.map((msg, i) =>
             msg.t === 'u' ? (
-              <motion.div
+              <div
                 key={`user-${i}`}
-                initial={{ opacity: 0, x: 20, scale: 0.95 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
                 className="self-end group relative"
               >
                 <div className="bg-black/5 dark:bg-white/10 px-5 py-3 rounded-2xl rounded-tr-none max-w-[100%] text-[15px] shadow-sm">
@@ -57,13 +54,10 @@ export default function ChatMessages({ messages, chatId }: Props) {
                 >
                   {copiedId === `user-${i}` ? <Check size={14} /> : <Copy size={14} />}
                 </button>
-              </motion.div>
+              </div>
             ) : (
-              <motion.div
+              <div
                 key={`bot-${i}`}
-                initial={{ opacity: 0, x: -20, scale: 0.95 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ duration: 0.4, ease: 'easeOut' }}
                 className="self-start flex gap-4 max-w-[90%]"
               >
                 <div className="w-8 h-8 rounded-full bg-purple-600 flex-shrink-0 flex items-center justify-center text-white text-xs font-bold shadow-md">
@@ -106,7 +100,7 @@ export default function ChatMessages({ messages, chatId }: Props) {
                     {msg.x}
                   </ReactMarkdown>
                 </div>
-              </motion.div>
+              </div>
             )
           )}
         </motion.div>

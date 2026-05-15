@@ -225,10 +225,10 @@ export default function Home() {
             {currentMsgs.length === 0 ? (
               <motion.div
                 key="suggestions"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25, ease: 'easeOut' }}
+                initial={{ opacity: 0, filter: 'blur(8px)' }}
+                animate={{ opacity: 1, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, filter: 'blur(8px)' }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
                 className="flex-1"
               >
                 <Suggestions onSuggestion={handleSuggestion} />
@@ -236,10 +236,10 @@ export default function Home() {
             ) : (
               <motion.div
                 key="chat"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.25, ease: 'easeOut' }}
+                initial={{ opacity: 0, filter: 'blur(8px)' }}
+                animate={{ opacity: 1, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, filter: 'blur(8px)' }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
                 className="max-w-[900px] mx-auto w-full py-8"
               >
                 <ChatMessages messages={currentMsgs} chatId={currentId} />
