@@ -27,6 +27,7 @@ export default function Home() {
   const [isDark, setIsDark] = useState(false);
   const [mobileSidebar, setMobileSidebar] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [searchTrigger, setSearchTrigger] = useState(0);
   const [stats, setStats] = useState<UserStats>({
     totalMessages: 0,
     totalCharsSent: 0,
@@ -54,6 +55,21 @@ export default function Home() {
     if (dark) document.documentElement.classList.add('dark');
     setLoaded(true);
   }, []);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchTrigger(prev => prev + 1);
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        e.preventDefault();
+        newChat();
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  });
 
   useEffect(() => {
     if (loaded) {
@@ -230,6 +246,7 @@ export default function Home() {
         onRenameChat={renameChat}
         mobileOpen={mobileSidebar}
         onMobileClose={() => setMobileSidebar(false)}
+        searchTrigger={searchTrigger}
       />
 
       <AnimatePresence>

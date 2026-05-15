@@ -71,6 +71,7 @@ interface SidebarProps {
   onRenameChat: (id: string, title: string) => void;
   mobileOpen?: boolean;
   onMobileClose?: () => void;
+  searchTrigger?: number;
 }
 
 function ChatMenu({ chat, onClose, onToggleFavorite, onDeleteChat, onRenameChat }: {
@@ -107,12 +108,20 @@ function ChatMenu({ chat, onClose, onToggleFavorite, onDeleteChat, onRenameChat 
   );
 }
 
-export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleFavorite, onDeleteChat, onRenameChat, mobileOpen, onMobileClose }: SidebarProps) {
+export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleFavorite, onDeleteChat, onRenameChat, mobileOpen, onMobileClose, searchTrigger }: SidebarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [menuChatId, setMenuChatId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (searchTrigger) {
+      setSearchOpen(true);
+      setTimeout(() => searchInputRef.current?.focus(), 50);
+    }
+  }, [searchTrigger]);
 
   const filtered = searchQuery
     ? chats.filter(c => c.title.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -210,6 +219,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
               className="flex items-center gap-2 w-full overflow-hidden"
             >
               <input
+                ref={searchInputRef}
                 autoFocus
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
@@ -230,6 +240,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
             >
               <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Charlas</h2>
               <div className="flex items-center gap-2">
+                <span className="text-[9px] text-zinc-300 dark:text-zinc-600 font-medium">Ctrl+K</span>
                 <Search size={16} className="text-zinc-400 dark:text-zinc-500 cursor-pointer shrink-0" onClick={() => setSearchOpen(true)} />
               </div>
             </motion.div>

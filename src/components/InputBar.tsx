@@ -95,6 +95,15 @@ export default function InputBar({ onSend, disabled }: Props) {
           })}
         </div>
       </div>
+
+      <a
+        href="https://sebas-dev.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-2 text-[10px] text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors underline italic"
+      >
+        Creado por Sebastian Vasquez Echavarria
+      </a>
     </div>
   );
 }
