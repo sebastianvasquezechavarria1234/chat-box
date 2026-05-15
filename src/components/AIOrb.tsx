@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { MeshDistortMaterial, Sphere } from '@react-three/drei';
 import { Color } from 'three';
@@ -53,8 +53,8 @@ function OrbMesh() {
     const mx = mouseTarget.current.x;
     const my = mouseTarget.current.y;
 
-    ref.current.rotation.x += (my * 0.8 - ref.current.rotation.x) * 0.06;
-    ref.current.rotation.y += (mx * 0.8 - ref.current.rotation.y) * 0.06;
+    ref.current.rotation.x += (my * 1.5 - ref.current.rotation.x) * 0.1;
+    ref.current.rotation.y += (mx * 1.5 - ref.current.rotation.y) * 0.1;
     ref.current.position.y = Math.sin(t * 1.8) * 0.06;
     ref.current.position.x = Math.sin(t * 0.7) * 0.03;
   });
