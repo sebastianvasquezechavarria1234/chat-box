@@ -200,7 +200,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
               transition={{ duration: 0.2 }}
               className="flex items-center justify-between w-full"
             >
-              <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Charlas</h2>
+              <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Charlas</h2>
               <Search size={16} className="text-zinc-400 cursor-pointer shrink-0" onClick={() => setSearchOpen(true)} />
             </motion.div>
           )}
@@ -233,7 +233,9 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
         )}
 
         <div className="px-2 mb-2 pt-2 border-t border-zinc-200 dark:border-zinc-700">
-          <span className="text-[10px] font-medium text-zinc-400 uppercase">Hoy</span>
+          <span className="text-[10px] font-medium text-zinc-400 uppercase flex items-center gap-1">
+            <Clock size={10} /> Hoy
+          </span>
         </div>
         
         {regular.length === 0 && favorites.length === 0 ? (
