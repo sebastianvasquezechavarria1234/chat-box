@@ -262,12 +262,6 @@ export default function Home() {
         </div>
 
         <InputBar onSend={sendMessage} disabled={sending} />
-        <footer className="px-4 lg:px-6 py-3 text-center text-[10px] text-zinc-400 dark:text-zinc-600">
-          Zenith GPT puede mostrar información imprecisa. Por favor, verifica las respuestas. 
-          <a href="https://sebas-dev.vercel.app/" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-900 dark:hover:text-zinc-300 transition-colors ml-1">
-            Creado por Sebastian Vasquez Echavarria
-          </a>
-        </footer>
       </main>
 
       <InfoModal show={showInfo} onClose={() => setShowInfo(false)} />

@@ -2,13 +2,9 @@
 
 import { 
   MessageSquare, 
-  Clock, 
-  Zap,
+  Clock,
   Sparkles, 
-  LayoutGrid, 
-  Archive, 
   Settings, 
-  Plus,
   Search,
   MoreHorizontal,
   Star,
@@ -25,15 +21,11 @@ import AIOrb from './AIOrb';
       <div className="hidden lg:flex fixed left-0 top-0 w-[60px] h-screen bg-white dark:bg-zinc-950 border-r border-gray-100 dark:border-zinc-900 flex-col items-center py-6 z-30">
         <AIOrb size="sm" />
         
-        <div className="flex flex-col gap-6 flex-1">
+        <div className="flex flex-col items-center gap-6 flex-1 mt-8">
           <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors"><MessageSquare size={20} /></button>
-          <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Clock size={20} /></button>
-          <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Zap size={20} /></button>
-          <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><LayoutGrid size={20} /></button>
-          <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Archive size={20} /></button>
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col items-center gap-6">
           <button 
             onClick={onToggleTheme}
             className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
@@ -50,8 +42,6 @@ import AIOrb from './AIOrb';
       {/* Mobile: bottom navigation bar */}
       <div className="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-900 flex items-center justify-around px-4 z-30">
         <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors"><MessageSquare size={20} /></button>
-        <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Clock size={20} /></button>
-        <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Zap size={20} /></button>
         <button 
           onClick={onToggleTheme}
           className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
@@ -59,6 +49,9 @@ import AIOrb from './AIOrb';
           {isDark ? <Sun size={20} /> : <Moon size={20} />}
         </button>
         <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Settings size={20} /></button>
+        <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 font-bold text-xs">
+          S
+        </div>
       </div>
     </>
   );
