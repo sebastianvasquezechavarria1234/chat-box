@@ -18,7 +18,9 @@ interface Props {
 export default function ChatMessages({ messages, chatId }: Props) {
   const endRef = useRef<HTMLDivElement>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const prevLenRef = useRef<Record<string, number>>({});
+  const prevLenRef = useRef(0);
+  const prevChatIdRef = useRef<string | null | undefined>(undefined);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -30,10 +32,21 @@ export default function ChatMessages({ messages, chatId }: Props) {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const chatKey = chatId || '__empty__';
-  const prevLen = prevLenRef.current[chatKey] ?? -1;
-  const isChatSwitch = prevLen === -1;
-  prevLenRef.current[chatKey] = messages.length;
+  if (isFirstRender.current) {
+    isFirstRender.current = false;
+    prevLenRef.current = messages.length;
+    prevChatIdRef.current = chatId;
+  }
+
+  const chatSwitched = prevChatIdRef.current !== chatId;
+  prevChatIdRef.current = chatId;
+
+  if (chatSwitched) {
+    prevLenRef.current = messages.length;
+  }
+
+  const prevLen = prevLenRef.current;
+  prevLenRef.current = messages.length;
 
   return (
     <div className="flex flex-col gap-6 p-4 flex-1 pb-[180px]">
@@ -47,7 +60,7 @@ export default function ChatMessages({ messages, chatId }: Props) {
           className="flex flex-col gap-6"
         >
         {messages.map((msg, i) => {
-          const isNew = !isChatSwitch && i >= prevLen;
+          const isNew = i >= prevLen;
           return msg.t === 'u' ? (
             <motion.div
               key={`user-${i}`}
