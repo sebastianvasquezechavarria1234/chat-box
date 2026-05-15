@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import AIOrb from './AIOrb';
 
- export function MiniSidebar({ isDark, onToggleTheme }: { isDark: boolean, onToggleTheme: () => void }) {
+ export function MiniSidebar({ isDark, onToggleTheme, onToggleStats }: { isDark: boolean, onToggleTheme: () => void, onToggleStats?: () => void }) {
   return (
     <>
       {/* Desktop: vertical left sidebar */}
@@ -32,7 +32,7 @@ import AIOrb from './AIOrb';
           >
             {isDark ? <Sun size={20} /> : <Moon size={20} />}
           </button>
-          <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Settings size={20} /></button>
+<button onClick={onToggleStats} className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Settings size={20} /></button>
           <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 font-bold text-xs">
             S
           </div>
@@ -48,7 +48,7 @@ import AIOrb from './AIOrb';
         >
           {isDark ? <Sun size={20} /> : <Moon size={20} />}
         </button>
-        <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Settings size={20} /></button>
+        <button onClick={onToggleStats} className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Settings size={20} /></button>
         <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 font-bold text-xs">
           S
         </div>

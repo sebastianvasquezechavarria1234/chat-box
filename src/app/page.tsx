@@ -10,6 +10,8 @@ import InputBar from '@/components/InputBar';
 import Suggestions from '@/components/Suggestions';
 import WelcomeModal from '@/components/WelcomeModal';
 import InfoModal from '@/components/InfoModal';
+import StatsModal from '@/components/StatsModal';
+import type { UserStats } from '@/components/StatsModal';
 import type { Chat, Message } from '@/components/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://python-api-render-ubr9.onrender.com/ask';
@@ -24,22 +26,40 @@ export default function Home() {
   const [loaded, setLoaded] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [mobileSidebar, setMobileSidebar] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+  const [stats, setStats] = useState<UserStats>({
+    totalMessages: 0,
+    totalCharsSent: 0,
+    totalCharsReceived: 0,
+    totalChatsCreated: 0,
+    firstUse: new Date().toISOString(),
+    lastActive: new Date().toISOString(),
+    activeDays: 1,
+  });
 
   useEffect(() => {
     const saved = localStorage.getItem('nexus_chats');
     const name = localStorage.getItem('nexus_user');
     const dark = localStorage.getItem('theme') === 'dark';
+    const savedStats = localStorage.getItem('nexus_stats');
     
     if (saved) setChats(JSON.parse(saved));
     if (name) {
       setUserName(name);
       setShowWelcome(false);
     }
+    if (savedStats) setStats(JSON.parse(savedStats));
     
     setIsDark(dark);
     if (dark) document.documentElement.classList.add('dark');
     setLoaded(true);
   }, []);
+
+  useEffect(() => {
+    if (loaded) {
+      localStorage.setItem('nexus_stats', JSON.stringify(stats));
+    }
+  }, [stats, loaded]);
 
   useEffect(() => {
     if (loaded) {
@@ -69,6 +89,7 @@ export default function Home() {
     const nc: Chat = { id, title: 'Nueva conversación', msgs: [], userName };
     save([nc, ...chats]);
     setCurrentId(id);
+    setStats(prev => ({ ...prev, totalChatsCreated: prev.totalChatsCreated + 1 }));
   };
 
   const loadChat = (id: string) => setCurrentId(id);
@@ -121,6 +142,19 @@ export default function Home() {
     
     setSending(true);
 
+    const today = new Date().toDateString();
+    setStats(prev => {
+      const lastActiveDate = new Date(prev.lastActive).toDateString();
+      const diff = Math.floor((new Date().getTime() - new Date(prev.lastActive).getTime()) / (1000 * 60 * 60 * 24));
+      return {
+        ...prev,
+        totalMessages: prev.totalMessages + 1,
+        totalCharsSent: prev.totalCharsSent + question.length,
+        lastActive: new Date().toISOString(),
+        activeDays: today !== lastActiveDate ? prev.activeDays + 1 : prev.activeDays,
+      };
+    });
+
     const history = activeList.find(c => c.id === activeId)?.msgs || [];
 
     const userMsg: Message = { t: 'u', x: question };
@@ -169,6 +203,12 @@ export default function Home() {
             : c
         ));
       }
+
+      setStats(prev => ({
+        ...prev,
+        totalMessages: prev.totalMessages + 1,
+        totalCharsReceived: prev.totalCharsReceived + botAnswer.length,
+      }));
     } catch (err) {
       const errorMsg: Message = { t: 'b', x: 'No se pudo conectar con la IA. Verifica tu conexión.' };
       setChats(prev => prev.map(c => c.id === activeId ? { ...c, msgs: [...c.msgs, errorMsg] } : c));
@@ -179,7 +219,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-white dark:bg-zinc-950 font-sans tracking-tight transition-colors duration-300">
-      <MiniSidebar isDark={isDark} onToggleTheme={toggleTheme} />
+      <MiniSidebar isDark={isDark} onToggleTheme={toggleTheme} onToggleStats={() => setShowStats(true)} />
       <ChatSidebar 
         chats={chats} 
         currentId={currentId} 
@@ -192,7 +232,9 @@ export default function Home() {
         onMobileClose={() => setMobileSidebar(false)}
       />
 
-      {showWelcome && <WelcomeModal onStart={startChat} />}
+      <AnimatePresence>
+        {showWelcome && <WelcomeModal onStart={startChat} />}
+      </AnimatePresence>
 
       <main className="flex-1 ml-0 lg:ml-[320px] flex flex-col relative h-screen overflow-x-hidden pb-16 lg:pb-0">
         {/* Encabezado */}
@@ -269,6 +311,10 @@ export default function Home() {
 
       <AnimatePresence>
         {showInfo && <InfoModal show={showInfo} onClose={() => setShowInfo(false)} />}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showStats && <StatsModal stats={stats} onClose={() => setShowStats(false)} />}
       </AnimatePresence>
     </div>
   );
