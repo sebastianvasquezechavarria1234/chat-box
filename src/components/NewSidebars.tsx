@@ -245,7 +245,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
         <Sparkles size={14} className="fill-white dark:fill-zinc-900" strokeWidth={1.5} />
       </button>
 
-      <div className="flex flex-col gap-1 flex-1 overflow-y-auto overflow-x-hidden pr-1">
+      <div className="flex flex-col gap-1 flex-1 overflow-y-auto overflow-x-hidden mr-1 pr-3">
         {favorites.length > 0 && (
           <>
             <div className="px-2 mb-2 pt-2 border-t border-zinc-200 dark:border-zinc-700">
@@ -296,7 +296,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
       </div>
 
       {/* Desktop sidebar */}
-      <div className="hidden lg:flex fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 p-4 flex flex-col z-20">
+      <div className="hidden lg:flex fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 pl-4 py-4 flex flex-col z-20">
         {sidebarContent}
       </div>
     </>

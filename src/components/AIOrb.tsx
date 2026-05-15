@@ -397,10 +397,12 @@ export default function AIOrb({ size = 'md' }: AIOrbProps) {
           {!pulseDone && <PulseRing key={pulseKey} active={pulseCount} onComplete={handlePulseComplete} />}
         </CameraOrbit>
         <Environment preset="city" />
-        <EffectComposer>
-          <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={0.6} />
-          <ChromaticAberration offset={new Vector2(0.001, 0.001)} radialModulation={false} modulationOffset={0.15} />
-        </EffectComposer>
+        {size !== 'sm' && (
+          <EffectComposer>
+            <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={0.6} />
+            <ChromaticAberration offset={new Vector2(0.001, 0.001)} radialModulation={false} modulationOffset={0.15} />
+          </EffectComposer>
+        )}
       </Canvas>
     </div>
   );
