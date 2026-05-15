@@ -1,5 +1,7 @@
 'use client';
 
+import { motion } from 'framer-motion';
+
 interface Props {
   show: boolean;
   onClose: () => void;
@@ -9,12 +11,20 @@ export default function InfoModal({ show, onClose }: Props) {
   if (!show) return null;
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
       className="fixed inset-0 flex items-center justify-center z-50"
       style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }}
       onClick={onClose}
     >
-      <div
+      <motion.div
+        initial={{ opacity: 0, scale: 0.85, rotateY: 6, y: 30 }}
+        animate={{ opacity: 1, scale: 1, rotateY: 0, y: 0 }}
+        exit={{ opacity: 0, scale: 0.85, rotateY: -6, y: 30 }}
+        transition={{ type: 'spring', damping: 22, stiffness: 260, mass: 0.9 }}
         className="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-y-auto dark:border dark:border-zinc-800"
         style={{ width: 680, maxHeight: '85vh', padding: '2rem' }}
         onClick={e => e.stopPropagation()}
@@ -98,7 +108,7 @@ export default function InfoModal({ show, onClose }: Props) {
           <p> <strong>Portafolio:</strong> <a href="https://sebas-dev.vercel.app/" target="_blank" className="text-purple-600 dark:text-purple-400 hover:underline">sebas-dev.vercel.app</a></p>
           <p> <strong>GitHub:</strong> <a href="https://github.com/sebastianvasquezechavarria1234/python-api-render" target="_blank" className="text-purple-600 dark:text-purple-400 hover:underline">python-api-render</a></p>
         </section>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

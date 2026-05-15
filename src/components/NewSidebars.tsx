@@ -198,7 +198,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
 
   const sidebarContent = (
     <>
-      <div className="flex items-center justify-between mb-6 px-2">
+      <div className="flex items-center justify-between mb-6 pl-2 pr-4">
         <AnimatePresence mode="wait">
           {searchOpen ? (
             <motion.div
@@ -239,13 +239,13 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
 
       <button
         onClick={onNewChat}
-        className="w-full bg-[#0F172A] dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 rounded-2xl py-3 px-4 flex items-center justify-center gap-2 text-sm font-normal transition-all shadow-sm mb-6"
+        className="w-full bg-[#0F172A] dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 rounded-2xl py-2 px-3 flex items-center justify-center gap-2 text-sm font-normal transition-all shadow-sm mb-6 mr-1"
       >
         Nuevo chat
         <Sparkles size={14} className="fill-white dark:fill-zinc-900" strokeWidth={1.5} />
       </button>
 
-      <div className="flex flex-col gap-1 flex-1 overflow-y-auto overflow-x-hidden mr-1 pr-3">
+      <div className="flex flex-col gap-1 flex-1 overflow-y-auto overflow-x-hidden pr-3">
         {favorites.length > 0 && (
           <>
             <div className="px-2 mb-2 pt-2 border-t border-zinc-200 dark:border-zinc-700">
@@ -296,7 +296,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
       </div>
 
       {/* Desktop sidebar */}
-      <div className="hidden lg:flex fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 px-4 py-4 flex flex-col z-20">
+      <div className="hidden lg:flex fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 pl-4 pr-2 py-4 flex flex-col z-20">
         {sidebarContent}
       </div>
     </>

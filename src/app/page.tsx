@@ -267,7 +267,9 @@ export default function Home() {
         <InputBar onSend={sendMessage} disabled={sending} />
       </main>
 
-      <InfoModal show={showInfo} onClose={() => setShowInfo(false)} />
+      <AnimatePresence>
+        {showInfo && <InfoModal show={showInfo} onClose={() => setShowInfo(false)} />}
+      </AnimatePresence>
     </div>
   );
 }
