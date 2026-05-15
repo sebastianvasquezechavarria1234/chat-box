@@ -160,7 +160,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
               transition={{ type: 'spring', stiffness: 500, damping: 35 }}
             />
           )}
-          <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold relative z-10 ${colorFor(c.id)}`}>{initial}</div>
+          <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-medium relative z-10 ${colorFor(c.id)}`}>{initial}</div>
           {editingId === c.id ? (
             <input
               autoFocus
