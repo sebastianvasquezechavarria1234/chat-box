@@ -21,20 +21,40 @@ export default function Home() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
   const [sending, setSending] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('nexus_chats');
     const name = localStorage.getItem('nexus_user');
+    const dark = localStorage.getItem('theme') === 'dark';
+    
     if (saved) setChats(JSON.parse(saved));
     if (name) {
       setUserName(name);
       setShowWelcome(false);
     }
+    
+    setIsDark(dark);
+    if (dark) document.documentElement.classList.add('dark');
+    setLoaded(true);
   }, []);
+
+  useEffect(() => {
+    if (loaded) {
+      localStorage.setItem('nexus_chats', JSON.stringify(chats));
+    }
+  }, [chats, loaded]);
+
+  const toggleTheme = () => {
+    const newDark = !isDark;
+    setIsDark(newDark);
+    localStorage.setItem('theme', newDark ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
 
   const save = (newChats: Chat[]) => {
     setChats(newChats);
-    localStorage.setItem('nexus_chats', JSON.stringify(newChats));
   };
 
   const startChat = (name: string) => {
@@ -78,7 +98,7 @@ export default function Home() {
       const updated = [nc, ...chats];
       save(updated);
       setCurrentId(id);
-      setTimeout(() => sendMessage(text, 'casual', id, updated), 100);
+      sendMessage(text, 'casual', id, updated);
     } else {
       sendMessage(text, 'casual');
     }
@@ -146,23 +166,6 @@ export default function Home() {
             : c
         ));
       }
-
-      // Guardar en localStorage al finalizar el stream
-      setTimeout(() => {
-        const finalSaved = JSON.parse(localStorage.getItem('nexus_chats') || '[]');
-        const updatedWithFullBot = finalSaved.map((c: any) => 
-          c.id === activeId 
-            ? { 
-                ...c, 
-                msgs: c.msgs.map((m: any, idx: number) => 
-                  idx === c.msgs.length - 1 ? { ...m, x: botAnswer } : m
-                ) 
-              } 
-            : c
-        );
-        localStorage.setItem('nexus_chats', JSON.stringify(updatedWithFullBot));
-      }, 500);
-
     } catch (err) {
       const errorMsg: Message = { t: 'b', x: 'No se pudo conectar con la IA. Verifica tu conexión.' };
       setChats(prev => prev.map(c => c.id === activeId ? { ...c, msgs: [...c.msgs, errorMsg] } : c));
@@ -172,8 +175,8 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white dark:bg-zinc-950 font-sans tracking-tight">
-      <MiniSidebar />
+    <div className="flex min-h-screen bg-white dark:bg-zinc-950 font-sans tracking-tight transition-colors duration-300">
+      <MiniSidebar isDark={isDark} onToggleTheme={toggleTheme} />
       <ChatSidebar 
         chats={chats} 
         currentId={currentId} 

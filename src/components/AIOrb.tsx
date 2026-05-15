@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect, useMemo, useCallback, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { MeshDistortMaterial, Sphere, Environment, ContactShadows } from '@react-three/drei';
-import { Color, Vector3 } from 'three';
+import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
+import { Color, Vector3, AdditiveBlending } from 'three';
 import type { Mesh, Points, Group } from 'three';
 
 const palette = [
@@ -82,7 +83,6 @@ function Particles({ count = 120, radius = 1.9 }: { count?: number; radius?: num
 
 function GlowSphere() {
   const ref = useRef<Mesh>(null);
-  const colorRef = useRef(new Color('#7c3aed'));
 
   useFrame(({ clock }) => {
     if (!ref.current) return;
@@ -90,7 +90,6 @@ function GlowSphere() {
     const s = 1.3 + Math.sin(t * 1.5) * 0.08;
     ref.current.scale.setScalar(s);
     ((ref.current.material as any).opacity) = 0.1 + Math.sin(t * 2) * 0.04;
-    ((ref.current.material as any).color).lerp(colorRef.current, 0.02);
   });
 
   return (
@@ -132,17 +131,145 @@ function WireframeOverlay() {
   );
 }
 
-function OrbMesh() {
+function PulseRing({ active, onComplete }: { active: number; onComplete: () => void }) {
+  const ref = useRef<Mesh>(null);
+  const progress = useRef(0);
+
+  useEffect(() => {
+    if (active > 0) progress.current = 0.001;
+  }, [active]);
+
+  useFrame(() => {
+    if (!ref.current || progress.current <= 0) return;
+    progress.current += 0.02;
+    const p = progress.current;
+    ref.current.scale.setScalar(1 + p * 4);
+    ((ref.current.material as any).opacity) = Math.max(0, 1 - p * 2);
+    if (p > 1.5) { progress.current = 0; onComplete(); }
+  });
+
+  if (progress.current <= 0) return null;
+
+  return (
+    <mesh ref={ref}>
+      <ringGeometry args={[0.85, 1.15, 64]} />
+      <meshBasicMaterial color="#c4b5fd" transparent opacity={1} side={2} depthWrite={false} blending={2} />
+    </mesh>
+  );
+}
+
+function SparkField() {
+  const ref = useRef<Points>(null);
+  const sparkData = useRef<Float32Array | null>(null);
+  const sparkActive = useRef(false);
+  const lastColorIdx = useRef(0);
+  const sparkTime = useRef(0);
+
+  const basePositions = useMemo(() => {
+    const count = 80;
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      pos[i * 3] = Math.sin(phi) * Math.cos(theta);
+      pos[i * 3 + 1] = Math.sin(phi) * Math.sin(theta);
+      pos[i * 3 + 2] = Math.cos(phi);
+    }
+    return pos;
+  }, []);
+
+  const velocities = useMemo(() => {
+    const vel = new Float32Array(80 * 3);
+    for (let i = 0; i < 80; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const speed = 0.02 + Math.random() * 0.04;
+      vel[i * 3] = Math.sin(phi) * Math.cos(theta) * speed;
+      vel[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * speed;
+      vel[i * 3 + 2] = Math.cos(phi) * speed;
+    }
+    return vel;
+  }, []);
+
+  useFrame(({ clock }) => {
+    if (!ref.current) return;
+
+    const t = clock.getElapsedTime();
+    const idx = Math.floor(t * 0.25) % palette.length;
+
+    if (idx !== lastColorIdx.current) {
+      lastColorIdx.current = idx;
+      sparkActive.current = true;
+      sparkTime.current = 0;
+      sparkData.current = new Float32Array(basePositions);
+      const pos = ref.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < 80 * 3; i++) {
+        pos[i] = basePositions[i];
+      }
+      ref.current.geometry.attributes.position.needsUpdate = true;
+    }
+
+    if (sparkActive.current && sparkData.current) {
+      sparkTime.current += 0.02;
+      const pos = ref.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < 80; i++) {
+        pos[i * 3] += velocities[i * 3];
+        pos[i * 3 + 1] += velocities[i * 3 + 1];
+        pos[i * 3 + 2] += velocities[i * 3 + 2];
+      }
+      ref.current.geometry.attributes.position.needsUpdate = true;
+      ((ref.current.material as any).opacity) = Math.max(0, 1 - sparkTime.current * 3);
+      if (sparkTime.current > 0.5) {
+        sparkActive.current = false;
+      }
+    } else if (!sparkActive.current) {
+      ((ref.current.material as any).opacity) = 0;
+    }
+  });
+
+  return (
+    <points ref={ref}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={80}
+          array={basePositions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.06}
+        color="#e8d4ff"
+        transparent
+        opacity={0}
+        blending={2}
+        depthWrite={false}
+        sizeAttenuation
+      />
+    </points>
+  );
+}
+
+function CameraOrbit({ children }: { children: React.ReactNode }) {
+  const groupRef = useRef<Group>(null);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current) return;
+    groupRef.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.04) * 0.1;
+  });
+
+  return <group ref={groupRef}>{children}</group>;
+}
+
+function OrbMesh({ onPulse }: { onPulse: () => void }) {
   const ref = useRef<Mesh>(null);
   const matRef = useRef<any>(null);
   const groupRef = useRef<Group>(null);
   const targetColor = useRef(new Color('#7c3aed'));
   const targetEmissive = useRef(new Color('#4f46e5'));
   const mouseTarget = useRef({ x: 0, y: 0 });
-
   const velocity = useRef({ x: 0, y: 0 });
   const springPos = useRef({ x: 0, y: 0 });
-
   const smoothColor = useRef(new Color('#7c3aed'));
 
   useEffect(() => {
@@ -202,7 +329,7 @@ function OrbMesh() {
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} onClick={onPulse}>
       <GlowSphere />
       <Sphere ref={ref} args={[1, 64, 64]}>
         <MeshDistortMaterial
@@ -223,13 +350,28 @@ function OrbMesh() {
       <OrbitingRing radius={1.5} tube={0.02} color="#2dd4bf" opacity={0.5} rotSpeed={-0.7} tilt={[0.3, 0.5, 0.8]} />
       <OrbitingRing radius={1.7} tube={0.015} color="#f472b6" opacity={0.4} rotSpeed={0.5} tilt={[0.8, 0.2, 1.2]} />
       <Particles count={120} radius={1.85} />
+      <SparkField />
     </group>
   );
 }
 
 export default function AIOrb() {
+  const [pulseCount, setPulseCount] = useState(0);
+  const [pulseDone, setPulseDone] = useState(true);
+  const [pulseKey, setPulseKey] = useState(0);
+
+  const handlePulse = useCallback(() => {
+    setPulseCount(prev => prev + 1);
+    setPulseKey(prev => prev + 1);
+    setPulseDone(false);
+  }, []);
+
+  const handlePulseComplete = useCallback(() => {
+    setPulseDone(true);
+  }, []);
+
   return (
-    <div className="w-28 h-28 relative mb-6">
+    <div className="w-28 h-28 relative mb-6 cursor-pointer" onClick={handlePulse}>
       <Canvas
         camera={{ position: [0, 0, 5], fov: 50 }}
         gl={{ antialias: true, alpha: true }}
@@ -239,15 +381,16 @@ export default function AIOrb() {
         <pointLight position={[5, 5, 5]} intensity={2} color="#a78bfa" />
         <pointLight position={[-5, -5, -5]} intensity={1} color="#06b6d4" />
         <directionalLight position={[0, 5, 0]} intensity={0.4} />
-        <OrbMesh />
-        <ContactShadows
-          position={[0, -1.5, 0]}
-          opacity={0.3}
-          scale={4}
-          blur={2.5}
-          far={2}
-        />
+        <CameraOrbit>
+          <OrbMesh onPulse={handlePulse} />
+          {!pulseDone && <PulseRing key={pulseKey} active={pulseCount} onComplete={handlePulseComplete} />}
+        </CameraOrbit>
+        <ContactShadows position={[0, -1.5, 0]} opacity={0.3} scale={4} blur={2.5} far={2} />
         <Environment preset="city" />
+        <EffectComposer>
+          <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={0.6} />
+          <ChromaticAberration offset={[0.001, 0.001]} radialModulation={false} />
+        </EffectComposer>
       </Canvas>
     </div>
   );
