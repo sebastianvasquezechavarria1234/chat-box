@@ -4,7 +4,7 @@ import { useRef, useEffect, useMemo, useCallback, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { MeshDistortMaterial, Sphere, Environment, ContactShadows } from '@react-three/drei';
 import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
-import { Color, Vector3, AdditiveBlending } from 'three';
+import { Color, Vector2 } from 'three';
 import type { Mesh, Points, Group } from 'three';
 
 const palette = [
@@ -389,7 +389,7 @@ export default function AIOrb() {
         <Environment preset="city" />
         <EffectComposer>
           <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={0.6} />
-          <ChromaticAberration offset={[0.001, 0.001]} radialModulation={false} />
+          <ChromaticAberration offset={new Vector2(0.001, 0.001)} radialModulation={false} modulationOffset={0.15} />
         </EffectComposer>
       </Canvas>
     </div>
