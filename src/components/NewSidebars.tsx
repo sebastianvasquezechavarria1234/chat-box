@@ -171,24 +171,40 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
   return (
     <div className="fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 p-4 flex flex-col z-20">
       <div className="flex items-center justify-between mb-6 px-2">
-        {searchOpen ? (
-          <div className="flex items-center gap-2 w-full">
-            <input
-              autoFocus
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
-              placeholder="Buscar charlas..."
-              className="w-full bg-transparent border-none outline-none text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
-            />
-            <Search size={16} className="text-zinc-400 cursor-pointer" onClick={() => { setSearchOpen(false); setSearchQuery(''); }} />
-          </div>
-        ) : (
-          <>
-            <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Charlas</h2>
-            <Search size={16} className="text-zinc-400 cursor-pointer" onClick={() => setSearchOpen(true)} />
-          </>
-        )}
+        <AnimatePresence mode="wait">
+          {searchOpen ? (
+            <motion.div
+              key="search"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center gap-2 w-full overflow-hidden"
+            >
+              <input
+                autoFocus
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
+                placeholder="Buscar charlas..."
+                className="w-full bg-transparent border-none outline-none text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
+              />
+              <Search size={16} className="text-zinc-400 cursor-pointer shrink-0" onClick={() => { setSearchOpen(false); setSearchQuery(''); }} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="title"
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center justify-between w-full"
+            >
+              <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Charlas</h2>
+              <Search size={16} className="text-zinc-400 cursor-pointer shrink-0" onClick={() => setSearchOpen(true)} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <button
@@ -203,8 +219,8 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
       <div className="flex flex-col gap-1 flex-1 overflow-y-auto overflow-x-hidden pr-1">
         {favorites.length > 0 && (
           <>
-            <div className="px-2 mb-2 mt-1">
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-1">
+            <div className="px-2 mb-2 pt-2 border-t border-zinc-200 dark:border-zinc-700">
+              <span className="text-[10px] font-medium text-zinc-400 uppercase flex items-center gap-1">
                 <Star size={10} /> Guardados
               </span>
             </div>
@@ -216,8 +232,8 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
           </>
         )}
 
-        <div className="px-2 mb-2">
-          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Hoy</span>
+        <div className="px-2 mb-2 pt-2 border-t border-zinc-200 dark:border-zinc-700">
+          <span className="text-[10px] font-medium text-zinc-400 uppercase">Hoy</span>
         </div>
         
         {regular.length === 0 && favorites.length === 0 ? (

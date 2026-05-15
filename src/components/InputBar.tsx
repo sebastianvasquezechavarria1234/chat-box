@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Paperclip, Mic, Send, ChevronDown } from 'lucide-react';
+import { Paperclip, Mic, Send, ChevronDown, MessageSquare, GraduationCap, Briefcase, Settings } from 'lucide-react';
 
 interface Props {
   onSend: (question: string, personality: string) => void;
@@ -29,7 +29,15 @@ export default function InputBar({ onSend, disabled }: Props) {
     // El foco regresará automáticamente gracias al useEffect cuando disabled sea false
   };
 
-  const personalities = ['casual', 'tutor', 'profesional', 'tecnico'];
+  const personalities = [
+    { id: 'casual',      label: 'Casual',       icon: MessageSquare },
+    { id: 'tutor',       label: 'Tutor',         icon: GraduationCap },
+    { id: 'profesional', label: 'Profesional',   icon: Briefcase },
+    { id: 'tecnico',     label: 'Técnico',       icon: Settings },
+  ];
+
+  const currentP = personalities.find(p => p.id === personality) || personalities[0];
+  const CurrentIcon = currentP.icon;
 
   return (
     <div className="fixed bottom-6 left-[340px] right-8 flex flex-col items-center">
@@ -55,22 +63,27 @@ export default function InputBar({ onSend, disabled }: Props) {
             <div className="relative">
               <button 
                 onClick={() => setShowPersonalities(!showPersonalities)}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-xs font-light text-zinc-500 dark:text-zinc-400"
+                className="flex items-center gap-2 px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-xs font-medium text-zinc-600 dark:text-zinc-300"
               >
-                Personalidad <ChevronDown size={14} />
+                <CurrentIcon size={14} />
+                <span>{currentP.label}</span>
+                <ChevronDown size={12} className={`opacity-40 transition-transform ${showPersonalities ? 'rotate-180' : ''}`} />
               </button>
               {showPersonalities && (
-                <div className="absolute bottom-full mb-2 left-0 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-2xl shadow-xl p-1 z-50 min-w-[140px]">
+                <div className="absolute bottom-full mb-2 left-0 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl z-50 py-1.5 min-w-[160px] overflow-hidden">
                   {personalities.map(p => (
                     <button
-                      key={p}
+                      key={p.id}
                       onClick={() => {
-                        setPersonality(p);
+                        setPersonality(p.id);
                         setShowPersonalities(false);
                       }}
-                      className="w-full text-left px-4 py-2 text-xs font-light hover:bg-zinc-50 dark:hover:bg-zinc-700 rounded-xl transition-colors text-zinc-600 dark:text-zinc-300"
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors"
                     >
-                      {p.charAt(0).toUpperCase() + p.slice(1)}
+                      <p.icon size={14} className={personality === p.id ? 'text-zinc-900 dark:text-white' : 'text-zinc-400'} />
+                      <span className={`text-xs ${personality === p.id ? 'text-zinc-900 dark:text-white font-medium' : 'text-zinc-600 dark:text-zinc-300'}`}>
+                        {p.label}
+                      </span>
                     </button>
                   ))}
                 </div>
