@@ -30,7 +30,7 @@ export default function Suggestions({ onSuggestion }: Props) {
                 <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-bold">Z</div>
                 <span className="text-sm font-semibold">Zenith Intelligence</span>
              </div>
-             <span className="bg-indigo-600/30 text-indigo-300 text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-widest border border-indigo-500/20">Análisis</span>
+             <span className="bg-indigo-600/30 text-indigo-300 text-[10px] px-2.5 py-1 rounded-full font-medium uppercase tracking-normal border border-indigo-500/20">Análisis</span>
            </div>
            <p className="text-sm text-zinc-300 leading-relaxed flex-1 font-light">
              Capaz de analizar grandes volúmenes de datos, extraer conclusiones clave y generar reportes profesionales en segundos.
@@ -38,10 +38,13 @@ export default function Suggestions({ onSuggestion }: Props) {
         </div>
 
         {/* Zenith Tasks Card */}
-        <div className="bg-white dark:bg-zinc-900/50 rounded-[32px] p-7 border border-gray-100 dark:border-zinc-800 flex flex-col h-[230px] shadow-sm hover:shadow-md transition-all">
+        <div 
+           className="bg-white dark:bg-zinc-900/50 rounded-[32px] p-7 border border-gray-100 dark:border-zinc-800 flex flex-col h-[230px] shadow-sm hover:shadow-md transition-all cursor-pointer group"
+           onClick={() => onSuggestion('Ayúdame a optimizar mis tareas diarias y mejorar mi flujo de trabajo con Zenith GPT.')}
+        >
            <div className="flex items-center gap-2 mb-5 text-zinc-400">
              <Layers size={16} />
-             <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Productividad</span>
+             <span className="text-[10px] font-normal uppercase tracking-tight">Productividad</span>
            </div>
            <div className="flex flex-col gap-3 flex-1">
              <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-300 font-light">
@@ -57,22 +60,25 @@ export default function Suggestions({ onSuggestion }: Props) {
                 <span>Resumen de documentos extensos</span>
              </div>
            </div>
-             <button className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest text-right hover:text-indigo-500 transition-colors">Capacidades</button>
+           <div className="flex items-center justify-between mt-auto pt-2">
+             <span className="text-[10px] font-normal text-zinc-400 uppercase tracking-tight">Capacidades</span>
+             <div className="text-[10px] font-medium text-indigo-500 uppercase tracking-tight opacity-0 group-hover:opacity-100 transition-opacity">Hacer esta pregunta</div>
+           </div>
         </div>
 
         {/* Suggested Prompt Card */}
         <div 
           className="bg-white dark:bg-zinc-900/50 rounded-[32px] p-7 border border-gray-100 dark:border-zinc-800 flex flex-col h-[230px] shadow-sm group cursor-pointer hover:border-indigo-100 transition-all" 
-          onClick={() => onSuggestion('¿Cómo puede Zenith GPT ayudarme a mejorar mi productividad diaria?')}
+          onClick={() => onSuggestion('¿Cómo puede Zenith GPT ayudarme a optimizar mis tareas diarias y mejorar la calidad de mis entregas?')}
         >
            <div className="flex items-center justify-between mb-5">
-             <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">Comenzar ahora</span>
-             <MoreHorizontal size={18} className="text-zinc-300" />
+             <span className="text-[10px] font-normal text-zinc-400 uppercase tracking-tight">Comenzar ahora</span>
+             < MoreHorizontal size={18} className="text-zinc-300" />
            </div>
            <p className="text-[15px] text-zinc-800 dark:text-zinc-100 font-light leading-relaxed flex-1">
              &ldquo;¿Cómo puede Zenith GPT ayudarme a optimizar mis tareas diarias y mejorar la calidad de mis entregas?&rdquo;
            </p>
-           <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Hacer esta pregunta</div>
+           <div className="text-[10px] font-medium text-indigo-500 uppercase tracking-tight">Hacer esta pregunta</div>
         </div>
       </div>
 

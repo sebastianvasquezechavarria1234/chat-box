@@ -127,13 +127,18 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
       >
         <button
           onClick={() => { onLoadChat(c.id); setMenuChatId(null); }}
-          className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-left transition-all ${
-            c.id === currentId 
-              ? 'bg-white dark:bg-zinc-800 shadow-sm' 
-              : 'hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'
+          className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-left transition-all relative ${
+            c.id !== currentId ? 'hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50' : ''
           }`}
         >
-          <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold ${colorFor(c.id)}`}>{initial}</div>
+          {c.id === currentId && (
+            <motion.div
+              layoutId="chat-active"
+              className="absolute inset-0 bg-white dark:bg-zinc-800 rounded-xl shadow-sm"
+              transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+            />
+          )}
+          <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold relative z-10 ${colorFor(c.id)}`}>{initial}</div>
           {editingId === c.id ? (
             <input
               autoFocus
@@ -145,14 +150,14 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
                 if (e.key === 'Escape') setEditingId(null);
               }}
               onClick={e => e.stopPropagation()}
-              className="flex-1 bg-transparent border-b border-zinc-300 dark:border-zinc-600 outline-none text-sm text-zinc-900 dark:text-white"
+              className="flex-1 bg-transparent border-b border-zinc-300 dark:border-zinc-600 outline-none text-sm text-zinc-900 dark:text-white relative z-10"
             />
           ) : (
-            <span className={`flex-1 truncate ${c.id === currentId ? 'text-zinc-900 dark:text-white font-medium' : 'text-zinc-500'}`}>{c.title}</span>
+            <span className={`flex-1 truncate relative z-10 ${c.id === currentId ? 'text-zinc-900 dark:text-white' : 'text-zinc-500'}`}>{c.title}</span>
           )}
           <MoreHorizontal
             size={14}
-            className="text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity relative z-10"
             onClick={e => { e.stopPropagation(); setMenuChatId(isMenuOpen ? null : c.id); }}
           />
         </button>
