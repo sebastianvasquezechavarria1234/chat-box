@@ -296,7 +296,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
       </div>
 
       {/* Desktop sidebar */}
-      <div className="hidden lg:flex fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 pl-4 py-4 flex flex-col z-20">
+      <div className="hidden lg:flex fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 px-4 py-4 flex flex-col z-20">
         {sidebarContent}
       </div>
     </>
