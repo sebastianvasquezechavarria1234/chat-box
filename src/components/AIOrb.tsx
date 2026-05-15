@@ -214,7 +214,7 @@ function OrbMesh() {
 
 export default function AIOrb() {
   return (
-    <div className="w-48 h-48 -mt-6 -mb-10 relative">
+    <div className="w-28 h-28 relative mb-6">
       <Canvas
         camera={{ position: [0, 0, 5], fov: 50 }}
         gl={{ antialias: true, alpha: true }}

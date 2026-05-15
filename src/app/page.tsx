@@ -186,7 +186,7 @@ export default function Home() {
 
       {showWelcome && <WelcomeModal onStart={startChat} />}
 
-      <main className="flex-1 ml-[320px] flex flex-col relative h-screen overflow-hidden">
+      <main className="flex-1 ml-[320px] flex flex-col relative h-screen overflow-x-hidden">
         {/* Encabezado */}
         <header className="flex items-center justify-between px-8 py-4 border-b border-gray-50 dark:border-zinc-900 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10">
           <div className="flex items-center gap-2">
