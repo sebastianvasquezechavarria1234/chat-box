@@ -13,36 +13,54 @@ import {
   MoreHorizontal,
   Star,
   Sun,
-  Moon
+  Moon,
+  X
 } from 'lucide-react';
 import AIOrb from './AIOrb';
 
  export function MiniSidebar({ isDark, onToggleTheme }: { isDark: boolean, onToggleTheme: () => void }) {
   return (
-    <div className="fixed left-0 top-0 w-[60px] h-screen bg-white dark:bg-zinc-950 border-r border-gray-100 dark:border-zinc-900 flex flex-col items-center py-6 z-30">
-      <AIOrb size="sm" />
-      
-      <div className="flex flex-col gap-6 flex-1">
-        <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors"><MessageSquare size={20} /></button>
-        <button className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Clock size={20} /></button>
-        <button className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Zap size={20} /></button>
-        <button className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><LayoutGrid size={20} /></button>
-        <button className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Archive size={20} /></button>
+    <>
+      {/* Desktop: vertical left sidebar */}
+      <div className="hidden lg:flex fixed left-0 top-0 w-[60px] h-screen bg-white dark:bg-zinc-950 border-r border-gray-100 dark:border-zinc-900 flex-col items-center py-6 z-30">
+        <AIOrb size="sm" />
+        
+        <div className="flex flex-col gap-6 flex-1">
+          <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors"><MessageSquare size={20} /></button>
+          <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Clock size={20} /></button>
+          <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Zap size={20} /></button>
+          <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><LayoutGrid size={20} /></button>
+          <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Archive size={20} /></button>
+        </div>
+
+        <div className="flex flex-col gap-6">
+          <button 
+            onClick={onToggleTheme}
+            className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+          >
+            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Settings size={20} /></button>
+          <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 font-bold text-xs">
+            S
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-6">
+      {/* Mobile: bottom navigation bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-900 flex items-center justify-around px-4 z-30">
+        <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors"><MessageSquare size={20} /></button>
+        <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Clock size={20} /></button>
+        <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Zap size={20} /></button>
         <button 
           onClick={onToggleTheme}
-          className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+          className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
         >
           {isDark ? <Sun size={20} /> : <Moon size={20} />}
         </button>
-        <button className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Settings size={20} /></button>
-        <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 font-bold text-xs">
-          S
-        </div>
+        <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Settings size={20} /></button>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -58,6 +76,8 @@ interface SidebarProps {
   onToggleFavorite: (id: string) => void;
   onDeleteChat: (id: string) => void;
   onRenameChat: (id: string, title: string) => void;
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
 }
 
 function ChatMenu({ chat, onClose, onToggleFavorite, onDeleteChat, onRenameChat }: {
@@ -94,7 +114,7 @@ function ChatMenu({ chat, onClose, onToggleFavorite, onDeleteChat, onRenameChat 
   );
 }
 
-export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleFavorite, onDeleteChat, onRenameChat }: SidebarProps) {
+export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleFavorite, onDeleteChat, onRenameChat, mobileOpen, onMobileClose }: SidebarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [menuChatId, setMenuChatId] = useState<string | null>(null);
@@ -162,11 +182,11 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
               className="flex-1 bg-transparent border-b border-zinc-300 dark:border-zinc-600 outline-none text-sm text-zinc-900 dark:text-white relative z-10"
             />
           ) : (
-            <span className={`flex-1 truncate relative z-10 ${c.id === currentId ? 'text-zinc-900 dark:text-white' : 'text-zinc-500'}`}>{c.title}</span>
+            <span className={`flex-1 truncate relative z-10 ${c.id === currentId ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>{c.title}</span>
           )}
           <MoreHorizontal
             size={14}
-            className="text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity relative z-10"
+            className="text-zinc-300 dark:text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity relative z-10"
             onClick={e => { e.stopPropagation(); setMenuChatId(isMenuOpen ? null : c.id); }}
           />
         </button>
@@ -183,8 +203,8 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
     );
   }
 
-  return (
-    <div className="fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 p-4 flex flex-col z-20">
+  const sidebarContent = (
+    <>
       <div className="flex items-center justify-between mb-6 px-2">
         <AnimatePresence mode="wait">
           {searchOpen ? (
@@ -204,7 +224,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
                 placeholder="Buscar charlas..."
                 className="w-full bg-transparent border-none outline-none text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
               />
-              <Search size={16} className="text-zinc-400 cursor-pointer shrink-0" onClick={() => { setSearchOpen(false); setSearchQuery(''); }} />
+              <Search size={16} className="text-zinc-400 dark:text-zinc-500 cursor-pointer shrink-0" onClick={() => { setSearchOpen(false); setSearchQuery(''); }} />
             </motion.div>
           ) : (
             <motion.div
@@ -216,7 +236,9 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
               className="flex items-center justify-between w-full"
             >
               <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Charlas</h2>
-              <Search size={16} className="text-zinc-400 cursor-pointer shrink-0" onClick={() => setSearchOpen(true)} />
+              <div className="flex items-center gap-2">
+                <Search size={16} className="text-zinc-400 dark:text-zinc-500 cursor-pointer shrink-0" onClick={() => setSearchOpen(true)} />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -224,10 +246,10 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
 
       <button
         onClick={onNewChat}
-        className="w-full bg-[#0F172A] hover:bg-zinc-800 text-white rounded-2xl py-3 px-4 flex items-center justify-center gap-2 text-sm font-normal transition-all shadow-sm mb-6"
+        className="w-full bg-[#0F172A] dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 rounded-2xl py-3 px-4 flex items-center justify-center gap-2 text-sm font-normal transition-all shadow-sm mb-6"
       >
         Nuevo chat
-        <Sparkles size={14} className="fill-white" strokeWidth={1.5} />
+        <Sparkles size={14} className="fill-white dark:fill-zinc-900" strokeWidth={1.5} />
       </button>
 
       <div className="flex flex-col gap-1 flex-1 overflow-y-auto overflow-x-hidden pr-1">
@@ -260,15 +282,30 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
           </AnimatePresence>
         )}
       </div>
+    </>
+  );
 
-      <div className="mt-auto pt-4">
-        <div className="bg-white dark:bg-zinc-800 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-700 shadow-sm">
-          <p className="text-xs text-zinc-500 mb-3">Get smarter with Zenith GPT PRO</p>
-          <button className="w-full py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 text-xs font-bold text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-all">
-            Upgrade to Pro
+  return (
+    <>
+      {/* Mobile overlay backdrop */}
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-0 bg-black/40 z-30" onClick={onMobileClose} />
+      )}
+
+      {/* Mobile drawer */}
+      <div className={`lg:hidden fixed left-0 top-0 w-[280px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 p-4 flex flex-col z-40 transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex justify-end mb-2">
+          <button onClick={onMobileClose} className="p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200">
+            <X size={20} />
           </button>
         </div>
+        {sidebarContent}
       </div>
-    </div>
+
+      {/* Desktop sidebar */}
+      <div className="hidden lg:flex fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 p-4 flex flex-col z-20">
+        {sidebarContent}
+      </div>
+    </>
   );
 }

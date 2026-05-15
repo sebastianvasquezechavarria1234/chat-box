@@ -41,7 +41,7 @@ export default function InputBar({ onSend, disabled }: Props) {
   const CurrentIcon = currentP.icon;
 
   return (
-    <div className="fixed bottom-6 left-[340px] right-8 flex flex-col items-center">
+    <div className="fixed bottom-20 lg:bottom-6 left-4 lg:left-[340px] right-4 lg:right-8 flex flex-col items-center">
       <div className="w-full max-w-[1000px] bg-white dark:bg-zinc-900 rounded-[32px] shadow-2xl shadow-zinc-200/50 dark:shadow-none border border-gray-100 dark:border-zinc-800 p-3 flex flex-col gap-2 transition-all hover:border-zinc-200 dark:hover:border-zinc-700 focus-within:border-indigo-200 dark:focus-within:border-indigo-900/50">
         <textarea
           ref={textareaRef}

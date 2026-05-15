@@ -46,7 +46,7 @@ export default function ChatMessages({ messages, chatId }: Props) {
                 key={`user-${i}`}
                 className="self-end group relative"
               >
-                <div className="bg-black/5 dark:bg-white/10 px-5 py-3 rounded-2xl rounded-tr-none max-w-[100%] text-[15px] shadow-sm">
+                <div className="bg-black/5 dark:bg-white/10 px-4 lg:px-5 py-3 rounded-2xl rounded-tr-none max-w-full text-[15px] text-zinc-900 dark:text-white shadow-sm">
                   {msg.x}
                 </div>
                 <button 
@@ -59,7 +59,7 @@ export default function ChatMessages({ messages, chatId }: Props) {
             ) : (
               <div
                 key={`bot-${i}`}
-                className="self-start flex gap-4 max-w-[90%]"
+                className="self-start flex gap-3 lg:gap-4 max-w-full lg:max-w-[90%]"
               >
                 <div className="flex-shrink-0 mt-1">
                   <AIOrb size="sm" />

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Menu, X } from 'lucide-react';
 import { MiniSidebar, ChatSidebar } from '@/components/NewSidebars';
 import ChatMessages from '@/components/ChatMessages';
 import InputBar from '@/components/InputBar';
@@ -23,6 +23,7 @@ export default function Home() {
   const [sending, setSending] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [mobileSidebar, setMobileSidebar] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('nexus_chats');
@@ -185,22 +186,30 @@ export default function Home() {
         onToggleFavorite={toggleFavorite}
         onDeleteChat={deleteChat}
         onRenameChat={renameChat}
+        mobileOpen={mobileSidebar}
+        onMobileClose={() => setMobileSidebar(false)}
       />
 
       {showWelcome && <WelcomeModal onStart={startChat} />}
 
-      <main className="flex-1 ml-[320px] flex flex-col relative h-screen overflow-x-hidden">
+      <main className="flex-1 ml-0 lg:ml-[320px] flex flex-col relative h-screen overflow-x-hidden pb-16 lg:pb-0">
         {/* Encabezado */}
-        <header className="flex items-center justify-between px-8 py-4 border-b border-gray-50 dark:border-zinc-900 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10">
+        <header className="flex items-center justify-between px-4 lg:px-8 py-4 border-b border-gray-50 dark:border-zinc-900 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10">
           <div className="flex items-center gap-2">
+            <button 
+              className="lg:hidden p-1.5 mr-1 text-zinc-600 dark:text-zinc-400"
+              onClick={() => setMobileSidebar(true)}
+            >
+              <Menu size={20} />
+            </button>
             <span className="text-sm font-medium text-zinc-900 dark:text-white">Zenith GPT</span>
-            <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">PRO</span>
+            <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-[10px] px-1.5 py-0.5 rounded font-medium uppercase">PRO</span>
           </div>
           
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setShowInfo(true)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs font-normal text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all"
+              className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs font-normal text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
               Documentación
@@ -209,15 +218,16 @@ export default function Home() {
               href="https://sebas-dev.vercel.app/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 dark:bg-white text-xs font-normal text-white dark:text-zinc-900 hover:opacity-90 transition-all"
+              className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 dark:bg-white text-xs font-normal text-white dark:text-zinc-900 hover:opacity-90 transition-all"
             >
               Portfolio Web
             </a>
             <button 
-              onClick={newChat}
-              className="flex items-center gap-2 px-3 py-1.5 bg-[#0F172A] text-white rounded-full text-xs font-normal hover:bg-zinc-800 transition-all shadow-sm"
+              onClick={() => { newChat(); setMobileSidebar(false); }}
+              className="flex items-center gap-2 px-3 py-1.5 bg-[#0F172A] dark:bg-white text-white dark:text-zinc-900 rounded-full text-xs font-normal hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-sm"
             >
-              Nuevo Chat <Sparkles size={12} className="fill-white" strokeWidth={1.5} />
+              <Sparkles size={12} className="fill-white dark:fill-zinc-900" strokeWidth={1.5} />
+              <span className="hidden sm:inline">Nuevo Chat</span>
             </button>
           </div>
         </header>
@@ -252,7 +262,7 @@ export default function Home() {
         </div>
 
         <InputBar onSend={sendMessage} disabled={sending} />
-        <footer className="px-6 py-3 text-center text-[10px] text-zinc-400 dark:text-zinc-600">
+        <footer className="px-4 lg:px-6 py-3 text-center text-[10px] text-zinc-400 dark:text-zinc-600">
           Zenith GPT puede mostrar información imprecisa. Por favor, verifica las respuestas. 
           <a href="https://sebas-dev.vercel.app/" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-900 dark:hover:text-zinc-300 transition-colors ml-1">
             Creado por Sebastian Vasquez Echavarria
