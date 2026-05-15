@@ -8,6 +8,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Check } from 'lucide-react';
 import { useState } from 'react';
+import AIOrb from './AIOrb';
 
 interface Props {
   messages: Message[];
@@ -60,8 +61,8 @@ export default function ChatMessages({ messages, chatId }: Props) {
                 key={`bot-${i}`}
                 className="self-start flex gap-4 max-w-[90%]"
               >
-                <div className="w-8 h-8 rounded-full bg-purple-600 flex-shrink-0 flex items-center justify-center text-white text-xs font-bold shadow-md">
-                  IA
+                <div className="flex-shrink-0 mt-1">
+                  <AIOrb size="sm" />
                 </div>
                 <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed text-[15px] text-gray-800 dark:text-gray-200">
                   <ReactMarkdown

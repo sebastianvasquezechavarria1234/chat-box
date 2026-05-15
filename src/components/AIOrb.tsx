@@ -107,24 +107,26 @@ function GlowSphere() {
   );
 }
 
-function WireframeOverlay() {
+function WireframeOverlay({ radius = 1.02, segments = 20, speedX = 0.12, speedY = 0.18 }: {
+  radius?: number; segments?: number; speedX?: number; speedY?: number;
+}) {
   const ref = useRef<Mesh>(null);
 
   useFrame(({ clock }) => {
     if (!ref.current) return;
-    ref.current.rotation.x = clock.getElapsedTime() * 0.12;
-    ref.current.rotation.y = clock.getElapsedTime() * 0.18;
-    ((ref.current.material as any).opacity) = 0.12 + Math.sin(clock.getElapsedTime() * 1.8) * 0.06;
+    ref.current.rotation.x = clock.getElapsedTime() * speedX;
+    ref.current.rotation.y = clock.getElapsedTime() * speedY;
+    ((ref.current.material as any).opacity) = 0.35 + Math.sin(clock.getElapsedTime() * 1.8) * 0.12;
   });
 
   return (
     <mesh ref={ref}>
-      <sphereGeometry args={[1.02, 20, 20]} />
+      <sphereGeometry args={[radius, segments, segments]} />
       <meshBasicMaterial
         wireframe
         color="#c4b5fd"
         transparent
-        opacity={0.18}
+        opacity={0.4}
         depthWrite={false}
       />
     </mesh>
@@ -321,8 +323,8 @@ function OrbMesh({ onPulse }: { onPulse: () => void }) {
     groupRef.current.rotation.y = smx * 1.2;
     groupRef.current.rotation.z = smx * smy * 0.25;
 
-    ref.current.scale.x = 1 + smx * 0.12 + velocity.current.x * 0.15;
-    ref.current.scale.y = 1 - Math.abs(smx) * 0.08 + smy * 0.1 + velocity.current.y * 0.12;
+    ref.current.scale.x = 1 + smx * 0.25 + velocity.current.x * 0.3;
+    ref.current.scale.y = 1 - Math.abs(smx) * 0.15 + smy * 0.2 + velocity.current.y * 0.25;
 
     groupRef.current.position.y = Math.sin(t * 1.8) * 0.05 + smy * 0.08;
     groupRef.current.position.x = Math.sin(t * 0.7) * 0.02 + smx * 0.08;
@@ -346,16 +348,25 @@ function OrbMesh({ onPulse }: { onPulse: () => void }) {
         />
       </Sphere>
       <WireframeOverlay />
-      <OrbitingRing radius={1.35} tube={0.025} color="#a78bfa" opacity={0.6} rotSpeed={1} tilt={[Math.PI / 2, 0, 0]} />
-      <OrbitingRing radius={1.5} tube={0.02} color="#2dd4bf" opacity={0.5} rotSpeed={-0.7} tilt={[0.3, 0.5, 0.8]} />
-      <OrbitingRing radius={1.7} tube={0.015} color="#f472b6" opacity={0.4} rotSpeed={0.5} tilt={[0.8, 0.2, 1.2]} />
       <Particles count={120} radius={1.85} />
       <SparkField />
     </group>
   );
 }
 
-export default function AIOrb() {
+type OrbSize = 'sm' | 'md' | 'lg';
+
+const sizeClasses: Record<OrbSize, string> = {
+  sm: 'w-8 h-8',
+  md: 'w-28 h-28 mb-6',
+  lg: 'w-40 h-40',
+};
+
+interface AIOrbProps {
+  size?: OrbSize;
+}
+
+export default function AIOrb({ size = 'md' }: AIOrbProps) {
   const [pulseCount, setPulseCount] = useState(0);
   const [pulseDone, setPulseDone] = useState(true);
   const [pulseKey, setPulseKey] = useState(0);
@@ -371,7 +382,7 @@ export default function AIOrb() {
   }, []);
 
   return (
-    <div className="w-28 h-28 relative mb-6 cursor-pointer" onClick={handlePulse}>
+    <div className={`${sizeClasses[size]} relative cursor-pointer`} onClick={handlePulse}>
       <Canvas
         camera={{ position: [0, 0, 5], fov: 50 }}
         gl={{ antialias: true, alpha: true }}
@@ -385,7 +396,6 @@ export default function AIOrb() {
           <OrbMesh onPulse={handlePulse} />
           {!pulseDone && <PulseRing key={pulseKey} active={pulseCount} onComplete={handlePulseComplete} />}
         </CameraOrbit>
-        <ContactShadows position={[0, -1.5, 0]} opacity={0.3} scale={4} blur={2.5} far={2} />
         <Environment preset="city" />
         <EffectComposer>
           <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={0.6} />
