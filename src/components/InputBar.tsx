@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Paperclip, Mic, Send, ChevronDown, MessageSquare, GraduationCap, Briefcase, Settings } from 'lucide-react';
+import { Send, ChevronDown, MessageSquare, GraduationCap, Briefcase, Settings } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
   onSend: (question: string, personality: string) => void;
@@ -63,41 +64,43 @@ export default function InputBar({ onSend, disabled }: Props) {
             <div className="relative">
               <button 
                 onClick={() => setShowPersonalities(!showPersonalities)}
-                className="flex items-center gap-2 px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-xs font-medium text-zinc-600 dark:text-zinc-300"
+                className="flex items-center gap-2 px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-xs font-medium text-zinc-600 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50"
               >
                 <CurrentIcon size={14} />
                 <span>{currentP.label}</span>
                 <ChevronDown size={12} className={`opacity-40 transition-transform ${showPersonalities ? 'rotate-180' : ''}`} />
               </button>
-              {showPersonalities && (
-                <div className="absolute bottom-full mb-2 left-0 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl z-50 py-1.5 min-w-[160px] overflow-hidden">
-                  {personalities.map(p => (
-                    <button
-                      key={p.id}
-                      onClick={() => {
-                        setPersonality(p.id);
-                        setShowPersonalities(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors"
-                    >
-                      <p.icon size={14} className={personality === p.id ? 'text-zinc-900 dark:text-white' : 'text-zinc-400'} />
-                      <span className={`text-xs ${personality === p.id ? 'text-zinc-900 dark:text-white font-medium' : 'text-zinc-600 dark:text-zinc-300'}`}>
-                        {p.label}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
+              <AnimatePresence>
+                {showPersonalities && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                    transition={{ duration: 0.15, ease: 'easeOut' }}
+                    className="absolute bottom-full mb-2 left-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-2xl z-50 py-1.5 min-w-[160px] overflow-hidden"
+                  >
+                    {personalities.map(p => (
+                      <button
+                        key={p.id}
+                        onClick={() => {
+                          setPersonality(p.id);
+                          setShowPersonalities(false);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors"
+                      >
+                        <p.icon size={14} className={personality === p.id ? 'text-zinc-900 dark:text-white' : 'text-zinc-400'} />
+                        <span className={`text-xs ${personality === p.id ? 'text-zinc-900 dark:text-white font-medium' : 'text-zinc-600 dark:text-zinc-300'}`}>
+                          {p.label}
+                        </span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="p-2.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors flex items-center gap-2 text-xs font-light">
-              <Paperclip size={18} /> Adjuntar
-            </button>
-            <button className="p-2.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors flex items-center gap-2 text-xs font-light">
-              <Mic size={18} /> Voz
-            </button>
             <button
               onClick={handleSend}
               disabled={disabled || !question.trim()}
