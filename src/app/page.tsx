@@ -261,7 +261,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-white dark:bg-zinc-950 font-sans tracking-tight transition-colors duration-300">
-      <MiniSidebar isDark={isDark} onToggleTheme={toggleTheme} onToggleStats={() => setShowStats(true)} />
+      <MiniSidebar isDark={isDark} userName={userName} onToggleTheme={toggleTheme} onToggleStats={() => setShowStats(true)} />
       <ChatSidebar 
         chats={chats} 
         currentId={currentId} 

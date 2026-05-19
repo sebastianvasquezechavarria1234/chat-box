@@ -14,7 +14,8 @@ import {
 } from 'lucide-react';
 import AIOrb from './AIOrb';
 
- export function MiniSidebar({ isDark, onToggleTheme, onToggleStats }: { isDark: boolean, onToggleTheme: () => void, onToggleStats?: () => void }) {
+ export function MiniSidebar({ isDark, userName, onToggleTheme, onToggleStats }: { isDark: boolean, userName: string, onToggleTheme: () => void, onToggleStats?: () => void }) {
+  const initial = userName ? userName.charAt(0).toUpperCase() : '?';
   return (
     <>
       {/* Desktop: vertical left sidebar */}
@@ -34,7 +35,7 @@ import AIOrb from './AIOrb';
           </button>
 <button onClick={onToggleStats} className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Settings size={20} /></button>
           <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 font-bold text-xs transition-colors duration-300">
-            S
+            {initial}
           </div>
         </div>
       </div>
@@ -50,8 +51,8 @@ import AIOrb from './AIOrb';
           </button>
           <button onClick={onToggleStats} className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors duration-300"><Settings size={20} /></button>
           <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 font-bold text-xs transition-colors duration-300">
-          S
-        </div>
+            {initial}
+          </div>
       </div>
     </>
   );
