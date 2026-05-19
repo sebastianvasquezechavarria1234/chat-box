@@ -93,14 +93,14 @@ function ChatMenu({ chat, onClose, onToggleFavorite, onDeleteChat, onRenameChat 
 
   return (
     <div ref={ref} className="absolute right-0 top-full mt-1 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-xl shadow-xl z-50 py-1 min-w-[160px]">
-      <button type="button" onClick={(e) => { e.stopPropagation(); onToggleFavorite(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
+      <button type="button" onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); onToggleFavorite(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
         <Star size={14} /> {chat.favorite ? 'Quitar de favoritos' : 'Favorito'}
       </button>
-      <button type="button" onClick={(e) => { e.stopPropagation(); onRenameChat(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
+      <button type="button" onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); onRenameChat(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
         Editar nombre
       </button>
-      <button type="button" onClick={(e) => { e.stopPropagation(); onDeleteChat(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+      <button type="button" onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); onDeleteChat(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
         Eliminar
       </button>
@@ -156,9 +156,9 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
         transition={{ duration: 0.25, ease: 'easeOut' }}
         className="relative group"
       >
-        <button
+        <div
           onClick={() => { onLoadChat(c.id); setMenuChatId(null); }}
-          className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-left transition-all relative ${
+          className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-left transition-all relative cursor-pointer ${
             c.id !== currentId ? 'hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50' : ''
           }`}
         >
@@ -175,9 +175,19 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
               autoFocus
               value={editValue}
               onChange={e => setEditValue(e.target.value)}
-              onBlur={() => { onRenameChat(c.id, editValue); setEditingId(null); }}
+              onBlur={() => {
+                if (editValue.trim()) {
+                  onRenameChat(c.id, editValue.trim());
+                }
+                setEditingId(null);
+              }}
               onKeyDown={e => {
-                if (e.key === 'Enter') { onRenameChat(c.id, editValue); setEditingId(null); }
+                if (e.key === 'Enter') {
+                  if (editValue.trim()) {
+                    onRenameChat(c.id, editValue.trim());
+                  }
+                  setEditingId(null);
+                }
                 if (e.key === 'Escape') setEditingId(null);
               }}
               onClick={e => e.stopPropagation()}
@@ -186,19 +196,30 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
           ) : (
             <span className={`flex-1 truncate relative z-10 ${c.id === currentId ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>{c.title}</span>
           )}
-          <MoreHorizontal
-            size={14}
-            className="text-zinc-300 dark:text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity relative z-10"
-            onClick={e => { e.stopPropagation(); setMenuChatId(isMenuOpen ? null : c.id); }}
-          />
-        </button>
+          <button
+            type="button"
+            className="text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-200 opacity-0 group-hover:opacity-100 transition-all p-1 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-md relative z-10 shrink-0"
+            onClick={e => {
+              e.stopPropagation();
+              setMenuChatId(isMenuOpen ? null : c.id);
+            }}
+          >
+            <MoreHorizontal size={14} />
+          </button>
+        </div>
         {isMenuOpen && (
           <ChatMenu
             chat={c}
             onClose={() => setMenuChatId(null)}
             onToggleFavorite={() => onToggleFavorite(c.id)}
             onDeleteChat={() => onDeleteChat(c.id)}
-            onRenameChat={() => { setEditingId(c.id); setEditValue(c.title); }}
+            onRenameChat={() => {
+              setEditingId(c.id);
+              setEditValue(c.title);
+              setTimeout(() => {
+                setMenuChatId(null);
+              }, 50);
+            }}
           />
         )}
       </motion.div>

@@ -111,19 +111,16 @@ export default function Home() {
   const loadChat = (id: string) => setCurrentId(id);
 
   const toggleFavorite = (id: string) => {
-    const updated = chats.map(c => c.id === id ? { ...c, favorite: !c.favorite } : c);
-    save(updated);
+    setChats(prev => prev.map(c => c.id === id ? { ...c, favorite: !c.favorite } : c));
   };
 
   const deleteChat = (id: string) => {
-    const updated = chats.filter(c => c.id !== id);
-    save(updated);
-    if (currentId === id) setCurrentId(null);
+    setChats(prev => prev.filter(c => c.id !== id));
+    setCurrentId(prev => prev === id ? null : prev);
   };
 
   const renameChat = (id: string, title: string) => {
-    const updated = chats.map(c => c.id === id ? { ...c, title } : c);
-    save(updated);
+    setChats(prev => prev.map(c => c.id === id ? { ...c, title } : c));
   };
 
   const currentChat = chats.find(c => c.id === currentId);
