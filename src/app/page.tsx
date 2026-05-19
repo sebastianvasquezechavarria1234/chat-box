@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Menu, X, ExternalLink } from 'lucide-react';
+import { Sparkles, Menu, X, ExternalLink, ChevronDown } from 'lucide-react';
 import { MiniSidebar, ChatSidebar } from '@/components/NewSidebars';
 import ChatMessages from '@/components/ChatMessages';
 import InputBar from '@/components/InputBar';
@@ -28,6 +28,8 @@ export default function Home() {
   const [mobileSidebar, setMobileSidebar] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [searchTrigger, setSearchTrigger] = useState(0);
+  const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [stats, setStats] = useState<UserStats>({
     totalMessages: 0,
     totalCharsSent: 0,
@@ -82,6 +84,21 @@ export default function Home() {
       localStorage.setItem('nexus_chats', JSON.stringify(chats));
     }
   }, [chats, loaded]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const threshold = 100;
+      setShowScrollBtn(el.scrollHeight - el.scrollTop - el.clientHeight > threshold);
+    };
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [loaded]);
+
+  const scrollToBottom = () => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+  };
 
   const toggleTheme = () => {
     const newDark = !isDark;
@@ -292,7 +309,7 @@ export default function Home() {
         </header>
 
         {/* Contenido */}
-        <div className="flex-1 overflow-y-auto scroll-smooth flex flex-col">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth flex flex-col">
           <AnimatePresence mode="wait">
             {currentMsgs.length === 0 ? (
               <motion.div
@@ -320,6 +337,21 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
+        <AnimatePresence>
+          {showScrollBtn && (
+            <motion.button
+              onClick={scrollToBottom}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed bottom-32 lg:bottom-[100px] left-1/2 -translate-x-1/2 z-20 p-2.5 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-lg text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-600 transition-all"
+              whileTap={{ scale: 0.9 }}
+            >
+              <ChevronDown size={18} />
+            </motion.button>
+          )}
+        </AnimatePresence>
         <InputBar onSend={sendMessage} disabled={sending} />
       </main>
 
