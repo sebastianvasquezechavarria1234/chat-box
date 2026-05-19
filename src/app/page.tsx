@@ -96,6 +96,18 @@ export default function Home() {
     return () => el.removeEventListener('scroll', onScroll);
   }, [loaded]);
 
+  const HEALTH_URL = API_URL.replace('/ask', '/health');
+
+  useEffect(() => {
+    if (!loaded) return;
+    const ping = () => {
+      fetch(HEALTH_URL).catch(() => {});
+    };
+    ping();
+    const id = setInterval(ping, 5 * 60 * 1000);
+    return () => clearInterval(id);
+  }, [loaded]);
+
   const scrollToBottom = () => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   };
