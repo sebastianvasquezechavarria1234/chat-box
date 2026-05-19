@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Menu, X, ExternalLink, ChevronDown } from 'lucide-react';
+import { Sparkles, Menu, X, ExternalLink, ArrowDownToLine } from 'lucide-react';
 import { MiniSidebar, ChatSidebar } from '@/components/NewSidebars';
 import ChatMessages from '@/components/ChatMessages';
 import InputBar from '@/components/InputBar';
@@ -337,19 +337,19 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        <div className="fixed bottom-44 lg:bottom-[160px] left-4 lg:left-[340px] right-4 lg:right-8 flex justify-center pointer-events-none z-20">
+        <div className="fixed bottom-48 lg:bottom-[180px] left-4 lg:left-[340px] right-4 lg:right-8 flex justify-center pointer-events-none z-20">
           <AnimatePresence>
             {showScrollBtn && (
               <motion.button
                 onClick={scrollToBottom}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, scale: 0, filter: 'blur(8px)' }}
+                animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, scale: 0, filter: 'blur(8px)' }}
                 transition={{ duration: 0.2 }}
                 className="pointer-events-auto p-2.5 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-lg text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-600 transition-all"
                 whileTap={{ scale: 0.9 }}
               >
-                <ChevronDown size={18} />
+                <ArrowDownToLine size={18} />
               </motion.button>
             )}
           </AnimatePresence>
