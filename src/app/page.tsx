@@ -272,13 +272,13 @@ export default function Home() {
         <header className="flex items-center justify-between px-4 lg:px-8 py-4 border-b border-gray-50 dark:border-zinc-900 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10 transition-colors duration-300">
           <div className="flex items-center gap-2">
             <button 
-              className="lg:hidden p-1.5 mr-1 text-zinc-600 dark:text-zinc-400"
+              className="lg:hidden p-1.5 mr-1 text-zinc-600 dark:text-zinc-400 transition-colors duration-300"
               onClick={() => setMobileSidebar(true)}
             >
               <Menu size={20} />
             </button>
-            <span className="text-sm font-medium text-zinc-900 dark:text-white">Zenith GPT</span>
-            <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-[10px] px-1.5 py-0.5 rounded font-medium uppercase">PRO</span>
+            <span className="text-sm font-medium text-zinc-900 dark:text-white transition-colors duration-300">Zenith GPT</span>
+            <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-[10px] px-1.5 py-0.5 rounded font-medium uppercase transition-colors duration-300">PRO</span>
           </div>
           
           <div className="flex items-center gap-3">

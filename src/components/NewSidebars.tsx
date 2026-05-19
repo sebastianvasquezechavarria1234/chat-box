@@ -22,7 +22,7 @@ import AIOrb from './AIOrb';
         <AIOrb size="sm" />
         
         <div className="flex flex-col items-center gap-6 flex-1 mt-8">
-          <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors"><MessageSquare size={20} /></button>
+          <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300"><MessageSquare size={20} /></button>
         </div>
 
         <div className="flex flex-col items-center gap-6">
@@ -33,7 +33,7 @@ import AIOrb from './AIOrb';
             {isDark ? <Sun size={20} /> : <Moon size={20} />}
           </button>
 <button onClick={onToggleStats} className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Settings size={20} /></button>
-          <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 font-bold text-xs">
+          <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 font-bold text-xs transition-colors duration-300">
             S
           </div>
         </div>
@@ -41,15 +41,15 @@ import AIOrb from './AIOrb';
 
       {/* Mobile: bottom navigation bar */}
       <div className="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-900 flex items-center justify-around px-4 z-30 transition-colors duration-300">
-        <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors"><MessageSquare size={20} /></button>
-        <button 
-          onClick={onToggleTheme}
-          className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
-        >
-          {isDark ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
-        <button onClick={onToggleStats} className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"><Settings size={20} /></button>
-        <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 font-bold text-xs">
+        <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300"><MessageSquare size={20} /></button>
+          <button 
+            onClick={onToggleTheme}
+            className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors duration-300"
+          >
+            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          <button onClick={onToggleStats} className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors duration-300"><Settings size={20} /></button>
+          <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 font-bold text-xs transition-colors duration-300">
           S
         </div>
       </div>
@@ -92,7 +92,7 @@ function ChatMenu({ chat, onClose, onToggleFavorite, onDeleteChat, onRenameChat 
   }, [onClose]);
 
   return (
-    <div ref={ref} className="absolute right-0 top-full mt-1 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-xl shadow-xl z-50 py-1 min-w-[160px]">
+    <div ref={ref} className="absolute right-0 top-full mt-1 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-xl shadow-xl z-50 py-1 min-w-[160px] transition-colors duration-300">
       <button type="button" onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); onToggleFavorite(); onClose(); }} className="w-full flex items-center gap-2 px-4 py-2 text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
         <Star size={14} /> {chat.favorite ? 'Quitar de favoritos' : 'Favorito'}
       </button>
@@ -191,10 +191,10 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
                 if (e.key === 'Escape') setEditingId(null);
               }}
               onClick={e => e.stopPropagation()}
-              className="flex-1 bg-transparent border-b border-zinc-300 dark:border-zinc-600 outline-none text-sm text-zinc-900 dark:text-white relative z-10"
+              className="flex-1 bg-transparent border-b border-zinc-300 dark:border-zinc-600 outline-none text-sm text-zinc-900 dark:text-white relative z-10 transition-colors duration-300"
             />
           ) : (
-            <span className={`flex-1 truncate relative z-10 ${c.id === currentId ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>{c.title}</span>
+            <span className={`flex-1 truncate relative z-10 transition-colors duration-300 ${c.id === currentId ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>{c.title}</span>
           )}
           <button
             type="button"

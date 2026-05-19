@@ -54,14 +54,14 @@ export default function InputBar({ onSend, disabled }: Props) {
             placeholder="Pregúntame cualquier cosa..."
             rows={1}
             disabled={disabled}
-            className="flex-1 bg-transparent border-none outline-none resize-none px-2 py-3 text-[16px] text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 font-light leading-relaxed"
+            className="flex-1 bg-transparent border-none outline-none resize-none px-2 py-3 text-[16px] text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 font-light leading-relaxed transition-colors duration-300"
           />
 
           <motion.button
             onClick={handleSend}
             disabled={disabled || !question.trim()}
             whileTap={{ scale: 0.9 }}
-            className="mb-1 p-3 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:opacity-90 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 disabled:text-zinc-300 dark:disabled:text-zinc-600 transition-all shadow-md shrink-0"
+            className="mb-1 p-3 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:opacity-90 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 disabled:text-zinc-300 dark:disabled:text-zinc-600 transition-all duration-300 shadow-md shrink-0"
           >
             <Send size={16} />
           </motion.button>
@@ -84,10 +84,10 @@ export default function InputBar({ onSend, disabled }: Props) {
                     transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                   />
                 )}
-                <span className={`relative z-10 ${isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                <span className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
                   <PIcon size={13} />
                 </span>
-                <span className={`relative z-10 ${isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                <span className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
                   {p.label}
                 </span>
               </button>

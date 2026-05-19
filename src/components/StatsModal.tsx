@@ -83,18 +83,18 @@ export default function StatsModal({ stats, onClose }: Props) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.88, y: 30 }}
         transition={{ type: 'spring', damping: 22, stiffness: 260, mass: 0.9 }}
-        className="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl dark:border dark:border-zinc-800 overflow-hidden"
+        className="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl dark:border dark:border-zinc-800 overflow-hidden transition-colors duration-300"
         style={{ width: 480 }}
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-zinc-100 dark:border-zinc-800 transition-colors duration-300">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-zinc-900 dark:bg-white flex items-center justify-center">
               <Zap size={18} className="text-white dark:text-zinc-900 fill-white dark:fill-zinc-900" />
             </div>
             <div>
-              <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Estadísticas</h2>
-              <p className="text-[11px] text-zinc-400 dark:text-zinc-500">Tu actividad en Zenith GPT</p>
+              <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 transition-colors duration-300">Estadísticas</h2>
+              <p className="text-[11px] text-zinc-400 dark:text-zinc-500 transition-colors duration-300">Tu actividad en Zenith GPT</p>
             </div>
           </div>
           <button onClick={onClose} className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">

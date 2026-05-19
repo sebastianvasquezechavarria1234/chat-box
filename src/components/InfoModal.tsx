@@ -25,7 +25,7 @@ export default function InfoModal({ show, onClose }: Props) {
         animate={{ opacity: 1, scale: 1, rotateY: 0, y: 0 }}
         exit={{ opacity: 0, scale: 0.85, rotateY: -6, y: 30 }}
         transition={{ type: 'spring', damping: 22, stiffness: 260, mass: 0.9 }}
-        className="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-y-auto dark:border dark:border-zinc-800"
+        className="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-y-auto dark:border dark:border-zinc-800 transition-colors duration-300"
         style={{ width: 680, maxHeight: '85vh', padding: '2rem' }}
         onClick={e => e.stopPropagation()}
       >

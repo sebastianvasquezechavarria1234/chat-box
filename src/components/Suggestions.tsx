@@ -15,8 +15,8 @@ export default function Suggestions({ onSuggestion }: Props) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-4 max-w-[900px] mx-auto w-full py-8 lg:py-12">
       <AIOrb />
-      <h1 className="text-3xl lg:text-4xl font-medium text-zinc-900 dark:text-white mb-2 tracking-tight">¡Hola! 👋</h1>
-      <p className="text-zinc-400 dark:text-zinc-500 text-base lg:text-lg mb-8 lg:mb-12 font-light">Cuéntanos qué necesitas y nosotros nos encargamos.</p>
+      <h1 className="text-3xl lg:text-4xl font-medium text-zinc-900 dark:text-white mb-2 tracking-tight transition-colors duration-300">¡Hola! 👋</h1>
+      <p className="text-zinc-400 dark:text-zinc-500 text-base lg:text-lg mb-8 lg:mb-12 font-light transition-colors duration-300">Cuéntanos qué necesitas y nosotros nos encargamos.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-3 w-full mb-8 lg:mb-10">
         {/* Zenith GPT Analytics Card */}
@@ -35,7 +35,7 @@ export default function Suggestions({ onSuggestion }: Props) {
 
         {/* Zenith GPT Tasks Card */}
         <div 
-           className="bg-white dark:bg-zinc-900/50 rounded-[32px] p-7 border border-gray-100 dark:border-zinc-800 flex flex-col h-[230px] shadow-sm hover:shadow-md transition-all cursor-pointer group"
+           className="bg-white dark:bg-zinc-900/50 rounded-[32px] p-7 border border-gray-100 dark:border-zinc-800 flex flex-col h-[230px] shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group"
            onClick={() => onSuggestion('Ayúdame a optimizar mis tareas diarias y mejorar mi flujo de trabajo con Zenith GPT.')}
         >
            <div className="flex items-center gap-2 mb-5 text-zinc-400">
@@ -43,15 +43,15 @@ export default function Suggestions({ onSuggestion }: Props) {
               <span className="text-[10px] font-normal uppercase tracking-tight">Productividad</span>
            </div>
            <div className="flex flex-col gap-3 flex-1">
-              <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-300 font-light">
+              <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-300 font-light transition-colors duration-300">
                 <CheckCircle2 size={16} className="text-green-500" />
                  <span>Gestión de flujos de trabajo</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-300 font-light">
+              <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-300 font-light transition-colors duration-300">
                  <CheckCircle2 size={16} className="text-green-500" />
                  <span>Automatización de correos</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-300 font-light">
+              <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-300 font-light transition-colors duration-300">
                  <CheckCircle2 size={16} className="text-green-500" />
                  <span>Resumen de documentos extensos</span>
               </div>
@@ -64,14 +64,14 @@ export default function Suggestions({ onSuggestion }: Props) {
 
         {/* Suggested Prompt Card */}
         <div 
-          className="bg-white dark:bg-zinc-900/50 rounded-[32px] p-7 border border-gray-100 dark:border-zinc-800 flex flex-col h-[230px] shadow-sm group cursor-pointer hover:border-indigo-100 transition-all" 
+          className="bg-white dark:bg-zinc-900/50 rounded-[32px] p-7 border border-gray-100 dark:border-zinc-800 flex flex-col h-[230px] shadow-sm group cursor-pointer hover:border-indigo-100 transition-all duration-300" 
           onClick={() => onSuggestion('¿Cómo puede Zenith GPT ayudarme a optimizar mis tareas diarias y mejorar la calidad de mis entregas?')}
         >
            <div className="flex items-center justify-between mb-5">
              <span className="text-[10px] font-normal text-zinc-400 uppercase tracking-tight">Comenzar ahora</span>
              < MoreHorizontal size={18} className="text-zinc-300 dark:text-zinc-600" />
            </div>
-           <p className="text-[15px] text-zinc-800 dark:text-zinc-100 font-light leading-relaxed flex-1">
+           <p className="text-[15px] text-zinc-800 dark:text-zinc-100 font-light leading-relaxed flex-1 transition-colors duration-300">
              &ldquo;¿Cómo puede Zenith GPT ayudarme a optimizar mis tareas diarias y mejorar la calidad de mis entregas?&rdquo;
            </p>
            <div className="text-[10px] font-medium text-indigo-500 uppercase tracking-tight">Hacer esta pregunta</div>
@@ -81,25 +81,25 @@ export default function Suggestions({ onSuggestion }: Props) {
       <div className="flex flex-nowrap lg:flex-wrap gap-3 justify-start lg:justify-center overflow-x-auto scrollbar-none px-1 pb-2 -mx-4 lg:mx-0 lg:px-0 lg:pb-0">
         <button 
           onClick={() => onSuggestion('¿Qué es la inteligencia artificial?')}
-          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-light text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all active:scale-95 whitespace-nowrap"
-        >
-          🤖 ¿Qué es la IA?
-        </button>
+           className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-light text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all duration-300 active:scale-95 whitespace-nowrap"
+          >
+            🤖 ¿Qué es la IA?
+          </button>
         <button 
           onClick={() => onSuggestion('¿Cuál es el país más grande del mundo?')}
-          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-light text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all active:scale-95 whitespace-nowrap"
-        >
-          🌍 País más grande
-        </button>
+          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-light text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all duration-300 active:scale-95 whitespace-nowrap"
+          >
+            🌍 País más grande
+          </button>
         <button 
           onClick={() => onSuggestion('Explícame qué es la teoría de la relatividad')}
-          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-light text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all active:scale-95 whitespace-nowrap"
-        >
-          ⚛️ Teoría relatividad
-        </button>
+          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-light text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all duration-300 active:scale-95 whitespace-nowrap"
+          >
+            ⚛️ Teoría relatividad
+          </button>
         <button 
           onClick={() => onSuggestion('¿Cómo hacer una pizza casera?')}
-          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-light text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all active:scale-95 whitespace-nowrap"
+          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-light text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all duration-300 active:scale-95 whitespace-nowrap"
         >
           🍕 Pizza casera
         </button>

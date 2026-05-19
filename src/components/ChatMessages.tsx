@@ -69,7 +69,7 @@ export default function ChatMessages({ messages, chatId }: Props) {
               transition={{ duration: 0.3, ease: 'easeOut' }}
               className="self-end group relative"
             >
-              <div className="bg-black/5 dark:bg-white/10 px-4 lg:px-5 py-3 rounded-2xl rounded-tr-none max-w-full text-[15px] text-zinc-900 dark:text-white shadow-sm">
+              <div className="bg-black/5 dark:bg-white/10 px-4 lg:px-5 py-3 rounded-2xl rounded-tr-none max-w-full text-[15px] text-zinc-900 dark:text-white shadow-sm transition-colors duration-300">
                 {msg.x}
               </div>
               <button 
@@ -90,7 +90,7 @@ export default function ChatMessages({ messages, chatId }: Props) {
               <div className="flex-shrink-0 mt-1">
                 <AIOrb size="sm" />
               </div>
-              <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed text-[15px] text-gray-800 dark:text-gray-200">
+              <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed text-[15px] text-gray-800 dark:text-gray-200 transition-colors duration-300">
                 <ReactMarkdown
                   components={{
                     code({ node, inline, className, children, ...props }: any) {
