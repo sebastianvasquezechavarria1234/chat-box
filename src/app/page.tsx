@@ -346,7 +346,7 @@ export default function Home() {
                 animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
                 exit={{ opacity: 0, scale: 0, filter: 'blur(8px)' }}
                 transition={{ duration: 0.2 }}
-                className="pointer-events-auto p-1.5 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-600 transition-all"
+                className="pointer-events-auto p-2.5 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-lg text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-600 transition-all"
                 whileTap={{ scale: 0.9 }}
               >
                 <ArrowDownToLine size={14} strokeWidth={1.5} />
