@@ -18,7 +18,7 @@ import AIOrb from './AIOrb';
   return (
     <>
       {/* Desktop: vertical left sidebar */}
-      <div className="hidden lg:flex fixed left-0 top-0 w-[60px] h-screen bg-white dark:bg-zinc-950 border-r border-gray-100 dark:border-zinc-900 flex-col items-center py-6 z-30">
+      <div className="hidden lg:flex fixed left-0 top-0 w-[60px] h-screen bg-white dark:bg-zinc-950 border-r border-gray-100 dark:border-zinc-900 flex-col items-center py-6 z-30 transition-colors duration-300">
         <AIOrb size="sm" />
         
         <div className="flex flex-col items-center gap-6 flex-1 mt-8">
@@ -40,7 +40,7 @@ import AIOrb from './AIOrb';
       </div>
 
       {/* Mobile: bottom navigation bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-900 flex items-center justify-around px-4 z-30">
+      <div className="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-900 flex items-center justify-around px-4 z-30 transition-colors duration-300">
         <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors"><MessageSquare size={20} /></button>
         <button 
           onClick={onToggleTheme}
@@ -246,7 +246,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
                 onChange={e => setSearchQuery(e.target.value)}
                 onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
                 placeholder="Buscar charlas..."
-                className="w-full bg-transparent border-none outline-none text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
+                className="w-full bg-transparent border-none outline-none text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 transition-colors duration-300"
               />
               <Search size={16} className="text-zinc-400 dark:text-zinc-500 cursor-pointer shrink-0" onClick={() => { setSearchOpen(false); setSearchQuery(''); }} />
             </motion.div>
@@ -271,7 +271,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
 
       <button
         onClick={onNewChat}
-        className="w-full bg-[#0F172A] dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 rounded-2xl py-2 px-3 flex items-center justify-center gap-2 text-sm font-normal transition-all shadow-sm mb-6 mr-1"
+        className="w-full bg-[#0F172A] dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 rounded-2xl py-2 px-3 flex items-center justify-center gap-2 text-sm font-normal transition-all duration-300 shadow-sm mb-6 mr-1"
       >
         Nuevo chat
         <Sparkles size={14} className="fill-white dark:fill-zinc-900" strokeWidth={1.5} />
@@ -318,8 +318,8 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
       )}
 
       {/* Mobile drawer */}
-      <div className={`lg:hidden fixed left-0 top-0 w-[280px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 p-4 flex flex-col z-40 transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="flex justify-end mb-2">
+      <div className={`lg:hidden fixed left-0 top-0 w-[280px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 p-4 flex flex-col z-40 transition-all duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex justify-end mb-2 transition-colors duration-300">
           <button onClick={onMobileClose} className="p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200">
             <X size={20} />
           </button>
@@ -328,7 +328,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
       </div>
 
       {/* Desktop sidebar */}
-      <div className="hidden lg:flex fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 pl-4 pr-2 py-4 flex flex-col z-20">
+      <div className="hidden lg:flex fixed left-[60px] top-0 w-[260px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 pl-4 pr-2 py-4 flex flex-col z-20 transition-colors duration-300">
         {sidebarContent}
       </div>
     </>
