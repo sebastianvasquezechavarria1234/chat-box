@@ -138,7 +138,7 @@ Responde estrictamente con una sola palabra:
     elif personality == "profesional":
         format_rule = "\n\nUsa listas, negritas y separadores para organizar la información."
 
-    full_system_prompt = f"{system_prompt}{lang_rule}{format_rule}{clarificacion}\n\nREGLAS: No generes contenido ilegal.{context_info}"
+    full_system_prompt = f"{system_prompt}{lang_rule}{format_rule}{clarificacion}\n\nREGLAS:\n- No generes contenido ilegal.\n- USA EMOJIS EN CADA RESPUESTA. Mínimo 2-3 emojis por mensaje. Son esenciales para el tono.{context_info}"
     messages = [{"role": "system", "content": full_system_prompt}]
 
     if history:

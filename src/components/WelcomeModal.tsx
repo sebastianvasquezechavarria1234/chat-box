@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Sparkles, ArrowRight } from 'lucide-react';
 
 interface Props {
   onStart: (name: string) => void;
@@ -9,13 +10,15 @@ interface Props {
 
 export default function WelcomeModal({ onStart }: Props) {
   const [name, setName] = useState('');
+  const [error, setError] = useState('');
 
   const handleStart = () => {
     const trimmed = name.trim();
     if (trimmed.length < 2) {
-      alert('Por favor, ingresa un nombre válido (mínimo 2 caracteres)');
+      setError('Mínimo 2 caracteres');
       return;
     }
+    setError('');
     onStart(trimmed);
   };
 
@@ -24,40 +27,54 @@ export default function WelcomeModal({ onStart }: Props) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.25 }}
       className="fixed inset-0 flex items-center justify-center z-50"
-      style={{ background: 'rgba(0,0,0,0.119)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }}
     >
       <motion.div
-        initial={{ opacity: 0, scale: 0.88, y: 50 }}
+        initial={{ opacity: 0, scale: 0.85, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.88, y: 50, filter: 'blur(4px)' }}
+        exit={{ opacity: 0, scale: 0.85, y: 30, filter: 'blur(4px)' }}
         transition={{ type: 'spring', damping: 24, stiffness: 280, mass: 0.8 }}
-        style={{ borderRadius: 30 }}
-        className="bg-white dark:bg-zinc-900 w-[520px] p-12 flex flex-col gap-4 shadow-2xl dark:border dark:border-zinc-800"
+        className="bg-white dark:bg-zinc-900 rounded-[32px] shadow-2xl dark:border dark:border-zinc-800 w-[520px] p-10 flex flex-col gap-6"
       >
-        <h1 className="text-center italic text-3xl font-light text-gray-800 dark:text-zinc-200">¡Bienvenido!</h1>
-        <p className="text-center text-gray-500 dark:text-zinc-400 text-sm">
-          La API de este chat está desplegada en Render, el servidor entra en reposo automáticamente — la primera consulta lo reactiva, lo que puede tomar entre 30 y 60 segundos. Las siguientes respuestas serán inmediatas.
-        </p>
+        <div className="flex items-center justify-center gap-2">
+          <Sparkles size={16} className="fill-zinc-900 dark:fill-white text-zinc-900 dark:text-white" strokeWidth={1.5} />
+          <span className="text-sm font-medium text-zinc-900 dark:text-white">Zenith GPT</span>
+          <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-[10px] px-1.5 py-0.5 rounded font-medium uppercase">PRO</span>
+        </div>
+
+        <div className="text-center">
+          <h1 className="text-2xl font-light text-zinc-900 dark:text-zinc-100 tracking-tight">Bienvenido</h1>
+          <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-2 leading-relaxed">
+            La API está en Render y entra en reposo automáticamente — la primera consulta puede tardar <strong className="text-zinc-600 dark:text-zinc-400">30–60 segundos</strong> en reactivar el servidor. Las siguientes serán inmediatas.
+          </p>
+        </div>
+
         <div className="relative">
           <input
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={e => { setName(e.target.value); setError(''); }}
             onKeyDown={e => e.key === 'Enter' && handleStart()}
             placeholder="Tu nombre..."
-            className="w-full rounded-full border border-gray-200 dark:border-zinc-700 outline-none bg-white dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 placeholder:text-gray-400 dark:placeholder:text-zinc-500"
-            style={{ padding: '20px 60px 20px 20px', fontSize: 18 }}
+            className="w-full bg-transparent border border-zinc-200 dark:border-zinc-700 rounded-full outline-none px-6 py-4 text-[16px] text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 font-light transition-all focus:border-zinc-900 dark:focus:border-white focus:ring-2 focus:ring-zinc-200/50 dark:focus:ring-zinc-700/50 pr-14"
           />
-          <button
+          <motion.button
             onClick={handleStart}
-            className="absolute right-1.5 top-1.5 bg-purple-600 hover:bg-purple-400 flex justify-center items-center rounded-full transition"
-            style={{ width: 55, height: 55 }}
+            whileTap={{ scale: 0.9 }}
+            className="absolute right-1.5 top-1.5 p-3 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:opacity-90 transition-all shadow-md"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-            </svg>
-          </button>
+            <ArrowRight size={18} strokeWidth={1.5} />
+          </motion.button>
+          {error && (
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-xs text-red-400 mt-2 ml-6"
+            >
+              {error}
+            </motion.p>
+          )}
         </div>
       </motion.div>
     </motion.div>
