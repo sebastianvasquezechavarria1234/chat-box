@@ -39,7 +39,7 @@ export default function InputBar({ onSend, disabled }: Props) {
 
   return (
     <div className="fixed bottom-20 lg:bottom-6 left-4 lg:left-[340px] right-4 lg:right-8 flex flex-col items-center">
-      <div className="w-full max-w-[900px] bg-white dark:bg-zinc-900 rounded-[32px] shadow-2xl shadow-zinc-200/50 dark:shadow-black/20 border border-gray-100 dark:border-zinc-800 p-3 flex flex-col gap-2 transition-all hover:border-zinc-200 dark:hover:border-zinc-700 focus-within:border-indigo-200 dark:focus-within:border-indigo-900/50">
+      <div className="w-full max-w-[900px] bg-white dark:bg-zinc-900 rounded-[32px] shadow-2xl shadow-zinc-200/50 dark:shadow-black/20 border border-gray-100 dark:border-zinc-800 p-3 flex flex-col gap-2 transition-all hover:border-zinc-200 dark:hover:border-zinc-700 focus-within:border-indigo-400 dark:focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-200/50 dark:focus-within:ring-indigo-600/30 focus-within:shadow-indigo-500/10">
         <div className="flex items-end gap-3 px-2 pt-1">
           <textarea
             ref={textareaRef}
