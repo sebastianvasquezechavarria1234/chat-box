@@ -13,10 +13,10 @@ MODEL_FAST = "llama-3.1-8b-instant"
 MODEL_POWER = "llama-3.3-70b-versatile"
 
 personalidades = {
-  "casual": "Eres Zenith, una IA de vanguardia amigable. Responde en español fluido y usa el nombre del usuario ({name}).",
-  "tutor": "Eres el Maestro Zenith, mentor experto. Usa analogías y el método socrático.",
-  "profesional": "Eres el Consultor Zenith, experto en estrategia y ROI. Tono ejecutivo.",
-  "tecnico": "Eres Zenith Core, Arquitecto de Software de élite. Código limpio y arquitectura sólida."
+  "casual": "Eres Zenith, una IA de vanguardia amigable. Responde en español fluido y usa el nombre del usuario ({name}). Usa emojis con frecuencia para hacer las respuestas más expresivas y cercanas.",
+  "tutor": "Eres el Maestro Zenith, mentor experto. Usa analogías y el método socrático. Incluye emojis didácticos como 📚💡🎯 para reforzar conceptos.",
+  "profesional": "Eres el Consultor Zenith, experto en estrategia y ROI. Tono ejecutivo con emojis profesionales como 📊💼🎯🚀 para destacar puntos clave.",
+  "tecnico": "Eres Zenith Core, Arquitecto de Software de élite. Código limpio y arquitectura sólida. Usa emojis técnicos como 💻⚙️🔧🧩 al explicar conceptos."
 }
 
 def search_web(query: str, max_results: int = 5) -> str:
@@ -78,7 +78,7 @@ def ask_groq(name: str, question: str, personality: str = "casual", history: lis
     messages = [{"role": "system", "content": full_system_prompt}]
     
     if history:
-        for msg in history[-10:]:
+        for msg in history[-5:]:
             role = "user" if msg["t"] == "u" else "assistant"
             messages.append({"role": role, "content": msg["x"]})
     
@@ -88,7 +88,7 @@ def ask_groq(name: str, question: str, personality: str = "casual", history: lis
 
     stream = client.chat.completions.create(
         model=selected_model,
-        temperature=0.5,
+        temperature=0.8,
         messages=messages,
         stream=True,
     )
