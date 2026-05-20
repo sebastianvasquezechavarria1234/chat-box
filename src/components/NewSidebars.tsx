@@ -319,7 +319,7 @@ export function ChatSidebar({ chats, currentId, onNewChat, onLoadChat, onToggleF
       )}
 
       {/* Mobile drawer */}
-      <div className={`lg:hidden fixed left-0 top-0 w-[280px] h-screen bg-[#F9FAFB] dark:bg-zinc-900/50 border-r border-gray-100 dark:border-zinc-900 p-4 flex flex-col z-40 transition-all duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className={`lg:hidden fixed left-0 top-0 w-[280px] h-screen bg-[#F9FAFB]/80 dark:bg-zinc-900/80 backdrop-blur-xl border-r border-gray-100 dark:border-zinc-900 p-4 flex flex-col z-40 transition-all duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex justify-end mb-2 transition-colors duration-300">
           <button onClick={onMobileClose} className="p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200">
             <X size={20} />

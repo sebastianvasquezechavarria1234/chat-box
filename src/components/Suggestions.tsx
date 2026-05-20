@@ -75,7 +75,7 @@ export default function Suggestions({ onSuggestion }: Props) {
         </div>
       </div>
 
-      <div className="flex flex-nowrap lg:flex-wrap gap-3 justify-start lg:justify-center overflow-x-auto scrollbar-none px-1 pb-2 -mx-4 lg:mx-0 lg:px-0 lg:pb-0">
+      <div className="flex flex-wrap gap-3 justify-center px-1 pb-2 -mx-4 lg:mx-0 lg:px-0 lg:pb-0">
         <button 
           onClick={() => onSuggestion('¿Qué es la inteligencia artificial?')}
            className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-full text-xs font-light text-zinc-600 dark:text-zinc-300 shadow-sm hover:shadow-md transition-all duration-300 active:scale-95 whitespace-nowrap"
