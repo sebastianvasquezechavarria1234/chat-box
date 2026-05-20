@@ -321,7 +321,7 @@ export default function Home() {
         </header>
 
         {/* Contenido */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth flex flex-col">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth flex flex-col max-[1399px]:pb-36">
           <AnimatePresence mode="wait">
             {currentMsgs.length === 0 ? (
               <motion.div
