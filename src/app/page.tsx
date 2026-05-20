@@ -349,7 +349,7 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        <div className="fixed bottom-48 lg:bottom-[180px] left-4 lg:left-[340px] right-4 lg:right-8 flex justify-center pointer-events-none z-20">
+        <div className="fixed bottom-60 lg:bottom-[180px] left-4 lg:left-[340px] right-4 lg:right-8 flex justify-center pointer-events-none z-20">
           <AnimatePresence>
             {showScrollBtn && (
               <motion.button
