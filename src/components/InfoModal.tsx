@@ -37,27 +37,28 @@ export default function InfoModal({ show, onClose }: Props) {
         <section className="mb-6">
           <h3 className="text-purple-700 dark:text-purple-400 text-base mb-2">¿Qué es este proyecto?</h3>
           <p className="text-sm text-gray-600 dark:text-zinc-400 leading-relaxed">
-            Es un <strong>chatbot con IA</strong> que funciona como intermediario entre el usuario y un modelo de lenguaje.
-            El frontend (Next.js + Tailwind) captura la pregunta del usuario y la envía a una API propia construida en Python.
-            Esa API se comunica con <strong>Groq</strong> usando el modelo <strong>LLaMA 3.3 70B</strong> para generar una respuesta inteligente y personalizada.
+            Es <strong>Zenith GPT</strong>, un chatbot inteligente de última generación.
+            El frontend (Next.js + Tailwind) captura la consulta y la envía a un backend en Python (FastAPI).
+            La API funciona como un middleware inteligente con multi-agentes: detecta idioma, comprime la memoria del historial, reconoce preguntas ambiguas y decide si responder directamente, realizar búsquedas web en vivo o generar imágenes con IA.
           </p>
         </section>
 
         <section className="mb-6">
           <h3 className="text-purple-700 dark:text-purple-400 text-base mb-2">¿Cómo funciona?</h3>
           <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-2xl p-4 text-sm text-gray-700 dark:text-zinc-300 leading-loose border border-gray-100 dark:border-zinc-700">
-            <p> <strong>Usuario</strong> escribe una pregunta en el frontend</p>
-            <p> <strong>Vercel</strong> sirve el frontend (Next.js)</p>
+            <p> <strong>Usuario</strong> ingresa su consulta en la interfaz de chat</p>
+            <p> <strong>Frontend</strong> realiza una solicitud de streaming al servidor</p>
             <p> <strong>fetch()</strong> en JavaScript hace un <code className="bg-purple-100 dark:bg-purple-900/30 px-1 rounded">POST</code> a la API</p>
-            <p> <strong>FastAPI (Python)</strong> recibe la petición en el endpoint <code className="bg-purple-100 px-1 rounded">POST /ask</code></p>
-            <p> <strong>Groq API</strong> procesa la pregunta con LLaMA 3.3 70B</p>
-            <p> La respuesta regresa al frontend y se escribe con efecto <strong>typewriter</strong></p>
+            <p> <strong>FastAPI (Python)</strong> recibe los datos en el endpoint <code className="bg-purple-100 px-1 rounded">POST /ask</code></p>
+            <p> <strong>Orquestador de Agentes</strong> decide si requiere búsqueda web (DuckDuckGo) o imagen (Flux)</p>
+            <p> <strong>Groq API</strong> procesa y genera la respuesta usando LLaMA 3.3 70B / LLaMA 3.1 8B</p>
+            <p> La respuesta se transmite en <strong>tiempo real (Streaming)</strong> de vuelta al chat</p>
           </div>
         </section>
 
         <section className="mb-6">
           <h3 className="text-purple-700 dark:text-purple-400 text-base mb-2">¿Cómo probar la API con Thunder Client?</h3>
-          <p className="text-sm text-gray-500 dark:text-zinc-400 mb-3">Puedes probar el endpoint directamente sin necesidad del frontend:</p>
+          <p className="text-sm text-gray-500 dark:text-zinc-400 mb-3">Puedes probar el endpoint de streaming directamente:</p>
           <div className="bg-gray-900 rounded-2xl p-4 text-sm flex flex-col gap-2">
             <div className="flex gap-2 items-center">
               <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">POST</span>
@@ -65,19 +66,51 @@ export default function InfoModal({ show, onClose }: Props) {
             </div>
             <hr className="border-gray-700" />
             <p className="text-gray-400 text-xs">Body - JSON:</p>
-            <pre className="text-yellow-300 text-xs leading-relaxed">{`{
-  "name": "Sebastian",
-  "question": "\u00bfQu\u00e9 es la inteligencia artificial?",
-  "personality": "casual"
-}`}</pre>
+            <pre className="text-yellow-300 text-xs leading-relaxed">
+              {"{\n" +
+               "  \"name\": \"Sebastian\",\n" +
+               "  \"question\": \"¿Qué es la inteligencia artificial?\",\n" +
+               "  \"personality\": \"casual\"\n" +
+               "}"}
+            </pre>
             <hr className="border-gray-700" />
             <p className="text-gray-400 text-xs">Respuesta esperada:</p>
-            <pre className="text-blue-300 text-xs">{`{
-  "answer": "\u00a1Hola Sebastian! La IA es..."
-}`}</pre>
+            <pre className="text-blue-300 text-xs">
+              {"{\n" +
+               "  \"answer\": \"¡Hola Sebastian! La IA es...\"\n" +
+               "}"}
+            </pre>
           </div>
-           <div className="mt-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/30 rounded-xl p-3 text-xs text-amber-700 dark:text-amber-400">
-            <strong>Nota:</strong> La API est&aacute; en Render con plan gratuito. Si lleva tiempo inactiva, la primera petici&oacute;n puede tardar 30&ndash;60 segundos en responder mientras el servidor se reactiva.
+          
+          <div className="bg-gray-900 rounded-2xl p-4 text-sm flex flex-col gap-2 mt-3">
+            <div className="flex gap-2 items-center">
+              <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">POST</span>
+              <code className="text-green-400">https://python-api-render-ubr9.onrender.com/ask</code>
+            </div>
+            <hr className="border-gray-700" />
+            <p className="text-gray-400 text-xs">Body - JSON (con historial):</p>
+            <pre className="text-yellow-300 text-xs leading-relaxed">
+              {"{\n" +
+               "  \"name\": \"Sebastian\",\n" +
+               "  \"question\": \"Dibuja un programador de noche\",\n" +
+               "  \"personality\": \"tecnico\",\n" +
+               "  \"history\": [\n" +
+               "    { \"t\": \"u\", \"x\": \"Hola\" },\n" +
+               "    { \"t\": \"a\", \"x\": \"¡Hola Sebastian! ¿En qué puedo ayudarte? 💻\" }\n" +
+               "  ]\n" +
+               "}"}
+            </pre>
+            <hr className="border-gray-700" />
+            <p className="text-gray-400 text-xs">Respuesta esperada (Streaming):</p>
+            <pre className="text-blue-300 text-xs">
+              {"Retorna un flujo de texto chunk-by-chunk.\n" +
+               "Si se generó una imagen, adjunta:\n" +
+               "![Imagen Generada](https://pollinations.ai/...)"}
+            </pre>
+          </div>
+          
+          <div className="mt-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/30 rounded-xl p-3 text-xs text-amber-700 dark:text-amber-400">
+            <strong>Nota:</strong> La API está en Render con plan gratuito. Si lleva tiempo inactiva, la primera petición puede tardar 30–60 segundos en responder mientras el servidor se reactiva.
           </div>
 
           <div className="mt-3">
@@ -92,14 +125,14 @@ export default function InfoModal({ show, onClose }: Props) {
         </section>
 
         <section className="mb-6">
-          <h3 className="text-purple-700 dark:text-purple-400 text-base mb-2">Stack tecnol&oacute;gico</h3>
+          <h3 className="text-purple-700 dark:text-purple-400 text-base mb-2">Stack tecnológico</h3>
           <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 dark:text-zinc-400">
             <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-xl p-3 border border-gray-100 dark:border-zinc-700"><strong>Backend:</strong> Python + FastAPI</div>
             <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-xl p-3 border border-gray-100 dark:border-zinc-700"><strong>Frontend:</strong> Next.js + Tailwind CSS</div>
-            <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-xl p-3 border border-gray-100 dark:border-zinc-700"> <strong>IA:</strong> Groq &mdash; LLaMA 3.3 70B</div>
-            <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-xl p-3 border border-gray-100 dark:border-zinc-700"> <strong>Historial:</strong> localStorage</div>
-            <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-xl p-3 border border-gray-100 dark:border-zinc-700"> <strong>API Deploy:</strong> Render</div>
-            <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-xl p-3 border border-gray-100 dark:border-zinc-700"> <strong>Frontend Deploy:</strong> Vercel</div>
+            <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-xl p-3 border border-gray-100 dark:border-zinc-700"><strong>IA / Modelos:</strong> LLaMA 3.3 & LLaMA 3.1 (Groq)</div>
+            <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-xl p-3 border border-gray-100 dark:border-zinc-700"><strong>Herramientas:</strong> DuckDuckGo Search & Flux</div>
+            <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-xl p-3 border border-gray-100 dark:border-zinc-700"><strong>API Deploy:</strong> Render (Streaming)</div>
+            <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-xl p-3 border border-gray-100 dark:border-zinc-700"><strong>Frontend Deploy:</strong> Vercel</div>
           </div>
         </section>
 
