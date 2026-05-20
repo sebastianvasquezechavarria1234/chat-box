@@ -1,128 +1,129 @@
-# 🤖 Chat IA — LLaMA 3.3 Power
+# 🤖 Zenith GPT — Premium Multi-Agent AI Chat Platform
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
   <img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white" alt="Render" />
 </p>
 
----
-
-## 🌟 ¿Qué es este proyecto?
-
-Este es un **chatbot inteligente** diseñado para ofrecer una experiencia de usuario premium, actuando como intermediario entre una interfaz moderna y el modelo de lenguaje **LLaMA 3.3 70B** a través de **Groq**.
-
-La aplicación está construida con una arquitectura desacoplada, asegurando velocidad y seguridad en cada interacción. 
+<p align="center">
+  <img src="public/preview.jpg" alt="Zenith GPT Preview" width="100%" style="border-radius: 16px;" />
+</p>
 
 ---
 
-## ✨ Características Principales
+## 🌟 Overview
 
-- 🎭 **Personalidades Dinámicas:** Interactúa con perfiles como Casual, Tutor, Profesional o Técnico.
-- ⚡ **Alta Velocidad:** Inferencia de IA optimizada gracias a la infraestructura de Groq.
-- 📜 **Historial Local:** Tus conversaciones se guardan en el navegador para que nunca pierdas el hilo.
-- ✍️ **Typewriter Effect:** Una experiencia de lectura fluida y natural en las respuestas.
-- 📱 **Diseño Responsivo:** Optimizado para dispositivos móviles y escritorio.
+**Zenith GPT** is a high-performance, responsive AI conversational platform built with **Next.js (React + TypeScript + Tailwind CSS)** on the frontend and **FastAPI (Python)** on the backend. 
+
+Powered by **LLaMA 3.3 70B** and **LLaMA 3.1 8B** via **Groq**, the application acts as an intelligent middleware orchestrating a multi-agent system. It handles user messages dynamically, deciding whether to search the web in real-time, generate images, compact chat history, or provide a socratic/casual conversation—delivering responses via real-time streaming.
 
 ---
 
-## 🛠️ Stack Tecnológico
+## ✨ Features
 
-| Capa | Tecnologías |
+- ⚡ **Real-Time Streaming:** Progressive token rendering for a natural and immediate typewriter chat experience using Server-Sent Events (SSE).
+- 🌐 **Live Web Search Agent (RAG):** Automatically triggers DuckDuckGo searches to retrieve and cite up-to-date real-world facts.
+- 🎨 **Generative AI Images:** Seamlessly creates visual prompts and embeds Flux-model images (via Pollinations AI).
+- 🎭 **Dynamic Prompt Personalities:** Tailored conversational modes (Casual, Tutor, Professional, Technical) with dedicated UI cues.
+- 🧠 **Context & Memory Compression:** Automatic summarization of previous chat context to optimize token usage without losing track of the conversation.
+- 🗣️ **Language & Ambiguity Auditing:** Detects user language automatically and prompts for clarification if the input is ambiguous.
+- 💾 **Local Chat History:** Securely saves conversations client-side in LocalStorage.
+- 🌓 **Premium Dark Mode:** Highly refined dark/light mode interfaces with glassmorphic elements.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technologies |
 | :--- | :--- |
-| **Backend** | Python, FastAPI, Uvicorn |
-| **Frontend** | HTML5, Tailwind CSS, JavaScript (Vanilla) |
-| **IA Engine** | Groq (LLaMA 3.3 70B) |
-| **Deployment** | Render (API), Vercel (Frontend) |
-| **Persistencia** | LocalStorage |
+| **Frontend** | Next.js 14+, Tailwind CSS, TypeScript, Framer Motion, Lucide Icons |
+| **Backend** | Python 3.11+, FastAPI, Groq SDK, DuckDuckGo Search |
+| **AI Models** | LLaMA 3.3 70B (High Power) & LLaMA 3.1 8B (Fast Inferences) |
+| **Image Engine** | Flux (via Pollinations AI) |
+| **Deployment** | Render (Backend API), Vercel (Frontend Client) |
 
 ---
 
-## 🚀 Instalación y Uso Local
+## 🚀 Local Installation
 
-Sigue estos pasos para tener el chatbot corriendo en tu máquina:
-
-### 1. Clonar y Preparar
+### 1. Clone the Repository
 ```bash
-git clone https://github.com/sebastianvasquezechavarria1234/python-api-render.git
-cd python-api-render
+git clone https://github.com/sebastianvasquezechavarria1234/zenith-gpt.git
+cd zenith-gpt
 ```
 
-### 2. Entorno Virtual
+### 2. Configure the Backend (FastAPI)
+Create a Python virtual environment and install dependencies:
 ```bash
-# Crear entorno
+# Create virtual environment
 python -m venv venv
 
-# Activar en Windows
+# Activate virtual environment (Windows)
 venv\Scripts\activate
 
-# Activar en Linux/Mac
+# Activate virtual environment (Linux/macOS)
 source venv/bin/activate
-```
 
-### 3. Dependencias y Configuración
-```bash
+# Install requirements
 pip install -r requirements.txt
 ```
 
-Crea un archivo `.env` en la raíz con tu API Key:
+Create a `.env` file in the root directory:
 ```env
-GROQ_API_KEY=tu_clave_aqui
+GROQ_API_KEY=your_groq_api_key_here
 ```
 
-### 4. Lanzar la API
+Start the backend server:
 ```bash
-uvicorn app.main:app --reload
+uvicorn api.main:app --reload
 ```
-La API estará disponible en `http://127.0.0.1:8000`. ¡Solo abre el `index.html` y empieza a chatear!
+The API will run locally at `http://127.0.0.1:8000`.
+
+### 3. Configure the Frontend (Next.js)
+Open a new terminal, install dependencies, and start the development server:
+```bash
+npm install
+npm run dev
+```
+Open `http://localhost:3000` in your browser.
 
 ---
 
-## 📡 Documentación de la API
+## 📡 API Reference
 
-### Endpoint: `POST /ask`
-Envía una pregunta para recibir una respuesta inteligente.
+### `POST /ask`
+Submit a question with context to receive a streaming text response.
 
-**Ejemplo de Body (JSON):**
-```json
-{
-  "name": "Sebastian",
-  "question": "¿Qué es la inteligencia artificial?",
-  "personality": "casual"
-}
-```
-
-**Personalidades soportadas:** `casual`, `tutor`, `profesional`, `tecnico`.
-
----
-
-## 📁 Estructura del Proyecto
-
-```text
-├── app/                  # Núcleo de la API (Python)
-│   ├── main.py           # Rutas y configuración de FastAPI
-│   ├── groq_service.py   # Lógica de conexión con Groq
-│   ├── schemas.py        # Modelos de datos (Pydantic)
-│   └── personality.py    # Definiciones de System Prompts
-├── index.html            # Interfaz de usuario
-├── script.js             # Lógica del cliente
-├── style.css             # Estilos personalizados
-└── vercel.json           # Configuración de despliegue
-```
+* **Headers:** `Content-Type: application/json`
+* **JSON Payload:**
+  ```json
+  {
+    "name": "Sebastian",
+    "question": "Explain quantum computing in simple terms",
+    "personality": "tutor",
+    "history": [
+      { "t": "u", "x": "Hello" },
+      { "t": "a", "x": "Hello Sebastian! How can I help you today? 📚" }
+    ]
+  }
+  ```
 
 ---
 
-## 👤 Autor
+## 👤 Author
 
-Desarrollado con ❤️ por **Sebastian Vasquez Echavarria**.
+Developed with ❤️ by **Sebastian Vasquez Echavarria**.
 
-- 🌐 [Mi Portafolio](https://sebas-dev.vercel.app)
-- 🐙 [Mi GitHub](https://github.com/sebastianvasquezechavarria1234)
+- 🌐 [Portfolio](https://sebas-dev.vercel.app)
+- 🐙 [GitHub](https://github.com/sebastianvasquezechavarria1234)
 
 ---
 
 <p align="center">
-  <i>"IA democratizada a través de un código limpio y eficiente."</i>
+  <i>"Democratizing AI through clean, high-performance architecture."</i>
 </p>
