@@ -2,8 +2,7 @@
 
 import { 
   Layers, 
-  CheckCircle2, 
-  MoreHorizontal
+  CheckCircle2
 } from 'lucide-react';
 import AIOrb from './AIOrb';
 
@@ -20,7 +19,7 @@ export default function Suggestions({ onSuggestion }: Props) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-3 w-full mb-8 lg:mb-10">
         {/* Zenith GPT Analytics Card */}
-        <div className="bg-[#0F172A] rounded-[32px] p-7 text-white flex flex-col h-[230px] shadow-xl shadow-blue-900/10 transition-transform hover:scale-[1.02]">
+        <div className="bg-[#0F172A] dark:bg-[#0F172A] rounded-[32px] p-7 text-white flex flex-col h-[230px] shadow-xl shadow-blue-900/10 transition-transform hover:scale-[1.02]">
            <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2.5">
                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-xs font-bold">Z</div>
@@ -56,10 +55,9 @@ export default function Suggestions({ onSuggestion }: Props) {
                  <span>Resumen de documentos extensos</span>
               </div>
            </div>
-           <div className="flex items-center justify-between mt-auto pt-2">
-              <span className="text-[10px] font-normal text-zinc-400 uppercase tracking-tight">Capacidades</span>
-              <div className="text-[10px] font-medium text-indigo-500 uppercase tracking-tight opacity-0 group-hover:opacity-100 transition-opacity">Hacer esta pregunta</div>
-           </div>
+            <div className="flex items-center mt-auto pt-2">
+               <span className="text-[10px] font-normal text-zinc-400 uppercase tracking-tight">Capacidades</span>
+            </div>
         </div>
 
         {/* Suggested Prompt Card */}
@@ -67,10 +65,9 @@ export default function Suggestions({ onSuggestion }: Props) {
           className="bg-white dark:bg-zinc-900/50 rounded-[32px] p-7 border border-gray-100 dark:border-zinc-800 flex flex-col h-[230px] shadow-sm group cursor-pointer hover:border-indigo-100 transition-all duration-300" 
           onClick={() => onSuggestion('¿Cómo puede Zenith GPT ayudarme a optimizar mis tareas diarias y mejorar la calidad de mis entregas?')}
         >
-           <div className="flex items-center justify-between mb-5">
-             <span className="text-[10px] font-normal text-zinc-400 uppercase tracking-tight">Comenzar ahora</span>
-             < MoreHorizontal size={18} className="text-zinc-300 dark:text-zinc-600" />
-           </div>
+            <div className="flex items-center mb-5">
+              <span className="text-[10px] font-normal text-zinc-400 uppercase tracking-tight">Comenzar ahora</span>
+            </div>
            <p className="text-[15px] text-zinc-800 dark:text-zinc-100 font-light leading-relaxed flex-1 transition-colors duration-300">
              &ldquo;¿Cómo puede Zenith GPT ayudarme a optimizar mis tareas diarias y mejorar la calidad de mis entregas?&rdquo;
            </p>
