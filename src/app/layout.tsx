@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: 'Chat IA | Inteligencia Artificial Avanzada',
   description: 'Chatbot inteligente con IA potenciado por LLaMA 3.3 y FastAPI.',
   keywords: 'AI, Chatbot, LLaMA, FastAPI, Python, Groq',
+  icons: {
+    icon: '/favicon.webp',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
