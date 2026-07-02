@@ -24,7 +24,7 @@ import AIOrb from './AIOrb';
         <AIOrb size="sm" />
         
         <div className="flex flex-col items-center gap-6 flex-1 mt-8">
-          <button className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white p-2 rounded-xl transition-colors duration-300" title="Chat">
+          <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300" title="Chat">
             <MessageSquare size={20} />
           </button>
           
@@ -57,7 +57,7 @@ import AIOrb from './AIOrb';
 
       {/* Mobile: bottom navigation bar */}
       <div className="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-900 flex items-center justify-around px-4 z-30 transition-colors duration-300">
-        <button className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white p-2 rounded-xl transition-colors duration-300"><MessageSquare size={20} /></button>
+        <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300"><MessageSquare size={20} /></button>
         
         <button 
           onClick={onVoiceClick}
