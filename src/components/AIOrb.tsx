@@ -71,7 +71,7 @@ const noiseFunctions = `
 function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
-  const shaderRef = useRef<THREE.Shader>();
+  const shaderRef = useRef<any>();
   
   const mouse = useRef({ x: 0, y: 0 });
   const prevMouse = useRef({ x: 0, y: 0 });
@@ -146,7 +146,7 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
     }
   });
 
-  const onBeforeCompile = useCallback((shader: THREE.Shader) => {
+  const onBeforeCompile = useCallback((shader: any) => {
     shader.uniforms.uTime = { value: 0 };
     shader.uniforms.uVelocity = { value: 0 };
     shader.uniforms.uHover = { value: 0 };
@@ -435,8 +435,14 @@ type OrbSize = 'sm' | 'md' | 'lg';
 
 const sizeClasses: Record<OrbSize, string> = {
   sm: 'w-16 h-16',
-  md: 'w-48 h-48 mb-6',
+  md: 'w-60 h-60 mb-6', // 240px x 240px (antes 192px, creció ~50px)
   lg: 'w-72 h-72',
+};
+
+const cameraDistances: Record<OrbSize, number> = {
+  sm: 6.0,  // Cámara más alejada para los orbes pequeños (sidebar, chats)
+  md: 4.2,  // Cámara un toque más alejada para el orbe principal
+  lg: 4.2,
 };
 
 interface AIOrbProps {
@@ -452,7 +458,7 @@ export default function AIOrb({ size = 'md' }: AIOrbProps) {
       className={`${sizeClasses[size]} relative`}
     >
       <Canvas
-        camera={{ position: [0, 0, 3.5], fov: 50 }}
+        camera={{ position: [0, 0, cameraDistances[size]], fov: 50 }}
         gl={{ antialias: true, alpha: true }}
         style={{ width: '100%', height: '100%' }}
         onPointerMove={(e: any) => {

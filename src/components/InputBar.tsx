@@ -68,7 +68,7 @@ export default function InputBar({ onSend, disabled }: Props) {
           </motion.button>
         </div>
 
-        <div className="flex items-center gap-1.5 px-2 pb-1 overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-0.5 px-2 pb-2 overflow-x-auto scrollbar-none">
           {personalities.map(p => {
             const PIcon = p.icon;
             const targetId = hovered || personality;
@@ -84,14 +84,14 @@ export default function InputBar({ onSend, disabled }: Props) {
                 {isTarget && (
                   <motion.div
                     layoutId="personality-bg"
-                    className="absolute inset-0 rounded-lg bg-zinc-100 dark:bg-zinc-800"
+                    className="absolute inset-0 rounded-lg bg-violet-600/15 dark:bg-violet-500/20"
                     transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                   />
                 )}
-                <span className={`relative z-10 transition-colors duration-100 ${isTarget ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                <span className={`relative z-10 transition-colors duration-100 ${isTarget ? 'text-violet-700 dark:text-violet-300' : 'text-zinc-500 dark:text-zinc-400'}`}>
                   <PIcon size={13} />
                 </span>
-                <span className={`relative z-10 transition-colors duration-100 ${isTarget ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                <span className={`relative z-10 transition-colors duration-100 ${isTarget ? 'text-violet-700 dark:text-violet-300' : 'text-zinc-500 dark:text-zinc-400'}`}>
                   {p.label}
                 </span>
               </button>

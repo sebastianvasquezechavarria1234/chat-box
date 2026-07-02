@@ -200,9 +200,10 @@ export default function Home() {
     const history = activeList.find(c => c.id === activeId)?.msgs || [];
 
     const userMsg: Message = { t: 'u', x: question };
+    const botMsg: Message = { t: 'b', x: '' };
     const updated = activeList.map(c => 
       c.id === activeId 
-        ? { ...c, msgs: [...c.msgs, userMsg], title: c.msgs.length === 0 ? question.slice(0, 30) : c.title } 
+        ? { ...c, msgs: [...c.msgs, userMsg, botMsg], title: c.msgs.length === 0 ? question.slice(0, 30) : c.title } 
         : c
     );
     save(updated);
@@ -220,11 +221,6 @@ export default function Home() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let botAnswer = '';
-
-      // Añadimos un mensaje vacío del bot que iremos rellenando
-      setChats(prev => prev.map(c => 
-        c.id === activeId ? { ...c, msgs: [...c.msgs, { t: 'b', x: '' }] } : c
-      ));
 
       while (true) {
         const { done, value } = await reader.read();
