@@ -1,13 +1,16 @@
 'use client';
 
-import { useRef, useMemo, useCallback } from 'react';
+import { useRef, useMemo, useCallback, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
+import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
+import { Vector2 } from 'three';
 import * as THREE from 'three';
 
 const vertexShader = `
   uniform float uTime;
   uniform float uVelocity;
+  uniform float uHover;
   varying vec3 vNormal;
   varying vec3 vPosition;
   varying vec2 vUv;
@@ -62,15 +65,30 @@ const vertexShader = `
     return 42.0 * dot(m * m, vec4(dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)));
   }
 
+  float fbm(vec3 p) {
+    float value = 0.0;
+    float amplitude = 0.5;
+    for (int i = 0; i < 4; i++) {
+      value += amplitude * snoise(p);
+      p *= 2.0;
+      amplitude *= 0.5;
+    }
+    return value;
+  }
+
   void main() {
     vUv = uv;
     vNormal = normalize(normalMatrix * normal);
 
-    float noise = snoise(position * 1.5 + uTime * 0.5);
-    vNoise = noise;
+    float noise1 = snoise(position * 1.5 + uTime * 0.5);
+    float noise2 = fbm(position * 2.0 + uTime * 0.3);
+    vNoise = noise1;
 
     float distortionStrength = 0.18 + uVelocity * 1.2;
-    vec3 displaced = position + normal * noise * distortionStrength;
+    vec3 displaced = position + normal * (noise1 * 0.7 + noise2 * 0.3) * distortionStrength;
+
+    float scale = 1.0 + uHover * 0.15;
+    displaced *= scale;
 
     vPosition = displaced;
     vWorldPosition = (modelMatrix * vec4(displaced, 1.0)).xyz;
@@ -121,26 +139,34 @@ const fragmentShader = `
     vec3 specular = (spec1 * uLight1Color + spec2 * uLight2Color + spec3 * uLight3Color) * 0.5;
     vec3 ambient = baseColor * 0.15;
 
-    vec3 fresnel = mix(purpleBase, pinkAccent, 0.5) * pow(1.0 - max(dot(viewDir, norm), 0.0), 3.0) * 0.6;
+    float fresnelTerm = pow(1.0 - max(dot(viewDir, norm), 0.0), 3.0);
+    vec3 fresnel = mix(purpleBase, pinkAccent, 0.5) * fresnelTerm * 0.6;
 
-    vec3 color = ambient + diffuse + specular + fresnel;
+    float sss = pow(max(dot(viewDir, -lightDir1), 0.0), 2.0) * 0.15;
+    vec3 subsurface = purpleBase * sss;
+
+    vec3 color = ambient + diffuse + specular + fresnel + subsurface;
 
     gl_FragColor = vec4(color, 1.0);
   }
 `;
 
-function MetalSphere() {
+function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const mouse = useRef({ x: 0, y: 0 });
   const prevMouse = useRef({ x: 0, y: 0 });
   const velocity = useRef(0);
   const targetRotation = useRef({ x: 0, y: 0 });
+  const isDragging = useRef(false);
+  const dragStart = useRef({ x: 0, y: 0 });
+  const hoverValue = useRef(0);
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uVelocity: { value: 0 },
+      uHover: { value: 0 },
       uLight1Pos: { value: new THREE.Vector3(5, 5, 5) },
       uLight1Color: { value: new THREE.Vector3(1, 1, 1) },
       uLight2Pos: { value: new THREE.Vector3(-5, -5, -5) },
@@ -154,12 +180,42 @@ function MetalSphere() {
   const handleMouseMove = useCallback((e: MouseEvent) => {
     mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
     mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+    if (isDragging.current) {
+      const dx = mouse.current.x - dragStart.current.x;
+      const dy = mouse.current.y - dragStart.current.y;
+      targetRotation.current.y += dx * 2;
+      targetRotation.current.x += dy * 2;
+      dragStart.current.x = mouse.current.x;
+      dragStart.current.y = mouse.current.y;
+    }
   }, []);
+
+  const handleMouseDown = useCallback((e: MouseEvent) => {
+    isDragging.current = true;
+    dragStart.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+    dragStart.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    isDragging.current = false;
+  }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    onHover(1);
+  }, [onHover]);
+
+  const handleMouseLeave = useCallback(() => {
+    onHover(0);
+    isDragging.current = false;
+  }, [onHover]);
 
   useFrame(({ clock }) => {
     if (!meshRef.current || !materialRef.current) return;
 
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
 
     const dx = mouse.current.x - prevMouse.current.x;
     const dy = mouse.current.y - prevMouse.current.y;
@@ -172,14 +228,22 @@ function MetalSphere() {
     materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
     materialRef.current.uniforms.uVelocity.value = velocity.current;
 
-    targetRotation.current.y = mouse.current.x * 1.2;
-    targetRotation.current.x = mouse.current.y * 1.2;
+    hoverValue.current += (0 - hoverValue.current) * 0.1;
+    materialRef.current.uniforms.uHover.value = hoverValue.current;
 
-    const baseRotY = clock.getElapsedTime() * 0.3;
-    const baseRotX = Math.sin(clock.getElapsedTime() * 0.2) * 0.2;
+    if (!isDragging.current) {
+      targetRotation.current.y = mouse.current.x * 1.2;
+      targetRotation.current.x = mouse.current.y * 1.2;
 
-    meshRef.current.rotation.y += (targetRotation.current.y + baseRotY - meshRef.current.rotation.y) * 0.08;
-    meshRef.current.rotation.x += (targetRotation.current.x + baseRotX - meshRef.current.rotation.x) * 0.08;
+      const baseRotY = clock.getElapsedTime() * 0.3;
+      const baseRotX = Math.sin(clock.getElapsedTime() * 0.2) * 0.2;
+
+      meshRef.current.rotation.y += (targetRotation.current.y + baseRotY - meshRef.current.rotation.y) * 0.08;
+      meshRef.current.rotation.x += (targetRotation.current.x + baseRotX - meshRef.current.rotation.x) * 0.08;
+    } else {
+      meshRef.current.rotation.y += (targetRotation.current.y - meshRef.current.rotation.y) * 0.15;
+      meshRef.current.rotation.x += (targetRotation.current.x - meshRef.current.rotation.x) * 0.15;
+    }
   });
 
   return (
@@ -198,10 +262,9 @@ function MetalSphere() {
   );
 }
 
-function OrbitingParticles({ count = 80, radius = 2.0 }: { count?: number; radius?: number }) {
+function OrbitingParticles({ count = 80, radius = 2.0, mousePos }: { count?: number; radius?: number; mousePos: React.MutableRefObject<{ x: number; y: number }> }) {
   const ref = useRef<THREE.Points>(null);
-
-  const positions = useMemo(() => {
+  const basePositions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2;
@@ -219,6 +282,26 @@ function OrbitingParticles({ count = 80, radius = 2.0 }: { count?: number; radiu
     const t = clock.getElapsedTime();
     ref.current.rotation.y = t * 0.15;
     ref.current.rotation.x = Math.sin(t * 0.1) * 0.1;
+
+    const positions = ref.current.geometry.attributes.position.array as Float32Array;
+    for (let i = 0; i < count; i++) {
+      const bx = basePositions[i * 3];
+      const by = basePositions[i * 3 + 1];
+      const bz = basePositions[i * 3 + 2];
+
+      const mx = mousePos.current.x * 0.3;
+      const my = mousePos.current.y * 0.3;
+
+      const dx = mx - bx;
+      const dy = my - by;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const influence = Math.max(0, 1 - dist / 3) * 0.4;
+
+      positions[i * 3] = bx + dx * influence;
+      positions[i * 3 + 1] = by + dy * influence;
+      positions[i * 3 + 2] = bz + Math.sin(t * 2 + i) * 0.05;
+    }
+    ref.current.geometry.attributes.position.needsUpdate = true;
   });
 
   return (
@@ -227,7 +310,7 @@ function OrbitingParticles({ count = 80, radius = 2.0 }: { count?: number; radiu
         <bufferAttribute
           attach="attributes-position"
           count={count}
-          array={positions}
+          array={basePositions.slice()}
           itemSize={3}
         />
       </bufferGeometry>
@@ -235,6 +318,77 @@ function OrbitingParticles({ count = 80, radius = 2.0 }: { count?: number; radiu
         size={0.05}
         color="#7c3aed"
         sizeAttenuation
+      />
+    </points>
+  );
+}
+
+function ParticleStorm({ active, mousePos }: { active: boolean; mousePos: React.MutableRefObject<{ x: number; y: number }> }) {
+  const ref = useRef<THREE.Points>(null);
+  const time = useRef(0);
+
+  const [positions, velocities] = useMemo(() => {
+    const count = 60;
+    const pos = new Float32Array(count * 3);
+    const vel = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 0.5;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const speed = 0.02 + Math.random() * 0.04;
+      vel[i * 3] = Math.sin(phi) * Math.cos(theta) * speed;
+      vel[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * speed;
+      vel[i * 3 + 2] = Math.cos(phi) * speed;
+    }
+    return [pos, vel];
+  }, []);
+
+  useFrame(() => {
+    if (!ref.current) return;
+
+    if (active) {
+      time.current += 0.02;
+      const pos = ref.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < 60; i++) {
+        pos[i * 3] += velocities[i * 3];
+        pos[i * 3 + 1] += velocities[i * 3 + 1];
+        pos[i * 3 + 2] += velocities[i * 3 + 2];
+      }
+      ref.current.geometry.attributes.position.needsUpdate = true;
+      (ref.current.material as THREE.PointsMaterial).opacity = Math.min(1, time.current * 3);
+    } else {
+      time.current = 0;
+      const pos = ref.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < 60; i++) {
+        pos[i * 3] = (Math.random() - 0.5) * 0.5;
+        pos[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
+      }
+      ref.current.geometry.attributes.position.needsUpdate = true;
+      (ref.current.material as THREE.PointsMaterial).opacity = 0;
+    }
+  });
+
+  return (
+    <points ref={ref}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={60}
+          array={positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.08}
+        color="#a78bfa"
+        transparent
+        opacity={0}
+        sizeAttenuation
+        blending={2}
+        depthWrite={false}
       />
     </points>
   );
@@ -253,19 +407,35 @@ interface AIOrbProps {
 }
 
 export default function AIOrb({ size = 'md' }: AIOrbProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  const mousePos = useRef({ x: 0, y: 0 });
+
   return (
-    <div className={`${sizeClasses[size]} relative`}>
+    <div
+      className={`${sizeClasses[size]} relative`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <Canvas
         camera={{ position: [0, 0, 3.5], fov: 50 }}
         gl={{ antialias: true, alpha: true }}
         style={{ width: '100%', height: '100%' }}
+        onPointerMove={(e) => {
+          mousePos.current.x = e.point.x;
+          mousePos.current.y = e.point.y;
+        }}
       >
         <ambientLight intensity={0.3} />
         <pointLight position={[5, 5, 5]} intensity={150} color="#ffffff" />
         <pointLight position={[-5, -5, -5]} intensity={150} color="#7c3aed" />
-        <MetalSphere />
-        <OrbitingParticles count={80} radius={2.2} />
+        <MetalSphere onHover={(v) => setIsHovered(v === 1)} />
+        <OrbitingParticles count={80} radius={2.2} mousePos={mousePos} />
+        <ParticleStorm active={isHovered} mousePos={mousePos} />
         <Environment preset="city" />
+        <EffectComposer>
+          <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={0.8} />
+          <ChromaticAberration offset={new Vector2(0.002, 0.002)} radialModulation={false} modulationOffset={0.2} />
+        </EffectComposer>
       </Canvas>
     </div>
   );
