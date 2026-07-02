@@ -120,10 +120,11 @@ export default function VoiceSessionModal({ onClose, userName }: Props) {
         const { done, value } = await reader.read();
         if (done) break;
         answer += decoder.decode(value, { stream: true });
+        // Actualizamos el texto en vivo para el efecto de "escribiendo"
+        setDisplayText(answer);
       }
 
       setStatus('speaking');
-      setDisplayText(answer.slice(0, 120) + (answer.length > 120 ? '...' : ''));
       await playTTS(answer);
 
     } catch (err) {
