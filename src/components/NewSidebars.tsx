@@ -30,7 +30,7 @@ import AIOrb from './AIOrb';
           
           <button 
             onClick={onVoiceClick}
-            className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white p-2 rounded-xl transition-colors duration-300 relative group"
+            className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300 relative group"
             title="Llamada Zenith"
           >
             <Mic size={20} />
@@ -61,7 +61,7 @@ import AIOrb from './AIOrb';
         
         <button 
           onClick={onVoiceClick}
-          className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white p-2 rounded-xl transition-colors duration-300 relative"
+          className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300 relative"
         >
           <Mic size={20} />
           <span className="absolute -top-1 -right-1 flex h-2 w-2">
