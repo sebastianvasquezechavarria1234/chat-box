@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Menu, X, ExternalLink, ArrowDownToLine } from 'lucide-react';
+import { Sparkles, Menu, X, ExternalLink, ArrowDownToLine, Mic } from 'lucide-react';
 import { MiniSidebar, ChatSidebar } from '@/components/NewSidebars';
+import { playTTS } from '@/components/AIOrb';
 import ChatMessages from '@/components/ChatMessages';
 import InputBar from '@/components/InputBar';
 import Suggestions from '@/components/Suggestions';
@@ -306,6 +307,13 @@ export default function Home() {
               <ExternalLink size={14} strokeWidth={1.5} />
               Portfolio Web
             </a>
+            <button 
+              onClick={() => playTTS("Hola, soy el orbe Zenith. Estoy listo para ayudarte con lo que necesites.")}
+              className="flex items-center gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full text-xs font-normal hover:bg-indigo-600 transition-all duration-300 shadow-sm"
+            >
+              <Mic size={12} strokeWidth={1.5} />
+              <span className="hidden sm:inline">Probar Voz</span>
+            </button>
             <button 
               onClick={() => { newChat(); setMobileSidebar(false); }}
               className="flex items-center gap-2 px-3 py-1.5 bg-[#0F172A] dark:bg-white text-white dark:text-zinc-900 rounded-full text-xs font-normal hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all duration-300 shadow-sm"

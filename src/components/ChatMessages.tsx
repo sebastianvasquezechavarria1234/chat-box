@@ -108,9 +108,14 @@ export default function ChatMessages({ messages, chatId, sending }: Props) {
               transition={{ duration: 0.3, ease: 'easeOut', delay: isNew ? 0.08 : 0 }}
               className="self-start flex gap-3 lg:gap-4 max-w-full lg:max-w-[90%]"
             >
-              <div className="flex-shrink-0 mt-1">
+              <motion.div
+                className="flex-shrink-0 mt-1"
+                initial={isNew ? { opacity: 0, filter: 'blur(8px)' } : false}
+                animate={{ opacity: 1, filter: 'blur(0px)' }}
+                transition={{ duration: 0.4, delay: 0.3 }}
+              >
                 <AIOrb size="sm" />
-              </div>
+              </motion.div>
               <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed text-[15px] text-gray-800 dark:text-gray-200 transition-colors duration-300">
                 <AnimatePresence mode="wait">
                   {msg.x === '' && sending ? (
