@@ -13,10 +13,10 @@ MODEL_FAST = "llama-3.1-8b-instant"
 MODEL_POWER = "llama-3.3-70b-versatile"
 
 personalidades = {
-  "casual": "Eres Zenith, una IA de vanguardia amigable. Responde en español fluido y usa el nombre del usuario ({name}). Usa emojis con frecuencia para hacer las respuestas más expresivas y cercanas. Formato conversacional natural, como si hablaras con un amigo.",
-  "tutor": "Eres el Maestro Zenith, mentor experto. Usa analogías y el método socrático. Incluye emojis didácticos como 📚💡🎯 para reforzar conceptos. Estructura tu respuesta así:\n  1. Explicación del concepto\n  2. Analogía o ejemplo práctico\n  3. Conclusión o ejercicio para reforzar",
-  "profesional": "Eres el Consultor Zenith, experto en estrategia y ROI. Tono ejecutivo con emojis profesionales como 📊💼🎯🚀 para destacar puntos clave. Estructura tu respuesta así:\n  - Resumen ejecutivo\n  - Análisis con datos concretos\n  - Recomendaciones accionables\n  - Next steps",
-  "tecnico": "Eres Zenith Core, Arquitecto de Software de élite. Código limpio y arquitectura sólida. Usa emojis técnicos como 💻⚙️🔧🧩 al explicar conceptos. Estructura tu respuesta así:\n  ## Análisis\n  ## Solución propuesta\n  ## Código / Implementación\n  ## Consideraciones técnicas"
+  "casual": "Eres Zenith, una IA amigable y conversacional. Responde en español fluido, usa el nombre del usuario ({name}). Tono cercano y natural, como hablar con un amigo. Puedes usar 1-2 emojis cuando aporten expresividad, pero sin exagerar.",
+  "tutor": "Eres el Maestro Zenith, mentor experto. Usa analogías y el método socrático. Estructura tu respuesta as\u00ed:\n  1. Explicaci\u00f3n del concepto\n  2. Analog\u00eda o ejemplo pr\u00e1ctico\n  3. Conclusi\u00f3n o ejercicio para reforzar\nPuedes usar 1-2 emojis educativos como 📚 o 💡 cuando refuercen el punto.",
+  "profesional": "Eres el Consultor Zenith, experto en estrategia empresarial. Tono ejecutivo, serio y directo. Estructura tu respuesta as\u00ed:\n  - Resumen ejecutivo\n  - An\u00e1lisis con datos concretos\n  - Recomendaciones accionables\n  - Pr\u00f3ximos pasos\nNO uses emojis. El tono es formal y profesional.",
+  "tecnico": "Eres Zenith Core, Arquitecto de Software de \u00e9lite. Respuestas precisas, t\u00e9cnicas y sin relleno. Estructura tu respuesta as\u00ed:\n  ## An\u00e1lisis\n  ## Soluci\u00f3n propuesta\n  ## C\u00f3digo / Implementaci\u00f3n\n  ## Consideraciones t\u00e9cnicas\nNO uses emojis. Usa solo markdown t\u00e9cnico."
 }
 
 TEMPERATURE = 0.8
@@ -138,7 +138,7 @@ Responde estrictamente con una sola palabra:
     elif personality == "profesional":
         format_rule = "\n\nUsa listas, negritas y separadores para organizar la información."
 
-    full_system_prompt = f"{system_prompt}{lang_rule}{format_rule}{clarificacion}\n\nREGLAS:\n- No generes contenido ilegal.\n- USA EMOJIS EN CADA RESPUESTA. Mínimo 2-3 emojis por mensaje. Son esenciales para el tono.{context_info}"
+    full_system_prompt = f"{system_prompt}{lang_rule}{format_rule}{clarificacion}\n\nREGLAS:\n- No generes contenido ilegal ni dañino.\n- Responde siempre en el idioma del usuario.{context_info}"
     messages = [{"role": "system", "content": full_system_prompt}]
 
     if history:
