@@ -434,9 +434,9 @@ function ParticleStorm({ active, mousePos }: { active: boolean; mousePos: React.
 type OrbSize = 'sm' | 'md' | 'lg';
 
 const sizeClasses: Record<OrbSize, string> = {
-  sm: 'w-8 h-8',
-  md: 'w-28 h-28 mb-6',
-  lg: 'w-40 h-40',
+  sm: 'w-16 h-16',
+  md: 'w-48 h-48 mb-6',
+  lg: 'w-72 h-72',
 };
 
 interface AIOrbProps {
