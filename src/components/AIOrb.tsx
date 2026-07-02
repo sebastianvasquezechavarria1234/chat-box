@@ -80,6 +80,8 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
   const isDragging = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
   const hoverValue = useRef(0);
+  const targetHover = useRef(0);
+  const customTime = useRef(0);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -121,9 +123,11 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
     prevMouse.current.y = mouse.current.y;
 
     if (shaderRef.current) {
-      shaderRef.current.uniforms.uTime.value = clock.getElapsedTime();
+      hoverValue.current += (targetHover.current - hoverValue.current) * 0.05;
+      customTime.current += 0.015 * (1.0 + hoverValue.current * 4.0); // Se acelera al hacer hover
+      
+      shaderRef.current.uniforms.uTime.value = customTime.current;
       shaderRef.current.uniforms.uVelocity.value = velocity.current;
-      hoverValue.current += (0 - hoverValue.current) * 0.1;
       shaderRef.current.uniforms.uHover.value = hoverValue.current;
     }
 
@@ -131,8 +135,8 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
       targetRotation.current.y = mouse.current.x * 1.2;
       targetRotation.current.x = mouse.current.y * 1.2;
 
-      const baseRotY = clock.getElapsedTime() * 0.3;
-      const baseRotX = Math.sin(clock.getElapsedTime() * 0.2) * 0.2;
+      const baseRotY = customTime.current * 0.3;
+      const baseRotX = Math.sin(customTime.current * 0.2) * 0.2;
 
       meshRef.current.rotation.y += (targetRotation.current.y + baseRotY - meshRef.current.rotation.y) * 0.08;
       meshRef.current.rotation.x += (targetRotation.current.x + baseRotX - meshRef.current.rotation.x) * 0.08;
@@ -165,11 +169,9 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
       float noise2 = fbm(position * 2.0 + uTime * 0.3);
       vNoise = noise1;
 
-      float distortionStrength = 0.18 + uVelocity * 1.2;
+      // La distorsión se vuelve mucho más agresiva (puntiaguda) al hacer hover
+      float distortionStrength = 0.18 + uVelocity * 1.2 + (uHover * 0.6);
       transformed = position + objectNormal * (noise1 * 0.7 + noise2 * 0.3) * distortionStrength;
-      
-      float scale = 1.0 + uHover * 0.15;
-      transformed *= scale;
       `
     );
 
@@ -190,8 +192,8 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
     <group>
       <mesh 
         ref={meshRef}
-        onPointerEnter={() => { hoverValue.current = 1; onHover(1); }}
-        onPointerLeave={() => { hoverValue.current = 0; onHover(0); isDragging.current = false; }}
+        onPointerEnter={() => { targetHover.current = 1; onHover(1); }}
+        onPointerLeave={() => { targetHover.current = 0; onHover(0); isDragging.current = false; }}
       >
         <sphereGeometry args={[1.2, 128, 128]} />
         <meshPhysicalMaterial
@@ -215,32 +217,48 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
   );
 }
 
-function OrbitingParticles({ count = 80, radius = 2.0, mousePos }: { count?: number; radius?: number; mousePos: React.MutableRefObject<{ x: number; y: number }> }) {
+function OrbitingParticles({ count = 120, radius = 2.2, mousePos }: { count?: number; radius?: number; mousePos: React.MutableRefObject<{ x: number; y: number }> }) {
   const ref = useRef<THREE.Points>(null);
-  const basePositions = useMemo(() => {
+  
+  const [positions, colors] = useMemo(() => {
     const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    
+    const palette = [
+      new THREE.Color('#5973e6'), // Azul
+      new THREE.Color('#8059d9'), // Morado
+      new THREE.Color('#f2738c'), // Rosa
+      new THREE.Color('#ffb366'), // Durazno
+    ];
+
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      const r = radius + (Math.random() - 0.5) * 0.4;
+      const r = radius + (Math.random() - 0.5) * 0.6;
       pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       pos[i * 3 + 2] = r * Math.cos(phi);
+      
+      const c = palette[Math.floor(Math.random() * palette.length)];
+      col[i * 3] = c.r;
+      col[i * 3 + 1] = c.g;
+      col[i * 3 + 2] = c.b;
     }
-    return pos;
+    return [pos, col];
   }, [count, radius]);
 
   useFrame(({ clock }) => {
     if (!ref.current) return;
     const t = clock.getElapsedTime();
-    ref.current.rotation.y = t * 0.15;
+    ref.current.rotation.y = t * 0.1;
     ref.current.rotation.x = Math.sin(t * 0.1) * 0.1;
+    ref.current.rotation.z = Math.cos(t * 0.05) * 0.05;
 
-    const positions = ref.current.geometry.attributes.position.array as Float32Array;
+    const posAttr = ref.current.geometry.attributes.position.array as Float32Array;
     for (let i = 0; i < count; i++) {
-      const bx = basePositions[i * 3];
-      const by = basePositions[i * 3 + 1];
-      const bz = basePositions[i * 3 + 2];
+      const bx = positions[i * 3];
+      const by = positions[i * 3 + 1];
+      const bz = positions[i * 3 + 2];
 
       const mx = (mousePos.current?.x ?? 0) * 0.3;
       const my = (mousePos.current?.y ?? 0) * 0.3;
@@ -250,9 +268,12 @@ function OrbitingParticles({ count = 80, radius = 2.0, mousePos }: { count?: num
       const dist = Math.sqrt(dx * dx + dy * dy);
       const influence = Math.max(0, 1 - dist / 3) * 0.4;
 
-      positions[i * 3] = bx + dx * influence;
-      positions[i * 3 + 1] = by + dy * influence;
-      positions[i * 3 + 2] = bz + Math.sin(t * 2 + i) * 0.05;
+      // Movimiento orgánico como si respiraran
+      const breathe = Math.sin(t * 2.0 + i) * 0.03;
+
+      posAttr[i * 3] = bx + dx * influence + breathe;
+      posAttr[i * 3 + 1] = by + dy * influence + breathe;
+      posAttr[i * 3 + 2] = bz + breathe;
     }
     ref.current.geometry.attributes.position.needsUpdate = true;
   });
@@ -260,17 +281,33 @@ function OrbitingParticles({ count = 80, radius = 2.0, mousePos }: { count?: num
   return (
     <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={basePositions.slice()}
-          itemSize={3}
-        />
+        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.05}
-        color="#7c3aed"
+        size={0.06}
+        vertexColors
+        transparent
+        opacity={0.8}
         sizeAttenuation
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        onBeforeCompile={(shader) => {
+          shader.fragmentShader = shader.fragmentShader.replace(
+            '#include <clipping_planes_fragment>',
+            `
+            #include <clipping_planes_fragment>
+            float d = length(gl_PointCoord - vec2(0.5));
+            if (d > 0.5) discard;
+            // Borde difuminado para que parezcan luz
+            float alpha = smoothstep(0.5, 0.1, d);
+            `
+          );
+          shader.fragmentShader = shader.fragmentShader.replace(
+            'vec4 diffuseColor = vec4( diffuse, opacity );',
+            'vec4 diffuseColor = vec4( diffuse, opacity * alpha );'
+          );
+        }}
       />
     </points>
   );
@@ -280,68 +317,115 @@ function ParticleStorm({ active, mousePos }: { active: boolean; mousePos: React.
   const ref = useRef<THREE.Points>(null);
   const time = useRef(0);
 
-  const [positions, velocities] = useMemo(() => {
-    const count = 60;
+  const [positions, velocities, colors] = useMemo(() => {
+    const count = 100;
     const pos = new Float32Array(count * 3);
     const vel = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+
+    const palette = [
+      new THREE.Color('#5973e6'),
+      new THREE.Color('#8059d9'),
+      new THREE.Color('#f2738c'),
+    ];
+
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 0.5;
       pos[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
       pos[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      const speed = 0.02 + Math.random() * 0.04;
-      vel[i * 3] = Math.sin(phi) * Math.cos(theta) * speed;
-      vel[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * speed;
-      vel[i * 3 + 2] = Math.cos(phi) * speed;
+      
+      const speed = 0.02 + Math.random() * 0.03;
+      vel[i * 3] = (Math.random() - 0.5) * speed;
+      vel[i * 3 + 1] = (Math.random() - 0.5) * speed;
+      vel[i * 3 + 2] = (Math.random() - 0.5) * speed;
+
+      const c = palette[Math.floor(Math.random() * palette.length)];
+      col[i * 3] = c.r;
+      col[i * 3 + 1] = c.g;
+      col[i * 3 + 2] = c.b;
     }
-    return [pos, vel];
+    return [pos, vel, col];
   }, []);
 
   useFrame(() => {
     if (!ref.current) return;
 
+    const pos = ref.current.geometry.attributes.position.array as Float32Array;
+    const material = ref.current.material as THREE.PointsMaterial;
+
     if (active) {
-      time.current += 0.02;
-      const pos = ref.current.geometry.attributes.position.array as Float32Array;
-      for (let i = 0; i < 60; i++) {
-        pos[i * 3] += velocities[i * 3];
-        pos[i * 3 + 1] += velocities[i * 3 + 1];
-        pos[i * 3 + 2] += velocities[i * 3 + 2];
+      time.current += 0.015;
+      
+      for (let i = 0; i < 100; i++) {
+        const x = pos[i * 3];
+        const y = pos[i * 3 + 1];
+        const z = pos[i * 3 + 2];
+
+        // Vórtice: fuerza giratoria
+        const forceX = -z * 0.05;
+        const forceZ = x * 0.05;
+        const forceY = Math.sin(time.current * 5.0 + i) * 0.02;
+
+        pos[i * 3] += velocities[i * 3] + forceX;
+        pos[i * 3 + 1] += velocities[i * 3 + 1] + forceY;
+        pos[i * 3 + 2] += velocities[i * 3 + 2] + forceZ;
+        
+        // Fricción
+        velocities[i * 3] *= 0.98;
+        velocities[i * 3 + 1] *= 0.98;
+        velocities[i * 3 + 2] *= 0.98;
       }
       ref.current.geometry.attributes.position.needsUpdate = true;
-      (ref.current.material as THREE.PointsMaterial).opacity = Math.min(1, time.current * 3);
+      material.opacity = Math.min(1, material.opacity + 0.05);
     } else {
       time.current = 0;
-      const pos = ref.current.geometry.attributes.position.array as Float32Array;
-      for (let i = 0; i < 60; i++) {
-        pos[i * 3] = (Math.random() - 0.5) * 0.5;
-        pos[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
-        pos[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
+      material.opacity = Math.max(0, material.opacity - 0.05);
+      
+      if (material.opacity <= 0) {
+        for (let i = 0; i < 100; i++) {
+          pos[i * 3] = (Math.random() - 0.5) * 0.5;
+          pos[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
+          pos[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
+          
+          const speed = 0.02 + Math.random() * 0.03;
+          velocities[i * 3] = (Math.random() - 0.5) * speed;
+          velocities[i * 3 + 1] = (Math.random() - 0.5) * speed;
+          velocities[i * 3 + 2] = (Math.random() - 0.5) * speed;
+        }
+        ref.current.geometry.attributes.position.needsUpdate = true;
       }
-      ref.current.geometry.attributes.position.needsUpdate = true;
-      (ref.current.material as THREE.PointsMaterial).opacity = 0;
     }
   });
 
   return (
     <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={60}
-          array={positions}
-          itemSize={3}
-        />
+        <bufferAttribute attach="attributes-position" count={100} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-color" count={100} array={colors} itemSize={3} />
       </bufferGeometry>
       <pointsMaterial
         size={0.08}
-        color="#a78bfa"
+        vertexColors
         transparent
         opacity={0}
         sizeAttenuation
-        blending={2}
         depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        onBeforeCompile={(shader) => {
+          shader.fragmentShader = shader.fragmentShader.replace(
+            '#include <clipping_planes_fragment>',
+            `
+            #include <clipping_planes_fragment>
+            float d = length(gl_PointCoord - vec2(0.5));
+            if (d > 0.5) discard;
+            float alpha = smoothstep(0.5, 0.1, d);
+            `
+          );
+          shader.fragmentShader = shader.fragmentShader.replace(
+            'vec4 diffuseColor = vec4( diffuse, opacity );',
+            'vec4 diffuseColor = vec4( diffuse, opacity * alpha );'
+          );
+        }}
       />
     </points>
   );
