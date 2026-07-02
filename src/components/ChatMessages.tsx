@@ -12,7 +12,7 @@ import AIOrb from './AIOrb';
 
 function TypingIndicator() {
   return (
-    <div className="flex items-center gap-1 py-3 px-1">
+    <div className="flex items-center gap-1 py-5 px-1">
       {[0, 1, 2].map(i => (
         <motion.span
           key={i}
