@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Menu, X, ExternalLink, ArrowDownToLine, Mic } from 'lucide-react';
 import { MiniSidebar, ChatSidebar } from '@/components/NewSidebars';
-import { playTTS } from '@/components/AIOrb';
+import AIOrb, { playTTS } from '@/components/AIOrb';
 import VoiceSessionModal from '@/components/VoiceSessionModal';
 import ChatMessages from '@/components/ChatMessages';
 import InputBar from '@/components/InputBar';
@@ -284,6 +284,15 @@ export default function Home() {
         )}
       </AnimatePresence>
 
+      <motion.div
+        initial={{ filter: 'blur(10px)', opacity: 0 }}
+        animate={{ 
+          filter: showAppLoader ? 'blur(10px)' : 'blur(0px)', 
+          opacity: showAppLoader ? 0 : 1 
+        }}
+        transition={{ duration: 0.8, ease: 'easeOut', delay: showAppLoader ? 0 : 0.2 }}
+        className="flex flex-1 min-h-screen w-full"
+      >
       <MiniSidebar 
         isDark={isDark} 
         userName={userName} 
@@ -371,7 +380,7 @@ export default function Home() {
         </header>
 
         {/* Contenido */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth flex flex-col pb-40 lg:pb-24">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth flex flex-col pb-52 lg:pb-40">
           <AnimatePresence mode="wait">
             {currentMsgs.length === 0 ? (
               <motion.div
@@ -430,6 +439,7 @@ export default function Home() {
       <AnimatePresence>
         {showStats && <StatsModal stats={stats} onClose={() => setShowStats(false)} />}
       </AnimatePresence>
+      </motion.div>
     </div>
   );
 }
