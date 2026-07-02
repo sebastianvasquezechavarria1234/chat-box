@@ -118,6 +118,11 @@ export default function ChatMessages({ messages, chatId, sending }: Props) {
                 {msg.x === '' && i === messages.length - 1 ? (
                   <TypingIndicator />
                 ) : (
+                  <motion.div
+                    initial={{ opacity: 0, filter: 'blur(6px)', y: 8 }}
+                    animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+                    transition={{ duration: 0.35, ease: 'easeOut' }}
+                  >
                   <ReactMarkdown
                   components={{
                     code({ node, inline, className, children, ...props }: any) {
@@ -153,6 +158,7 @@ export default function ChatMessages({ messages, chatId, sending }: Props) {
                 >
                   {msg.x}
                 </ReactMarkdown>
+                  </motion.div>
                 )}
               </div>
             </motion.div>
