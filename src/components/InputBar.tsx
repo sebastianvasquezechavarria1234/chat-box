@@ -19,6 +19,7 @@ const personalities = [
 export default function InputBar({ onSend, disabled }: Props) {
   const [question, setQuestion] = useState('');
   const [personality, setPersonality] = useState('casual');
+  const [hovered, setHovered] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -70,24 +71,27 @@ export default function InputBar({ onSend, disabled }: Props) {
         <div className="flex items-center gap-1.5 px-2 pb-1 overflow-x-auto scrollbar-none">
           {personalities.map(p => {
             const PIcon = p.icon;
-            const isActive = personality === p.id;
+            const targetId = hovered || personality;
+            const isTarget = p.id === targetId;
             return (
               <button
                 key={p.id}
                 onClick={() => setPersonality(p.id)}
+                onMouseEnter={() => setHovered(p.id)}
+                onMouseLeave={() => setHovered(null)}
                 className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium shrink-0"
               >
-                {isActive && (
+                {isTarget && (
                   <motion.div
                     layoutId="personality-bg"
                     className="absolute inset-0 rounded-lg bg-zinc-100 dark:bg-zinc-800"
                     transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                   />
                 )}
-                <span className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                <span className={`relative z-10 transition-colors duration-300 ${isTarget ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
                   <PIcon size={13} />
                 </span>
-                <span className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                <span className={`relative z-10 transition-colors duration-300 ${isTarget ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
                   {p.label}
                 </span>
               </button>
