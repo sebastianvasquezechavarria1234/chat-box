@@ -373,6 +373,10 @@ export default function Home() {
           </AnimatePresence>
         </div>
         <InputBar onSend={sendMessage} disabled={sending} />
+
+        <AnimatePresence>
+          {showVoiceModal && <VoiceSessionModal userName={userName} onClose={() => setShowVoiceModal(false)} />}
+        </AnimatePresence>
       </main>
 
       <AnimatePresence>
@@ -381,10 +385,6 @@ export default function Home() {
 
       <AnimatePresence>
         {showStats && <StatsModal stats={stats} onClose={() => setShowStats(false)} />}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {showVoiceModal && <VoiceSessionModal userName={userName} onClose={() => setShowVoiceModal(false)} />}
       </AnimatePresence>
     </div>
   );

@@ -150,7 +150,7 @@ export default function VoiceSessionModal({ onClose, userName }: Props) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-between bg-[#030303] overflow-hidden"
+      className="absolute inset-0 z-50 flex flex-col items-center justify-between bg-[#030303] overflow-hidden"
     >
       {/* Glow de fondo */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(88,51,196,0.15)_0%,_transparent_70%)] pointer-events-none" />
