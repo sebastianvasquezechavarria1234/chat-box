@@ -26,6 +26,7 @@ export default function Home() {
   const [showInfo, setShowInfo] = useState(false);
   const [sending, setSending] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [showAppLoader, setShowAppLoader] = useState(true);
   const [isDark, setIsDark] = useState(false);
   const [mobileSidebar, setMobileSidebar] = useState(false);
   const [showStats, setShowStats] = useState(false);
@@ -59,6 +60,7 @@ export default function Home() {
     setIsDark(dark);
     if (dark) document.documentElement.classList.add('dark');
     setLoaded(true);
+    setTimeout(() => setShowAppLoader(false), 2000);
   }, []);
 
   useEffect(() => {
@@ -260,6 +262,28 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-white dark:bg-zinc-950 font-sans tracking-tight transition-colors duration-300">
+      <AnimatePresence>
+        {showAppLoader && (
+          <motion.div
+            key="app-loader"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, filter: 'blur(10px)' }}
+            transition={{ duration: 0.8, ease: 'easeInOut' }}
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white dark:bg-zinc-950"
+          >
+            <AIOrb size="lg" />
+            <motion.p
+              initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="mt-8 text-zinc-500 dark:text-zinc-400 font-bold tracking-[0.2em] uppercase text-[10px]"
+            >
+              Iniciando Zenith
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <MiniSidebar 
         isDark={isDark} 
         userName={userName} 
@@ -347,7 +371,7 @@ export default function Home() {
         </header>
 
         {/* Contenido */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth flex flex-col max-[1399px]:pb-36">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth flex flex-col pb-40 lg:pb-24">
           <AnimatePresence mode="wait">
             {currentMsgs.length === 0 ? (
               <motion.div
