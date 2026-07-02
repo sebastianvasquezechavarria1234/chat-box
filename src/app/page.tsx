@@ -316,17 +316,31 @@ export default function Home() {
               <Sparkles size={12} className="fill-white dark:fill-zinc-900" strokeWidth={1.5} />
               <span className="hidden sm:inline">Nuevo Chat</span>
             </button>
-            <button 
-              onClick={() => setShowVoiceModal(true)}
-              className="relative flex items-center gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full text-xs font-normal hover:bg-indigo-600 transition-all duration-300 shadow-[0_0_15px_rgba(99,102,241,0.4)] group"
-            >
-              <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-300 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-400 border border-white dark:border-zinc-900"></span>
-              </span>
-              <Mic size={12} strokeWidth={1.5} className="group-hover:scale-110 transition-transform duration-300" />
-              <span className="hidden sm:inline font-medium tracking-wide">Llamada Zenith</span>
-            </button>
+            <div className="relative group ml-2">
+              {/* Aura de neón que pulsa fuertemente */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full blur opacity-70 animate-pulse transition duration-500 group-hover:opacity-100"></div>
+              
+              <button 
+                onClick={() => setShowVoiceModal(true)}
+                className="relative flex items-center gap-2 px-4 py-1.5 bg-zinc-950 dark:bg-white rounded-full text-xs font-bold hover:scale-105 transition-all duration-300"
+              >
+                {/* Ícono de micro que resalta */}
+                <div className="relative flex items-center justify-center">
+                  <span className="animate-ping absolute inline-flex h-4 w-4 rounded-full bg-purple-400 opacity-60"></span>
+                  <Mic size={14} strokeWidth={2.5} className="text-purple-400 dark:text-purple-600 relative z-10" />
+                </div>
+                
+                {/* Texto con gradiente */}
+                <span className="hidden sm:inline bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 dark:from-indigo-600 dark:via-purple-600 dark:to-pink-600 uppercase tracking-wider font-extrabold text-[11px]">
+                  Modo Voz
+                </span>
+                
+                {/* Etiqueta flotante llamativa */}
+                <span className="absolute -top-2.5 -right-3 flex items-center justify-center px-1.5 py-0.5 bg-red-500 text-white text-[8px] font-black rounded-full uppercase tracking-widest animate-bounce shadow-[0_0_10px_rgba(239,68,68,0.8)] border border-white/20">
+                  Nuevo
+                </span>
+              </button>
+            </div>
           </div>
         </header>
 
