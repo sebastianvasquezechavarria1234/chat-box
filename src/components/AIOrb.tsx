@@ -1,18 +1,18 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
 const vertexShader = `
   uniform float uTime;
+  uniform float uVelocity;
   varying vec3 vNormal;
   varying vec3 vPosition;
   varying vec2 vUv;
   varying float vNoise;
 
-  // Simplex noise
   vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
@@ -68,7 +68,8 @@ const vertexShader = `
     float noise = snoise(position * 2.0 + uTime * 0.3);
     vNoise = noise;
 
-    vec3 displaced = position + normal * noise * 0.15;
+    float distortionStrength = 0.15 + uVelocity * 0.4;
+    vec3 displaced = position + normal * noise * distortionStrength;
 
     vPosition = displaced;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
@@ -91,16 +92,16 @@ const fragmentShader = `
     float spec = pow(max(dot(vNormal, halfDir), 0.0), 64.0);
 
     vec3 purpleBase = vec3(0.486, 0.227, 0.929);
-    vec3 cyanAccent = vec3(0.0, 0.85, 0.9);
+    vec3 pinkAccent = vec3(0.91, 0.3, 0.6);
 
     float noiseFactor = smoothstep(-0.2, 0.8, vNoise);
-    vec3 baseColor = mix(purpleBase, cyanAccent, noiseFactor * 0.6);
+    vec3 baseColor = mix(purpleBase, pinkAccent, noiseFactor * 0.7);
 
     vec3 ambient = baseColor * 0.35;
     vec3 diffuse = baseColor * diff * 0.55;
     vec3 specular = vec3(1.0) * spec * 0.7;
 
-    vec3 fresnel = mix(purpleBase, cyanAccent, 0.5) * pow(1.0 - max(dot(viewDir, vNormal), 0.0), 3.0);
+    vec3 fresnel = mix(purpleBase, pinkAccent, 0.5) * pow(1.0 - max(dot(viewDir, vNormal), 0.0), 3.0);
 
     vec3 color = ambient + diffuse + specular + fresnel;
 
@@ -111,19 +112,45 @@ const fragmentShader = `
 function MetalSphere() {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const mouse = useRef({ x: 0, y: 0 });
+  const prevMouse = useRef({ x: 0, y: 0 });
+  const velocity = useRef(0);
+  const targetRotation = useRef({ x: 0, y: 0 });
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
+      uVelocity: { value: 0 },
     }),
     []
   );
 
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  }, []);
+
   useFrame(({ clock }) => {
     if (!meshRef.current || !materialRef.current) return;
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    const dx = mouse.current.x - prevMouse.current.x;
+    const dy = mouse.current.y - prevMouse.current.y;
+    const speed = Math.sqrt(dx * dx + dy * dy);
+    velocity.current = velocity.current * 0.9 + speed * 0.1;
+
+    prevMouse.current.x = mouse.current.x;
+    prevMouse.current.y = mouse.current.y;
+
     materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
-    meshRef.current.rotation.y = clock.getElapsedTime() * 0.15;
-    meshRef.current.rotation.x = Math.sin(clock.getElapsedTime() * 0.1) * 0.1;
+    materialRef.current.uniforms.uVelocity.value = velocity.current;
+
+    targetRotation.current.y = mouse.current.x * 0.5;
+    targetRotation.current.x = mouse.current.y * 0.5;
+
+    meshRef.current.rotation.y += (targetRotation.current.y - meshRef.current.rotation.y) * 0.05;
+    meshRef.current.rotation.x += (targetRotation.current.x - meshRef.current.rotation.x) * 0.05;
   });
 
   return (
