@@ -502,9 +502,10 @@ const cameraDistances: Record<OrbSize, number> = {
 
 interface AIOrbProps {
   size?: OrbSize;
+  onReady?: () => void;
 }
 
-export default function AIOrb({ size = 'md' }: AIOrbProps) {
+export default function AIOrb({ size = 'md', onReady }: AIOrbProps) {
   const [isHovered, setIsHovered] = useState(false);
   const mousePos = useRef({ x: 0, y: 0 });
 
@@ -516,6 +517,7 @@ export default function AIOrb({ size = 'md' }: AIOrbProps) {
         camera={{ position: [0, 0, cameraDistances[size]], fov: 50 }}
         gl={{ antialias: true, alpha: true }}
         style={{ width: '100%', height: '100%' }}
+        onCreated={() => onReady?.()}
         onPointerMove={(e: any) => {
           if (e?.point) {
             mousePos.current.x = e.point.x;
