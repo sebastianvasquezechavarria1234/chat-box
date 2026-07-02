@@ -10,12 +10,33 @@ import { Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 import AIOrb from './AIOrb';
 
+function TypingIndicator() {
+  return (
+    <div className="flex items-center gap-1.5 py-2 px-1">
+      {[0, 1, 2].map(i => (
+        <motion.span
+          key={i}
+          className="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-500"
+          animate={{ y: [0, -6, 0] }}
+          transition={{
+            duration: 0.5,
+            repeat: Infinity,
+            delay: i * 0.15,
+            ease: 'easeInOut',
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 interface Props {
   messages: Message[];
   chatId?: string | null;
+  sending?: boolean;
 }
 
-export default function ChatMessages({ messages, chatId }: Props) {
+export default function ChatMessages({ messages, chatId, sending }: Props) {
   const endRef = useRef<HTMLDivElement>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const prevLenRef = useRef(0);
@@ -91,7 +112,10 @@ export default function ChatMessages({ messages, chatId }: Props) {
                 <AIOrb size="sm" />
               </div>
               <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed text-[15px] text-gray-800 dark:text-gray-200 transition-colors duration-300">
-                <ReactMarkdown
+                {msg.x === '' && sending ? (
+                  <TypingIndicator />
+                ) : (
+                  <ReactMarkdown
                   components={{
                     code({ node, inline, className, children, ...props }: any) {
                       const match = /language-(\w+)/.exec(className || '');
@@ -126,6 +150,7 @@ export default function ChatMessages({ messages, chatId }: Props) {
                 >
                   {msg.x}
                 </ReactMarkdown>
+                )}
               </div>
             </motion.div>
           )

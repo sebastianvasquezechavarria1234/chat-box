@@ -88,10 +88,10 @@ export default function InputBar({ onSend, disabled }: Props) {
                     transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                   />
                 )}
-                <span className={`relative z-10 transition-colors duration-300 ${isTarget ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                <span className={`relative z-10 transition-colors duration-100 ${isTarget ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
                   <PIcon size={13} />
                 </span>
-                <span className={`relative z-10 transition-colors duration-300 ${isTarget ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                <span className={`relative z-10 transition-colors duration-100 ${isTarget ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
                   {p.label}
                 </span>
               </button>

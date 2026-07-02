@@ -343,7 +343,7 @@ export default function Home() {
                 transition={{ duration: 0.3, ease: 'easeOut' }}
                 className="max-w-[900px] mx-auto w-full py-8"
               >
-                <ChatMessages messages={currentMsgs} chatId={currentId} />
+                <ChatMessages messages={currentMsgs} chatId={currentId} sending={sending} />
               </motion.div>
             )}
           </AnimatePresence>
