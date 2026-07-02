@@ -1,9 +1,9 @@
 'use client';
 
 import { useRef, useMemo, useCallback, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
-import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, ChromaticAberration, Noise, Vignette } from '@react-three/postprocessing';
 import { Vector2 } from 'three';
 import * as THREE from 'three';
 
@@ -392,6 +392,8 @@ export default function AIOrb({ size = 'md' }: AIOrbProps) {
         <EffectComposer>
           <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={0.8} />
           <ChromaticAberration offset={new Vector2(0.002, 0.002)} radialModulation={false} modulationOffset={0.2} />
+          <Noise opacity={0.04} />
+          <Vignette eskil={false} offset={0.1} darkness={1.1} />
         </EffectComposer>
       </Canvas>
     </div>
