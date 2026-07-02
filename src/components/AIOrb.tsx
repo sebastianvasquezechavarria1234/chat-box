@@ -68,7 +68,7 @@ const vertexShader = `
     float noise = snoise(position * 2.0 + uTime * 0.3);
     vNoise = noise;
 
-    float distortionStrength = 0.15 + uVelocity * 0.4;
+    float distortionStrength = 0.15 + uVelocity * 1.2;
     vec3 displaced = position + normal * noise * distortionStrength;
 
     vPosition = displaced;
@@ -138,7 +138,7 @@ function MetalSphere() {
     const dx = mouse.current.x - prevMouse.current.x;
     const dy = mouse.current.y - prevMouse.current.y;
     const speed = Math.sqrt(dx * dx + dy * dy);
-    velocity.current = velocity.current * 0.9 + speed * 0.1;
+    velocity.current = velocity.current * 0.8 + speed * 0.2;
 
     prevMouse.current.x = mouse.current.x;
     prevMouse.current.y = mouse.current.y;
@@ -146,11 +146,11 @@ function MetalSphere() {
     materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
     materialRef.current.uniforms.uVelocity.value = velocity.current;
 
-    targetRotation.current.y = mouse.current.x * 0.5;
-    targetRotation.current.x = mouse.current.y * 0.5;
+    targetRotation.current.y = mouse.current.x * 1.2;
+    targetRotation.current.x = mouse.current.y * 1.2;
 
-    meshRef.current.rotation.y += (targetRotation.current.y - meshRef.current.rotation.y) * 0.05;
-    meshRef.current.rotation.x += (targetRotation.current.x - meshRef.current.rotation.x) * 0.05;
+    meshRef.current.rotation.y += (targetRotation.current.y - meshRef.current.rotation.y) * 0.12;
+    meshRef.current.rotation.x += (targetRotation.current.x - meshRef.current.rotation.x) * 0.12;
   });
 
   return (
