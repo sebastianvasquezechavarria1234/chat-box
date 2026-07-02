@@ -200,6 +200,8 @@ export default function Home() {
       };
     });
 
+    const history = activeList.find(c => c.id === activeId)?.msgs || [];
+
     const userMsg: Message = { t: 'u', x: question };
     const botMsg: Message = { t: 'b', x: '' };
     const updated = activeList.map(c => 
@@ -208,8 +210,6 @@ export default function Home() {
         : c
     );
     save(updated);
-
-    const history = activeList.find(c => c.id === activeId)?.msgs || [];
 
     try {
       const res = await fetch(API_URL, {
