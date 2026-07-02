@@ -289,8 +289,8 @@ function OrbitingParticles({ count = 80, radius = 2.0, mousePos }: { count?: num
       const by = basePositions[i * 3 + 1];
       const bz = basePositions[i * 3 + 2];
 
-      const mx = mousePos.current.x * 0.3;
-      const my = mousePos.current.y * 0.3;
+      const mx = (mousePos.current?.x ?? 0) * 0.3;
+      const my = (mousePos.current?.y ?? 0) * 0.3;
 
       const dx = mx - bx;
       const dy = my - by;
@@ -420,9 +420,11 @@ export default function AIOrb({ size = 'md' }: AIOrbProps) {
         camera={{ position: [0, 0, 3.5], fov: 50 }}
         gl={{ antialias: true, alpha: true }}
         style={{ width: '100%', height: '100%' }}
-        onPointerMove={(e) => {
-          mousePos.current.x = e.point.x;
-          mousePos.current.y = e.point.y;
+        onPointerMove={(e: any) => {
+          if (e?.point) {
+            mousePos.current.x = e.point.x;
+            mousePos.current.y = e.point.y;
+          }
         }}
       >
         <ambientLight intensity={0.3} />
