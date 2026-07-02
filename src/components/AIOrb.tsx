@@ -201,10 +201,8 @@ function MetalSphere() {
 function OrbitingParticles({ count = 80, radius = 2.0 }: { count?: number; radius?: number }) {
   const ref = useRef<THREE.Points>(null);
 
-  const [positions, sizes, opacities] = useMemo(() => {
+  const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
-    const sz = new Float32Array(count);
-    const op = new Float32Array(count);
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
@@ -212,10 +210,8 @@ function OrbitingParticles({ count = 80, radius = 2.0 }: { count?: number; radiu
       pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       pos[i * 3 + 2] = r * Math.cos(phi);
-      sz[i] = 0.04 + Math.random() * 0.08;
-      op[i] = 0.5 + Math.random() * 0.5;
     }
-    return [pos, sz, op];
+    return pos;
   }, [count, radius]);
 
   useFrame(({ clock }) => {
@@ -226,65 +222,21 @@ function OrbitingParticles({ count = 80, radius = 2.0 }: { count?: number; radiu
   });
 
   return (
-    <group>
-      <points ref={ref}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={count}
-            array={positions}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.12}
-          color="#a78bfa"
-          transparent
-          opacity={0.9}
-          sizeAttenuation
-          blending={2}
-          depthWrite={false}
+    <points ref={ref}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={positions}
+          itemSize={3}
         />
-      </points>
-      <points>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={count}
-            array={positions}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.35}
-          color="#7c3aed"
-          transparent
-          opacity={0.3}
-          sizeAttenuation
-          blending={2}
-          depthWrite={false}
-        />
-      </points>
-      <points>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={count}
-            array={positions}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.6}
-          color="#5b21b6"
-          transparent
-          opacity={0.12}
-          sizeAttenuation
-          blending={2}
-          depthWrite={false}
-        />
-      </points>
-    </group>
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.05}
+        color="#7c3aed"
+        sizeAttenuation
+      />
+    </points>
   );
 }
 
