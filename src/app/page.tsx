@@ -332,7 +332,7 @@ export default function Home() {
                 <span className="hidden sm:inline">Modo Voz</span>
                 
                 {/* Etiqueta flotante rotada */}
-                <span className="absolute -top-2 -left-2 -rotate-12 flex items-center px-1.5 py-[1px] rounded bg-indigo-500 text-white text-[8px] font-bold uppercase tracking-widest shadow-sm border border-indigo-400">
+                <span className="absolute -top-2 -right-3 rotate-12 flex items-center px-1.5 py-[1px] rounded bg-indigo-500 text-white text-[9px] font-bold shadow-sm border border-indigo-400">
                   Nuevo
                 </span>
               </button>
