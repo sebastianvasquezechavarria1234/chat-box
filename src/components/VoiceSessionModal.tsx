@@ -136,35 +136,43 @@ export default function VoiceSessionModal({ onClose, userName }: Props) {
         </h2>
         {transcript && (
           <p className="text-white/90 max-w-2xl mx-auto text-2xl font-light">
-            "{transcript}"
+            &quot;{transcript}&quot;
           </p>
         )}
       </div>
 
       {/* El Orbe Centrado Gigante */}
-      <div className="scale-150 transform pointer-events-none mt-10">
-        <AIOrb size="lg" />
+      <div className="flex-1 w-full h-full flex items-center justify-center pointer-events-none pb-20">
+        <div className="scale-[1.3] sm:scale-[1.8] transform">
+          <AIOrb size="lg" />
+        </div>
       </div>
 
       {/* Controles flotantes */}
-      <div className="absolute bottom-16 flex gap-6 items-center">
-        <button 
-          onClick={toggleListen}
-          className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
-            isListening 
-              ? 'bg-zinc-800 text-white border border-zinc-700 hover:bg-zinc-700' 
-              : 'bg-white text-black hover:bg-gray-200'
-          }`}
-        >
-          {isListening ? <Mic size={24} /> : <MicOff size={24} />}
-        </button>
+      <div className="absolute bottom-12 flex flex-col items-center gap-4 w-full">
+        <p className="text-white/60 text-xs tracking-widest uppercase">
+          {isListening ? "¡Habla ahora!" : "Toca el micrófono para hablar"}
+        </p>
+        <div className="flex gap-6 items-center">
+          <button 
+            onClick={toggleListen}
+            className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
+              isListening 
+                ? 'bg-red-500/20 text-red-500 border border-red-500/50 animate-pulse' 
+                : 'bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.3)]'
+            }`}
+          >
+            {isListening ? <Mic size={24} /> : <MicOff size={24} />}
+          </button>
 
-        <button 
-          onClick={onClose}
-          className="w-16 h-16 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-all shadow-[0_0_30px_rgba(220,38,38,0.3)]"
-        >
-          <PhoneOff size={24} />
-        </button>
+          <button 
+            onClick={onClose}
+            title="Terminar Llamada"
+            className="w-16 h-16 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-all shadow-[0_0_30px_rgba(220,38,38,0.3)]"
+          >
+            <PhoneOff size={24} />
+          </button>
+        </div>
       </div>
     </motion.div>
   );
