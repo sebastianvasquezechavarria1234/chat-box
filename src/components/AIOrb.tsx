@@ -12,6 +12,7 @@ const vertexShader = `
   varying vec3 vPosition;
   varying vec2 vUv;
   varying float vNoise;
+  varying vec3 vWorldPosition;
 
   vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -72,24 +73,43 @@ const vertexShader = `
     vec3 displaced = position + normal * noise * distortionStrength;
 
     vPosition = displaced;
+    vWorldPosition = (modelMatrix * vec4(displaced, 1.0)).xyz;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
   }
 `;
 
 const fragmentShader = `
   uniform float uTime;
+  uniform vec3 uLight1Pos;
+  uniform vec3 uLight1Color;
+  uniform vec3 uLight2Pos;
+  uniform vec3 uLight2Color;
+  uniform vec3 uLight3Pos;
+  uniform vec3 uLight3Color;
   varying vec3 vNormal;
   varying vec3 vPosition;
   varying vec2 vUv;
   varying float vNoise;
+  varying vec3 vWorldPosition;
 
   void main() {
-    vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
-    float diff = max(dot(vNormal, lightDir), 0.0);
+    vec3 norm = normalize(vNormal);
+    vec3 viewDir = normalize(vec3(0.0, 0.0, 3.0) - vWorldPosition);
 
-    vec3 viewDir = normalize(vec3(0.0, 0.0, 3.0));
-    vec3 halfDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(vNormal, halfDir), 0.0), 64.0);
+    vec3 lightDir1 = normalize(uLight1Pos - vWorldPosition);
+    float diff1 = max(dot(norm, lightDir1), 0.0);
+    vec3 halfDir1 = normalize(lightDir1 + viewDir);
+    float spec1 = pow(max(dot(norm, halfDir1), 0.0), 64.0);
+
+    vec3 lightDir2 = normalize(uLight2Pos - vWorldPosition);
+    float diff2 = max(dot(norm, lightDir2), 0.0);
+    vec3 halfDir2 = normalize(lightDir2 + viewDir);
+    float spec2 = pow(max(dot(norm, halfDir2), 0.0), 64.0);
+
+    vec3 lightDir3 = normalize(uLight3Pos - vWorldPosition);
+    float diff3 = max(dot(norm, lightDir3), 0.0);
+    vec3 halfDir3 = normalize(lightDir3 + viewDir);
+    float spec3 = pow(max(dot(norm, halfDir3), 0.0), 64.0);
 
     vec3 purpleBase = vec3(0.486, 0.227, 0.929);
     vec3 pinkAccent = vec3(0.91, 0.3, 0.6);
@@ -97,11 +117,11 @@ const fragmentShader = `
     float noiseFactor = smoothstep(-0.2, 0.8, vNoise);
     vec3 baseColor = mix(purpleBase, pinkAccent, noiseFactor * 0.7);
 
-    vec3 ambient = baseColor * 0.35;
-    vec3 diffuse = baseColor * diff * 0.55;
-    vec3 specular = vec3(1.0) * spec * 0.7;
+    vec3 diffuse = baseColor * (diff1 * uLight1Color + diff2 * uLight2Color + diff3 * uLight3Color) * 0.4;
+    vec3 specular = (spec1 * uLight1Color + spec2 * uLight2Color + spec3 * uLight3Color) * 0.5;
+    vec3 ambient = baseColor * 0.15;
 
-    vec3 fresnel = mix(purpleBase, pinkAccent, 0.5) * pow(1.0 - max(dot(viewDir, vNormal), 0.0), 3.0);
+    vec3 fresnel = mix(purpleBase, pinkAccent, 0.5) * pow(1.0 - max(dot(viewDir, norm), 0.0), 3.0) * 0.6;
 
     vec3 color = ambient + diffuse + specular + fresnel;
 
@@ -121,6 +141,12 @@ function MetalSphere() {
     () => ({
       uTime: { value: 0 },
       uVelocity: { value: 0 },
+      uLight1Pos: { value: new THREE.Vector3(5, 5, 5) },
+      uLight1Color: { value: new THREE.Vector3(1, 1, 1) },
+      uLight2Pos: { value: new THREE.Vector3(-5, -5, -5) },
+      uLight2Color: { value: new THREE.Vector3(0.486, 0.227, 0.929) },
+      uLight3Pos: { value: new THREE.Vector3(0, 0, 0) },
+      uLight3Color: { value: new THREE.Vector3(0.486, 0.227, 0.929) },
     }),
     []
   );
@@ -157,15 +183,108 @@ function MetalSphere() {
   });
 
   return (
-    <mesh ref={meshRef}>
-      <sphereGeometry args={[1.2, 64, 64]} />
-      <shaderMaterial
-        ref={materialRef}
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        uniforms={uniforms}
-      />
-    </mesh>
+    <group>
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[1.2, 64, 64]} />
+        <shaderMaterial
+          ref={materialRef}
+          vertexShader={vertexShader}
+          fragmentShader={fragmentShader}
+          uniforms={uniforms}
+        />
+      </mesh>
+      <pointLight position={[0, 0, 0]} intensity={150} color="#7c3aed" distance={4} />
+    </group>
+  );
+}
+
+function OrbitingParticles({ count = 80, radius = 2.0 }: { count?: number; radius?: number }) {
+  const ref = useRef<THREE.Points>(null);
+
+  const [positions, sizes, opacities] = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    const sz = new Float32Array(count);
+    const op = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = radius + (Math.random() - 0.5) * 0.4;
+      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      pos[i * 3 + 2] = r * Math.cos(phi);
+      sz[i] = 0.04 + Math.random() * 0.08;
+      op[i] = 0.5 + Math.random() * 0.5;
+    }
+    return [pos, sz, op];
+  }, [count, radius]);
+
+  useFrame(({ clock }) => {
+    if (!ref.current) return;
+    const t = clock.getElapsedTime();
+    ref.current.rotation.y = t * 0.15;
+    ref.current.rotation.x = Math.sin(t * 0.1) * 0.1;
+  });
+
+  return (
+    <group>
+      <points ref={ref}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={count}
+            array={positions}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.12}
+          color="#a78bfa"
+          transparent
+          opacity={0.9}
+          sizeAttenuation
+          blending={2}
+          depthWrite={false}
+        />
+      </points>
+      <points>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={count}
+            array={positions}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.35}
+          color="#7c3aed"
+          transparent
+          opacity={0.3}
+          sizeAttenuation
+          blending={2}
+          depthWrite={false}
+        />
+      </points>
+      <points>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={count}
+            array={positions}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.6}
+          color="#5b21b6"
+          transparent
+          opacity={0.12}
+          sizeAttenuation
+          blending={2}
+          depthWrite={false}
+        />
+      </points>
+    </group>
   );
 }
 
@@ -190,9 +309,10 @@ export default function AIOrb({ size = 'md' }: AIOrbProps) {
         style={{ width: '100%', height: '100%' }}
       >
         <ambientLight intensity={0.3} />
-        <pointLight position={[5, 5, 5]} intensity={1.5} color="#ffffff" />
-        <pointLight position={[-5, -5, -5]} intensity={0.8} color="#7c3aed" />
+        <pointLight position={[5, 5, 5]} intensity={150} color="#ffffff" />
+        <pointLight position={[-5, -5, -5]} intensity={150} color="#7c3aed" />
         <MetalSphere />
+        <OrbitingParticles count={80} radius={2.2} />
         <Environment preset="city" />
       </Canvas>
     </div>
