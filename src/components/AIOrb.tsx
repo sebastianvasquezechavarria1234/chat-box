@@ -7,16 +7,7 @@ import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postpro
 import { Vector2 } from 'three';
 import * as THREE from 'three';
 
-const vertexShader = `
-  uniform float uTime;
-  uniform float uVelocity;
-  uniform float uHover;
-  varying vec3 vNormal;
-  varying vec3 vPosition;
-  varying vec2 vUv;
-  varying float vNoise;
-  varying vec3 vWorldPosition;
-
+const noiseFunctions = `
   vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
@@ -75,85 +66,13 @@ const vertexShader = `
     }
     return value;
   }
-
-  void main() {
-    vUv = uv;
-    vNormal = normalize(normalMatrix * normal);
-
-    float noise1 = snoise(position * 1.5 + uTime * 0.5);
-    float noise2 = fbm(position * 2.0 + uTime * 0.3);
-    vNoise = noise1;
-
-    float distortionStrength = 0.18 + uVelocity * 1.2;
-    vec3 displaced = position + normal * (noise1 * 0.7 + noise2 * 0.3) * distortionStrength;
-
-    float scale = 1.0 + uHover * 0.15;
-    displaced *= scale;
-
-    vPosition = displaced;
-    vWorldPosition = (modelMatrix * vec4(displaced, 1.0)).xyz;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
-  }
-`;
-
-const fragmentShader = `
-  uniform float uTime;
-  uniform vec3 uLight1Pos;
-  uniform vec3 uLight1Color;
-  uniform vec3 uLight2Pos;
-  uniform vec3 uLight2Color;
-  uniform vec3 uLight3Pos;
-  uniform vec3 uLight3Color;
-  varying vec3 vNormal;
-  varying vec3 vPosition;
-  varying vec2 vUv;
-  varying float vNoise;
-  varying vec3 vWorldPosition;
-
-  void main() {
-    vec3 norm = normalize(vNormal);
-    vec3 viewDir = normalize(vec3(0.0, 0.0, 3.0) - vWorldPosition);
-
-    vec3 lightDir1 = normalize(uLight1Pos - vWorldPosition);
-    float diff1 = max(dot(norm, lightDir1), 0.0);
-    vec3 halfDir1 = normalize(lightDir1 + viewDir);
-    float spec1 = pow(max(dot(norm, halfDir1), 0.0), 64.0);
-
-    vec3 lightDir2 = normalize(uLight2Pos - vWorldPosition);
-    float diff2 = max(dot(norm, lightDir2), 0.0);
-    vec3 halfDir2 = normalize(lightDir2 + viewDir);
-    float spec2 = pow(max(dot(norm, halfDir2), 0.0), 64.0);
-
-    vec3 lightDir3 = normalize(uLight3Pos - vWorldPosition);
-    float diff3 = max(dot(norm, lightDir3), 0.0);
-    vec3 halfDir3 = normalize(lightDir3 + viewDir);
-    float spec3 = pow(max(dot(norm, halfDir3), 0.0), 64.0);
-
-    vec3 purpleBase = vec3(0.486, 0.227, 0.929);
-    vec3 pinkAccent = vec3(0.91, 0.3, 0.6);
-
-    float noiseFactor = smoothstep(-0.2, 0.8, vNoise);
-    vec3 baseColor = mix(purpleBase, pinkAccent, noiseFactor * 0.7);
-
-    vec3 diffuse = baseColor * (diff1 * uLight1Color + diff2 * uLight2Color + diff3 * uLight3Color) * 0.4;
-    vec3 specular = (spec1 * uLight1Color + spec2 * uLight2Color + spec3 * uLight3Color) * 0.5;
-    vec3 ambient = baseColor * 0.15;
-
-    float fresnelTerm = pow(1.0 - max(dot(viewDir, norm), 0.0), 3.0);
-    vec3 fresnel = mix(purpleBase, pinkAccent, 0.5) * fresnelTerm * 0.6;
-
-    float sss = pow(max(dot(viewDir, -lightDir1), 0.0), 2.0) * 0.15;
-    vec3 subsurface = purpleBase * sss;
-
-    vec3 color = ambient + diffuse + specular + fresnel + subsurface;
-
-    gl_FragColor = vec4(color, 1.0);
-  }
 `;
 
 function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  const shaderRef = useRef<THREE.Shader>();
+  
   const mouse = useRef({ x: 0, y: 0 });
   const prevMouse = useRef({ x: 0, y: 0 });
   const velocity = useRef(0);
@@ -161,21 +80,6 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
   const isDragging = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
   const hoverValue = useRef(0);
-
-  const uniforms = useMemo(
-    () => ({
-      uTime: { value: 0 },
-      uVelocity: { value: 0 },
-      uHover: { value: 0 },
-      uLight1Pos: { value: new THREE.Vector3(5, 5, 5) },
-      uLight1Color: { value: new THREE.Vector3(1, 1, 1) },
-      uLight2Pos: { value: new THREE.Vector3(-5, -5, -5) },
-      uLight2Color: { value: new THREE.Vector3(0.486, 0.227, 0.929) },
-      uLight3Pos: { value: new THREE.Vector3(0, 0, 0) },
-      uLight3Color: { value: new THREE.Vector3(0.486, 0.227, 0.929) },
-    }),
-    []
-  );
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -201,17 +105,8 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
     isDragging.current = false;
   }, []);
 
-  const handleMouseEnter = useCallback(() => {
-    onHover(1);
-  }, [onHover]);
-
-  const handleMouseLeave = useCallback(() => {
-    onHover(0);
-    isDragging.current = false;
-  }, [onHover]);
-
   useFrame(({ clock }) => {
-    if (!meshRef.current || !materialRef.current) return;
+    if (!meshRef.current) return;
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mousedown', handleMouseDown);
@@ -225,11 +120,12 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
     prevMouse.current.x = mouse.current.x;
     prevMouse.current.y = mouse.current.y;
 
-    materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
-    materialRef.current.uniforms.uVelocity.value = velocity.current;
-
-    hoverValue.current += (0 - hoverValue.current) * 0.1;
-    materialRef.current.uniforms.uHover.value = hoverValue.current;
+    if (shaderRef.current) {
+      shaderRef.current.uniforms.uTime.value = clock.getElapsedTime();
+      shaderRef.current.uniforms.uVelocity.value = velocity.current;
+      hoverValue.current += (0 - hoverValue.current) * 0.1;
+      shaderRef.current.uniforms.uHover.value = hoverValue.current;
+    }
 
     if (!isDragging.current) {
       targetRotation.current.y = mouse.current.x * 1.2;
@@ -246,18 +142,75 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
     }
   });
 
+  const onBeforeCompile = useCallback((shader: THREE.Shader) => {
+    shader.uniforms.uTime = { value: 0 };
+    shader.uniforms.uVelocity = { value: 0 };
+    shader.uniforms.uHover = { value: 0 };
+    shaderRef.current = shader;
+
+    shader.vertexShader = `
+      uniform float uTime;
+      uniform float uVelocity;
+      uniform float uHover;
+      varying float vNoise;
+      ${noiseFunctions}
+    ` + shader.vertexShader;
+
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <begin_vertex>',
+      `
+      #include <begin_vertex>
+      
+      float noise1 = snoise(position * 1.5 + uTime * 0.5);
+      float noise2 = fbm(position * 2.0 + uTime * 0.3);
+      vNoise = noise1;
+
+      float distortionStrength = 0.18 + uVelocity * 1.2;
+      transformed = position + objectNormal * (noise1 * 0.7 + noise2 * 0.3) * distortionStrength;
+      
+      float scale = 1.0 + uHover * 0.15;
+      transformed *= scale;
+      `
+    );
+
+    shader.fragmentShader = `
+      varying float vNoise;
+    ` + shader.fragmentShader;
+
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <color_fragment>',
+      `
+      #include <color_fragment>
+      diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.91, 0.3, 0.6), smoothstep(-0.2, 0.8, vNoise) * 0.6);
+      `
+    );
+  }, []);
+
   return (
     <group>
-      <mesh ref={meshRef}>
-        <sphereGeometry args={[1.2, 64, 64]} />
-        <shaderMaterial
+      <mesh 
+        ref={meshRef}
+        onPointerEnter={() => { hoverValue.current = 1; onHover(1); }}
+        onPointerLeave={() => { hoverValue.current = 0; onHover(0); isDragging.current = false; }}
+      >
+        <sphereGeometry args={[1.2, 128, 128]} />
+        <meshPhysicalMaterial
           ref={materialRef}
-          vertexShader={vertexShader}
-          fragmentShader={fragmentShader}
-          uniforms={uniforms}
+          color="#4822e1"
+          emissive="#1a0b40"
+          emissiveIntensity={0.2}
+          roughness={0.15}
+          metalness={0.85}
+          clearcoat={1.0}
+          clearcoatRoughness={0.1}
+          iridescence={1.0}
+          iridescenceIOR={1.5}
+          iridescenceThicknessRange={[100, 400]}
+          transmission={0.2}
+          thickness={1.5}
+          onBeforeCompile={onBeforeCompile}
         />
       </mesh>
-      <pointLight position={[0, 0, 0]} intensity={150} color="#7c3aed" distance={4} />
     </group>
   );
 }
@@ -413,8 +366,6 @@ export default function AIOrb({ size = 'md' }: AIOrbProps) {
   return (
     <div
       className={`${sizeClasses[size]} relative`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <Canvas
         camera={{ position: [0, 0, 3.5], fov: 50 }}
@@ -427,13 +378,17 @@ export default function AIOrb({ size = 'md' }: AIOrbProps) {
           }
         }}
       >
-        <ambientLight intensity={0.3} />
-        <pointLight position={[5, 5, 5]} intensity={150} color="#ffffff" />
-        <pointLight position={[-5, -5, -5]} intensity={150} color="#7c3aed" />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[5, 10, 5]} intensity={2} color="#ffffff" />
+        <pointLight position={[-5, -5, -5]} intensity={50} color="#7c3aed" />
+        
         <MetalSphere onHover={(v) => setIsHovered(v === 1)} />
         <OrbitingParticles count={80} radius={2.2} mousePos={mousePos} />
         <ParticleStorm active={isHovered} mousePos={mousePos} />
+        
+        {/* Aquí es donde el Environment hace toda la magia PBR */}
         <Environment preset="city" />
+        
         <EffectComposer>
           <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={0.8} />
           <ChromaticAberration offset={new Vector2(0.002, 0.002)} radialModulation={false} modulationOffset={0.2} />
