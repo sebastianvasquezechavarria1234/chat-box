@@ -10,11 +10,12 @@ import {
   Star,
   Sun,
   Moon,
-  X
+  X,
+  Mic
 } from 'lucide-react';
 import AIOrb from './AIOrb';
 
- export function MiniSidebar({ isDark, userName, onToggleTheme, onToggleStats }: { isDark: boolean, userName: string, onToggleTheme: () => void, onToggleStats?: () => void }) {
+ export function MiniSidebar({ isDark, userName, onToggleTheme, onToggleStats, onVoiceClick }: { isDark: boolean, userName: string, onToggleTheme: () => void, onToggleStats?: () => void, onVoiceClick?: () => void }) {
   const initial = userName ? userName.charAt(0).toUpperCase() : '?';
   return (
     <>
@@ -23,7 +24,21 @@ import AIOrb from './AIOrb';
         <AIOrb size="sm" />
         
         <div className="flex flex-col items-center gap-6 flex-1 mt-8">
-          <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300"><MessageSquare size={20} /></button>
+          <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300" title="Chat">
+            <MessageSquare size={20} />
+          </button>
+          
+          <button 
+            onClick={onVoiceClick}
+            className="text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 transition-all duration-300 relative group"
+            title="Llamada Zenith"
+          >
+            <Mic size={20} />
+            <span className="absolute -top-1 -right-1 flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500 border border-white dark:border-zinc-950"></span>
+            </span>
+          </button>
         </div>
 
         <div className="flex flex-col items-center gap-6">
@@ -43,6 +58,17 @@ import AIOrb from './AIOrb';
       {/* Mobile: bottom navigation bar */}
       <div className="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-900 flex items-center justify-around px-4 z-30 transition-colors duration-300">
         <button className="text-zinc-900 dark:text-white p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300"><MessageSquare size={20} /></button>
+        
+        <button 
+          onClick={onVoiceClick}
+          className="text-indigo-500 p-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 transition-all duration-300 relative"
+        >
+          <Mic size={20} />
+          <span className="absolute -top-1 -right-1 flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500 border border-white dark:border-zinc-950"></span>
+          </span>
+        </button>
           <button 
             onClick={onToggleTheme}
             className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors duration-300"
