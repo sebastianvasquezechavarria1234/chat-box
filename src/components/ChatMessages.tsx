@@ -110,7 +110,7 @@ export default function ChatMessages({ messages, chatId, sending }: Props) {
               className="self-start flex gap-3 lg:gap-4 max-w-full lg:max-w-[90%]"
             >
               <div
-                className={`flex-shrink-0 mt-1 transition-opacity duration-500 ${readyOrbs.has(i) ? 'opacity-100' : 'opacity-0'}`}
+                className={`flex-shrink-0 mt-1 transition-all duration-500 ${readyOrbs.has(i) ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
               >
                 <AIOrb size="sm" onReady={() => setReadyOrbs(prev => new Set(prev).add(i))} />
               </div>

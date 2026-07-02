@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, MicOff, PhoneOff } from 'lucide-react';
 import AIOrb, { playTTS } from './AIOrb';
 
@@ -10,77 +10,100 @@ interface Props {
   userName: string;
 }
 
+type Status = 'idle' | 'listening' | 'thinking' | 'speaking';
+
 export default function VoiceSessionModal({ onClose, userName }: Props) {
-  const [isListening, setIsListening] = useState(false);
-  const [transcript, setTranscript] = useState('');
-  const [status, setStatus] = useState<'idle' | 'listening' | 'thinking' | 'speaking'>('idle');
+  const [status, setStatus] = useState<Status>('idle');
+  const [displayText, setDisplayText] = useState('Toca el micrófono para comenzar');
+  const transcriptRef = useRef('');
   const recognitionRef = useRef<any>(null);
+  const isProcessingRef = useRef(false);
 
+  // Inicializar SpeechRecognition una sola vez
   useEffect(() => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = true;
-      recognition.lang = 'es-ES';
-
-      recognition.onstart = () => {
-        setIsListening(true);
-        setStatus('listening');
-      };
-
-      recognition.onresult = (event: any) => {
-        const current = event.resultIndex;
-        const result = event.results[current][0].transcript;
-        setTranscript(result);
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-        // Usamos una pequeña pausa para asegurar que capturó el último estado del state
-        setTimeout(() => {
-          const finalTranscript = recognition.transcriptBackup || transcript;
-          if (finalTranscript.trim().length > 0) {
-            handleUserFinishedSpeaking(finalTranscript);
-          } else {
-            setStatus('idle');
-          }
-        }, 100);
-      };
-
-      // Truco para guardar el transcript final antes del onend
-      recognition.onresult = (event: any) => {
-        const current = event.resultIndex;
-        const result = event.results[current][0].transcript;
-        setTranscript(result);
-        recognition.transcriptBackup = result;
-      };
-
-      recognitionRef.current = recognition;
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) {
+      setDisplayText('Tu navegador no soporta reconocimiento de voz. Usa Chrome.');
+      return;
     }
 
-    return () => {
-      if (recognitionRef.current) recognitionRef.current.abort();
-    };
-  }, []); // Removemos transcript de dependencias para evitar recrear
+    const rec = new SR();
+    rec.lang = 'es-ES';
+    rec.continuous = false;
+    rec.interimResults = true;
 
-  const toggleListen = () => {
-    if (isListening) {
-      recognitionRef.current?.stop();
-    } else {
-      setTranscript('');
-      if (recognitionRef.current) {
-        recognitionRef.current.transcriptBackup = '';
-        recognitionRef.current.start();
+    rec.onstart = () => {
+      setStatus('listening');
+      setDisplayText('Escuchándote...');
+      transcriptRef.current = '';
+    };
+
+    rec.onresult = (e: any) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) {
+          transcriptRef.current += t;
+        } else {
+          interim = t;
+        }
       }
+      setDisplayText(transcriptRef.current || interim || 'Escuchándote...');
+    };
+
+    rec.onend = () => {
+      if (isProcessingRef.current) return;
+      const text = transcriptRef.current.trim();
+      if (text.length > 0) {
+        isProcessingRef.current = true;
+        handleAIResponse(text);
+      } else {
+        setStatus('idle');
+        setDisplayText('No te escuché. Toca el micrófono e intenta de nuevo.');
+      }
+    };
+
+    rec.onerror = (e: any) => {
+      console.error('Speech error:', e.error);
+      setStatus('idle');
+      setDisplayText(
+        e.error === 'not-allowed'
+          ? 'Permiso de micrófono denegado. Actívalo en tu navegador.'
+          : 'Error al escuchar. Intenta de nuevo.'
+      );
+    };
+
+    recognitionRef.current = rec;
+
+    return () => {
+      rec.abort();
+    };
+  }, []);
+
+  const startListening = () => {
+    if (!recognitionRef.current || status === 'thinking' || status === 'speaking') return;
+    try {
+      recognitionRef.current.start();
+    } catch (_) {}
+  };
+
+  const stopListening = () => {
+    recognitionRef.current?.stop();
+  };
+
+  const handleMicClick = () => {
+    if (status === 'listening') {
+      stopListening();
+    } else if (status === 'idle') {
+      startListening();
     }
   };
 
-  const handleUserFinishedSpeaking = async (text: string) => {
+  const handleAIResponse = async (text: string) => {
     setStatus('thinking');
-    
+    setDisplayText('Procesando tu pregunta...');
+
     try {
-      // 1. Enviar a tu backend Llama (Groq)
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://python-api-render-ubr9.onrender.com/ask';
       const res = await fetch(API_URL, {
         method: 'POST',
@@ -88,91 +111,113 @@ export default function VoiceSessionModal({ onClose, userName }: Props) {
         body: JSON.stringify({ name: userName, question: text, personality: 'casual', history: [] }),
       });
 
-      if (!res.body) throw new Error('Cuerpo vacío');
+      if (!res.body) throw new Error('Sin respuesta');
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let botAnswer = '';
-
+      let answer = '';
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        botAnswer += decoder.decode(value, { stream: true });
+        answer += decoder.decode(value, { stream: true });
       }
 
-      setTranscript(''); // Limpiar lo que dijo el usuario
-
-      // 2. Reproducir voz con ElevenLabs
       setStatus('speaking');
-      await playTTS(botAnswer);
-      
-      setStatus('idle');
-      
-      // Auto-escuchar de nuevo (conversación continua)
-      setTimeout(() => {
-        toggleListen();
-      }, 500);
+      setDisplayText(answer.slice(0, 120) + (answer.length > 120 ? '...' : ''));
+      await playTTS(answer);
 
     } catch (err) {
       console.error(err);
+      setDisplayText('Error al contactar la IA. Intenta de nuevo.');
+    } finally {
+      isProcessingRef.current = false;
       setStatus('idle');
+      // Escuchar de nuevo automáticamente
+      setTimeout(() => startListening(), 800);
     }
   };
 
+  const statusLabel: Record<Status, string> = {
+    idle: 'MODO VOZ · ZENITH',
+    listening: 'ESCUCHANDO',
+    thinking: 'PROCESANDO',
+    speaking: 'RESPONDIENDO',
+  };
+
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-[#050505]/95 backdrop-blur-2xl flex flex-col items-center justify-center"
+      transition={{ duration: 0.3 }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-between bg-[#030303] overflow-hidden"
     >
-      {/* Indicador superior */}
-      <div className="absolute top-16 text-center w-full px-4">
-        <h2 className="text-white/80 text-sm font-light tracking-[0.3em] uppercase mb-6">
-          {status === 'idle' && 'Llamada Iniciada'}
-          {status === 'listening' && 'Escuchando...'}
-          {status === 'thinking' && 'Procesando...'}
-          {status === 'speaking' && 'Respondiendo'}
-        </h2>
-        {transcript && (
-          <p className="text-white/90 max-w-2xl mx-auto text-2xl font-light">
-            &quot;{transcript}&quot;
-          </p>
-        )}
+      {/* Glow de fondo */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(88,51,196,0.15)_0%,_transparent_70%)] pointer-events-none" />
+
+      {/* Header */}
+      <div className="w-full flex items-center justify-between px-8 pt-8 z-10">
+        <span className="text-white/40 text-xs font-light tracking-[0.3em]">
+          {statusLabel[status]}
+        </span>
+        <button
+          onClick={onClose}
+          className="text-white/30 hover:text-white/80 transition-colors text-xs tracking-widest"
+        >
+          ESC
+        </button>
       </div>
 
-      {/* El Orbe Centrado Gigante */}
-      <div className="flex-1 w-full h-full flex items-center justify-center pointer-events-none pb-20">
-        <div className="scale-[1.3] sm:scale-[1.8] transform">
-          <AIOrb size="lg" />
-        </div>
+      {/* Orbe centrado */}
+      <div className="flex-1 flex items-center justify-center w-full pointer-events-none">
+        <AIOrb size="lg" />
       </div>
 
-      {/* Controles flotantes */}
-      <div className="absolute bottom-12 flex flex-col items-center gap-4 w-full">
-        <p className="text-white/60 text-xs tracking-widest uppercase">
-          {isListening ? "¡Habla ahora!" : "Toca el micrófono para hablar"}
-        </p>
-        <div className="flex gap-6 items-center">
-          <button 
-            onClick={toggleListen}
-            className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
-              isListening 
-                ? 'bg-red-500/20 text-red-500 border border-red-500/50 animate-pulse' 
-                : 'bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.3)]'
-            }`}
+      {/* Texto del transcript / estado */}
+      <div className="w-full text-center px-8 pb-6 min-h-[60px] flex items-center justify-center z-10">
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={displayText}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2 }}
+            className="text-white/70 text-base font-light max-w-xl leading-relaxed"
           >
-            {isListening ? <Mic size={24} /> : <MicOff size={24} />}
-          </button>
+            {displayText}
+          </motion.p>
+        </AnimatePresence>
+      </div>
 
-          <button 
-            onClick={onClose}
-            title="Terminar Llamada"
-            className="w-16 h-16 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-all shadow-[0_0_30px_rgba(220,38,38,0.3)]"
-          >
-            <PhoneOff size={24} />
-          </button>
-        </div>
+      {/* Controles */}
+      <div className="flex gap-8 items-center pb-14 z-10">
+        {/* Botón Micrófono */}
+        <button
+          onClick={handleMicClick}
+          disabled={status === 'thinking' || status === 'speaking'}
+          className={`
+            relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300
+            disabled:opacity-40 disabled:cursor-not-allowed
+            ${status === 'listening'
+              ? 'bg-indigo-500/20 border border-indigo-400/60 text-indigo-300'
+              : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
+            }
+          `}
+        >
+          {/* Pulso mientras escucha */}
+          {status === 'listening' && (
+            <span className="absolute inset-0 rounded-full border border-indigo-400/40 animate-ping" />
+          )}
+          {status === 'listening' ? <Mic size={28} /> : <MicOff size={28} />}
+        </button>
+
+        {/* Botón Colgar */}
+        <button
+          onClick={onClose}
+          className="w-20 h-20 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-all shadow-[0_0_40px_rgba(220,38,38,0.4)]"
+        >
+          <PhoneOff size={26} />
+        </button>
       </div>
     </motion.div>
   );
