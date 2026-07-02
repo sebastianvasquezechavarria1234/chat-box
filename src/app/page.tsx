@@ -318,10 +318,14 @@ export default function Home() {
             </button>
             <button 
               onClick={() => setShowVoiceModal(true)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full text-xs font-normal hover:bg-indigo-600 transition-all duration-300 shadow-sm"
+              className="relative flex items-center gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full text-xs font-normal hover:bg-indigo-600 transition-all duration-300 shadow-[0_0_15px_rgba(99,102,241,0.4)] group"
             >
-              <Mic size={12} strokeWidth={1.5} />
-              <span className="hidden sm:inline">Llamada Zenith</span>
+              <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-300 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-400 border border-white dark:border-zinc-900"></span>
+              </span>
+              <Mic size={12} strokeWidth={1.5} className="group-hover:scale-110 transition-transform duration-300" />
+              <span className="hidden sm:inline font-medium tracking-wide">Llamada Zenith</span>
             </button>
           </div>
         </header>
