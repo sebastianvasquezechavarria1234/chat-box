@@ -115,7 +115,7 @@ export default function ChatMessages({ messages, chatId, sending }: Props) {
                 <AIOrb size="sm" onReady={() => setReadyOrbs(prev => new Set(prev).add(i))} />
               </div>
               <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed text-[15px] text-gray-800 dark:text-gray-200 transition-colors duration-300">
-                {msg.x === '' && sending && i === messages.length - 1 ? (
+                {msg.x === '' && i === messages.length - 1 ? (
                   <TypingIndicator />
                 ) : (
                   <ReactMarkdown

@@ -204,12 +204,12 @@ export default function Home() {
 
     const userMsg: Message = { t: 'u', x: question };
     const botMsg: Message = { t: 'b', x: '' };
-    const updated = activeList.map(c => 
+
+    setChats(prev => prev.map(c => 
       c.id === activeId 
         ? { ...c, msgs: [...c.msgs, userMsg, botMsg], title: c.msgs.length === 0 ? question.slice(0, 30) : c.title } 
         : c
-    );
-    save(updated);
+    ));
 
     try {
       const res = await fetch(API_URL, {
