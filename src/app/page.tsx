@@ -310,18 +310,18 @@ export default function Home() {
               Portfolio Web
             </a>
             <button 
-              onClick={() => setShowVoiceModal(true)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full text-xs font-normal hover:bg-indigo-600 transition-all duration-300 shadow-sm"
-            >
-              <Mic size={12} strokeWidth={1.5} />
-              <span className="hidden sm:inline">Llamada Zenith</span>
-            </button>
-            <button 
               onClick={() => { newChat(); setMobileSidebar(false); }}
               className="flex items-center gap-2 px-3 py-1.5 bg-[#0F172A] dark:bg-white text-white dark:text-zinc-900 rounded-full text-xs font-normal hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all duration-300 shadow-sm"
             >
               <Sparkles size={12} className="fill-white dark:fill-zinc-900" strokeWidth={1.5} />
               <span className="hidden sm:inline">Nuevo Chat</span>
+            </button>
+            <button 
+              onClick={() => setShowVoiceModal(true)}
+              className="flex items-center gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full text-xs font-normal hover:bg-indigo-600 transition-all duration-300 shadow-sm"
+            >
+              <Mic size={12} strokeWidth={1.5} />
+              <span className="hidden sm:inline">Llamada Zenith</span>
             </button>
           </div>
         </header>
