@@ -12,7 +12,7 @@ interface Props {
 
 export default function Suggestions({ onSuggestion }: Props) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-4 max-w-[900px] mx-auto w-full py-8 lg:py-12">
+    <div className="flex-1 flex flex-col items-center justify-start px-4 max-w-[900px] mx-auto w-full py-8 lg:py-12">
       <AIOrb />
       <h1 className="text-3xl lg:text-4xl font-medium text-zinc-900 dark:text-white mb-2 tracking-tight transition-colors duration-300">¡Hola! 👋</h1>
       <p className="text-zinc-400 dark:text-zinc-500 text-base lg:text-lg mb-8 lg:mb-12 font-light transition-colors duration-300">Cuéntanos qué necesitas y nosotros nos encargamos.</p>
