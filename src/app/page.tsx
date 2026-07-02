@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Menu, X, ExternalLink, ArrowDownToLine, Mic } from 'lucide-react';
 import { MiniSidebar, ChatSidebar } from '@/components/NewSidebars';
 import { playTTS } from '@/components/AIOrb';
+import VoiceSessionModal from '@/components/VoiceSessionModal';
 import ChatMessages from '@/components/ChatMessages';
 import InputBar from '@/components/InputBar';
 import Suggestions from '@/components/Suggestions';
@@ -30,6 +31,7 @@ export default function Home() {
   const [showStats, setShowStats] = useState(false);
   const [searchTrigger, setSearchTrigger] = useState(0);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const [showVoiceModal, setShowVoiceModal] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [stats, setStats] = useState<UserStats>({
     totalMessages: 0,
@@ -308,11 +310,11 @@ export default function Home() {
               Portfolio Web
             </a>
             <button 
-              onClick={() => playTTS("Hola, soy el orbe Zenith. Estoy listo para ayudarte con lo que necesites.")}
+              onClick={() => setShowVoiceModal(true)}
               className="flex items-center gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full text-xs font-normal hover:bg-indigo-600 transition-all duration-300 shadow-sm"
             >
               <Mic size={12} strokeWidth={1.5} />
-              <span className="hidden sm:inline">Probar Voz</span>
+              <span className="hidden sm:inline">Llamada Zenith</span>
             </button>
             <button 
               onClick={() => { newChat(); setMobileSidebar(false); }}
@@ -379,6 +381,10 @@ export default function Home() {
 
       <AnimatePresence>
         {showStats && <StatsModal stats={stats} onClose={() => setShowStats(false)} />}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showVoiceModal && <VoiceSessionModal userName={userName} onClose={() => setShowVoiceModal(false)} />}
       </AnimatePresence>
     </div>
   );

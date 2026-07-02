@@ -5,46 +5,52 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 
 export const audioReactValue = { current: 0 };
 
-export async function playTTS(text: string) {
-  try {
-    const res = await fetch('/api/tts', {
-      method: 'POST',
-      body: JSON.stringify({ text })
-    });
-    if (!res.ok) throw new Error("Fallo en TTS");
-    
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    
-    const audio = new Audio(url);
-    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const source = audioCtx.createMediaElementSource(audio);
-    const analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 256;
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    
-    const dataArray = new Uint8Array(analyser.frequencyBinCount);
-    
-    const update = () => {
-      if (!audio.paused) {
-        analyser.getByteFrequencyData(dataArray);
-        let sum = 0;
-        for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-        const avg = sum / dataArray.length;
-        audioReactValue.current = avg / 255.0; // Normalizado 0 a 1
-        requestAnimationFrame(update);
-      } else {
-        audioReactValue.current = 0;
-      }
-    };
-    
-    audio.play();
-    audioCtx.resume();
-    update();
-  } catch (err) {
-    console.error("Error reproduciendo TTS", err);
-  }
+export async function playTTS(text: string): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        body: JSON.stringify({ text })
+      });
+      if (!res.ok) throw new Error("Fallo en TTS");
+      
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      
+      const audio = new Audio(url);
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const source = audioCtx.createMediaElementSource(audio);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
+      analyser.connect(audioCtx.destination);
+      
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      
+      const update = () => {
+        if (!audio.paused) {
+          analyser.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+          const avg = sum / dataArray.length;
+          audioReactValue.current = avg / 255.0; // Normalizado 0 a 1
+          requestAnimationFrame(update);
+        } else {
+          audioReactValue.current = 0;
+        }
+      };
+      
+      audio.onended = () => resolve();
+      audio.onerror = (e) => reject(e);
+
+      audio.play();
+      audioCtx.resume();
+      update();
+    } catch (err) {
+      console.error("Error reproduciendo TTS", err);
+      resolve(); // resolvemos de todas formas para no trabar la app
+    }
+  });
 }
 import { Environment } from '@react-three/drei';
 import { EffectComposer, Bloom, ChromaticAberration, Noise, Vignette } from '@react-three/postprocessing';
