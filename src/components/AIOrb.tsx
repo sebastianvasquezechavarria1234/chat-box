@@ -65,10 +65,10 @@ const vertexShader = `
     vUv = uv;
     vNormal = normalize(normalMatrix * normal);
 
-    float noise = snoise(position * 2.0 + uTime * 0.3);
+    float noise = snoise(position * 1.5 + uTime * 0.5);
     vNoise = noise;
 
-    float distortionStrength = 0.15 + uVelocity * 1.2;
+    float distortionStrength = 0.18 + uVelocity * 1.2;
     vec3 displaced = position + normal * noise * distortionStrength;
 
     vPosition = displaced;
@@ -149,8 +149,11 @@ function MetalSphere() {
     targetRotation.current.y = mouse.current.x * 1.2;
     targetRotation.current.x = mouse.current.y * 1.2;
 
-    meshRef.current.rotation.y += (targetRotation.current.y - meshRef.current.rotation.y) * 0.12;
-    meshRef.current.rotation.x += (targetRotation.current.x - meshRef.current.rotation.x) * 0.12;
+    const baseRotY = clock.getElapsedTime() * 0.3;
+    const baseRotX = Math.sin(clock.getElapsedTime() * 0.2) * 0.2;
+
+    meshRef.current.rotation.y += (targetRotation.current.y + baseRotY - meshRef.current.rotation.y) * 0.08;
+    meshRef.current.rotation.x += (targetRotation.current.x + baseRotX - meshRef.current.rotation.x) * 0.08;
   });
 
   return (
