@@ -126,8 +126,8 @@ export default function ChatMessages({ messages, chatId, sending }: Props) {
                   ) : (
                     <motion.div
                       key="text"
-                      initial={{ opacity: 0, filter: 'blur(8px)', scale: 0.95 }}
-                      animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
+                      initial={{ opacity: 0, filter: 'blur(8px)', y: 12 }}
+                      animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
                       transition={{ duration: 0.3 }}
                     >
                       <ReactMarkdown

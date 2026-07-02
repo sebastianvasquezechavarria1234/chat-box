@@ -2,6 +2,50 @@
 
 import { useRef, useMemo, useCallback, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
+
+export const audioReactValue = { current: 0 };
+
+export async function playTTS(text: string) {
+  try {
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      body: JSON.stringify({ text })
+    });
+    if (!res.ok) throw new Error("Fallo en TTS");
+    
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    
+    const audio = new Audio(url);
+    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const source = audioCtx.createMediaElementSource(audio);
+    const analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    
+    const update = () => {
+      if (!audio.paused) {
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+        const avg = sum / dataArray.length;
+        audioReactValue.current = avg / 255.0; // Normalizado 0 a 1
+        requestAnimationFrame(update);
+      } else {
+        audioReactValue.current = 0;
+      }
+    };
+    
+    audio.play();
+    audioCtx.resume();
+    update();
+  } catch (err) {
+    console.error("Error reproduciendo TTS", err);
+  }
+}
 import { Environment } from '@react-three/drei';
 import { EffectComposer, Bloom, ChromaticAberration, Noise, Vignette } from '@react-three/postprocessing';
 import { Vector2 } from 'three';
@@ -124,11 +168,16 @@ function MetalSphere({ onHover }: { onHover: (v: number) => void }) {
 
     if (shaderRef.current) {
       hoverValue.current += (targetHover.current - hoverValue.current) * 0.05;
-      customTime.current += 0.015 * (1.0 + hoverValue.current * 4.0); // Se acelera al hacer hover
+      
+      // Combinamos el Hover del ratón con la fuerza del Audio en tiempo real
+      const audioStrength = audioReactValue.current;
+      const combinedForce = hoverValue.current + (audioStrength * 2.5);
+
+      customTime.current += 0.015 * (1.0 + combinedForce * 4.0); // Se acelera con el hover o la voz
       
       shaderRef.current.uniforms.uTime.value = customTime.current;
-      shaderRef.current.uniforms.uVelocity.value = velocity.current;
-      shaderRef.current.uniforms.uHover.value = hoverValue.current;
+      shaderRef.current.uniforms.uVelocity.value = velocity.current + (audioStrength * 1.5); // Picos extra al hablar
+      shaderRef.current.uniforms.uHover.value = combinedForce;
     }
 
     if (!isDragging.current) {
