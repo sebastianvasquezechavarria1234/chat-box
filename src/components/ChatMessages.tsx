@@ -115,25 +115,10 @@ export default function ChatMessages({ messages, chatId, sending }: Props) {
                 <AIOrb size="sm" onReady={() => setReadyOrbs(prev => new Set(prev).add(i))} />
               </div>
               <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed text-[15px] text-gray-800 dark:text-gray-200 transition-colors duration-300">
-                <AnimatePresence mode="wait">
-                  {msg.x === '' && sending ? (
-                    <motion.div
-                      key="typing"
-                      initial={{ opacity: 0, filter: 'blur(8px)' }}
-                      animate={{ opacity: 1, filter: 'blur(0px)' }}
-                      exit={{ opacity: 0, filter: 'blur(8px)' }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <TypingIndicator />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="text"
-                      initial={{ opacity: 0, filter: 'blur(8px)', y: 12 }}
-                      animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <ReactMarkdown
+                {msg.x === '' && sending ? (
+                  <TypingIndicator />
+                ) : (
+                  <ReactMarkdown
                   components={{
                     code({ node, inline, className, children, ...props }: any) {
                       const match = /language-(\w+)/.exec(className || '');
@@ -168,9 +153,7 @@ export default function ChatMessages({ messages, chatId, sending }: Props) {
                 >
                   {msg.x}
                 </ReactMarkdown>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                )}
               </div>
             </motion.div>
           )
