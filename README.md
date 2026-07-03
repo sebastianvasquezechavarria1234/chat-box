@@ -320,24 +320,12 @@ TEMPERATURE = 0.8  # 0.0 = deterministic, 1.0 = creative
 
 ---
 
-## Author
+
+
+
 
 <div align="center">
 
-*Sebastian Vasquez Echavarria*
-
-[Portfolio](https://sebas-dev.vercel.app/) · [GitHub](https://github.com/sebastianvasquezechavarria1234)
-
-</div>
-
----
-
-## License
-
-<div align="center">
-
-Under the [MIT License](LICENSE).
-
-Made with ❤️ by Sebastian V
+Made with ❤️ by <a href="https://sebas-dev.vercel.app/" target="_blank" rel="noopener noreferrer">Sebastián V</a>
 
 </div>
