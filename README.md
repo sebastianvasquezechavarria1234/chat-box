@@ -4,109 +4,114 @@
 
   # Zenith GPT
 
-  **Chatbot inteligente con IA de última generación.**
+  **An intelligent AI-powered chatbot.**
 
-  Potenciado por LLaMA 3.3, FastAPI y una interfaz que respira.
+  Powered by LLaMA 3.3, FastAPI, and an interface that breathes.
 
   [![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel)](https://vercel.app)
-  [![License: MIT](https://img.shields.io/badge/Licencia-MIT-8B5CF6?style=flat-square)](LICENSE)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-8B5CF6?style=flat-square)](LICENSE)
   [![Next.js](https://img.shields.io/badge/Next.js-14-000000?style=flat-square&logo=next.js)](https://nextjs.org)
   [![Python](https://img.shields.io/badge/Python-FastAPI-3776AB?style=flat-square&logo=python)](https://fastapi.tiangolo.com)
+  [![Tech Stack](https://img.shields.io/badge/Tech%20Stack-Next.js%20•%20React%20•%20Three.js%20•%20Tailwind-8B5CF6?style=flat-square)](#tech-stack)
+
+  <br/>
+
+  <img src="public/preview.jpg" alt="Zenith GPT Preview" width="100%" style="border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);" />
 
   ---
 </div>
 
-## Tabla de contenidos
+## Table of contents
 
-- [Una mirada al proyecto](#una-mirada-al-proyecto)
-- [Características](#características)
-- [Stack tecnológico](#stack-tecnológico)
-- [Arquitectura](#arquitectura)
+- [Overview](#overview)
+- [Features](#features)
+- [Tech stack](#tech-stack)
+- [Architecture](#architecture)
 - [Getting started](#getting-started)
-- [Variables de entorno](#variables-de-entorno)
+- [Environment variables](#environment-variables)
 - [API](#api)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [Personalización](#personalización)
-- [Autor](#autor)
-- [Licencia](#licencia)
+- [Project structure](#project-structure)
+- [Customization](#customization)
+- [Author](#author)
+- [License](#license)
 
 ---
 
-## Una mirada al proyecto
+## Overview
 
-> *Zenith GPT nace de una pregunta simple: ¿y si una IA pudiera sentirse viva?*
+> *Zenith GPT was born from a simple question: what if an AI could feel alive?*
 
-No es solo un chatbot. Es una experiencia visual y conversacional donde cada interacción tiene peso. Un orbe 3D reacciona al mouse, al ritmo de la voz, al contexto de la charla. Mientras la IA piensa, la interfaz también respira.
+It is more than a chatbot. It is a visual and conversational experience where every interaction carries weight. A 3D orb reacts to the mouse, to the rhythm of the voice, to the context of the conversation. While the AI thinks, the interface also breathes.
 
-El backend funciona como un **sistema multi-agente**: detecta el idioma del usuario, analiza si la pregunta es ambigua, decide si necesita buscar en internet o generar una imagen, y elige automáticamente el modelo más adecuado. Todo esto sucede en milisegundos, antes de que la primera palabra llegue a pantalla.
+The backend operates as a **multi-agent system**: it detects the user's language, analyzes whether the question is ambiguous, decides whether to search the web or generate an image, and automatically selects the most suitable model. All of this happens in milliseconds, before the first word reaches the screen.
 
 ---
 
-## Características
+## Features
 
-| Capacidades | Detalle |
+| Capability | Details |
 |:---|:---|
-| **Streaming en tiempo real** | Las respuestas aparecen carácter por carácter, sin esperas. |
-| **4 personalidades** | Casual, Tutor, Profesional y Técnico — cada una con su propio tono y estructura. |
-| **Búsqueda web integrada** | Cuando la pregunta requiere datos actuales, Zenith busca en DuckDuckGo y cita fuentes. |
-| **Generación de imágenes** | Pide una imagen y Zenith la crea con Flux a través de Pollinations.ai. |
-| **Detección de idioma** | Responde en español, inglés, portugués o cualquier idioma detectado automáticamente. |
-| **Clarificación automática** | Si la pregunta es ambigua, pide contexto antes de responder. |
-| **Gestión de conversaciones** | Crear, renombrar, buscar, favoritos y eliminar chats. |
-| **Estadísticas de uso** | Mensajes, caracteres, días activos — todo almacenado localmente. |
-| **Tema claro y oscuro** | Un toggle, transición suave, cero destellos. |
-| **Atajos de teclado** | `Ctrl+N` para nuevo chat, `Ctrl+K` para buscar. |
+| **Real-time streaming** | Responses appear character by character, no waiting. |
+| **4 personalities** | Casual, Tutor, Professional, and Technical — each with its own tone and structure. |
+| **Integrated web search** | When a question requires current data, Zenith searches DuckDuckGo and cites sources. |
+| **Image generation** | Ask for an image and Zenith creates it with Flux through Pollinations.ai. |
+| **Language detection** | Responds in Spanish, English, Portuguese, or any detected language automatically. |
+| **Automatic clarification** | If a question is ambiguous, it asks for context before answering. |
+| **Conversation management** | Create, rename, search, favorite, and delete chats. |
+| **Usage statistics** | Messages, characters, active days — all stored locally. |
+| **Light and dark theme** | A single toggle, smooth transition, zero flashes. |
+| **Keyboard shortcuts** | `Ctrl+N` for new chat, `Ctrl+K` to search. |
 
-### El orbe 3D
+### The 3D Orb
 
-El orbe no es decoración. Es una esfera metálica con *iridiscencia*, *clearcoat* y shaders personalizados de ruido simplex que reaccionan a tres estímulos:
+The orb is not decoration. It is a metallic sphere with *iridescence*, *clearcoat*, and custom simplex noise shaders that react to three stimuli:
 
-- **El mouse** — al pasar sobre él, la esfera se distorsiona y las partículas orbitantes se aceleran.
-- **El audio** — cuando la IA habla (TTS), la frecuencia del sonido modifica la geometría en tiempo real.
-- **El tiempo** — la esfera respira orgánicamente, como si tuviera pulso propio.
+- **The mouse** — when hovering, the sphere distorts and the orbiting particles accelerate.
+- **The audio** — when the AI speaks (TTS), the sound frequency modifies the geometry in real time.
+- **Time** — the sphere breathes organically, as if it had its own pulse.
 
 ---
 
-## Stack tecnológico
+## Tech stack
 
 ### Frontend
 
-| Tecnología | Uso |
+| Technology | Purpose |
 |:---|:---|
-| **Next.js 14** | Framework React con App Router y server components. |
-| **React 18** | UI declarativa con hooks y server-side rendering. |
-| **TypeScript** | Type safety en todo el proyecto. |
-| **Tailwind CSS** | Estilos utility-first con modo oscuro por clase. |
-| **Three.js** | Renderizado 3D del orbe con React Three Fiber. |
-| **Framer Motion** | Animaciones declarativas: blur, spring, layout animations. |
-| **react-markdown** | Renderizado de markdown con syntax highlighting. |
-| **Lucide React** | Iconografía limpia y consistente. |
+| **Next.js 14** | React framework with App Router and server components. |
+| **React 18** | Declarative UI with hooks and server-side rendering. |
+| **TypeScript** | Type safety across the entire project. |
+| **Tailwind CSS** | Utility-first styles with class-based dark mode. |
+| **Three.js** | 3D rendering of the orb with React Three Fiber. |
+| **Framer Motion** | Declarative animations: blur, spring, layout animations. |
+| **react-markdown** | Markdown rendering with syntax highlighting. |
+| **Lucide React** | Clean and consistent iconography. |
 
 ### Backend
 
-| Tecnología | Uso |
+| Technology | Purpose |
 |:---|:---|
-| **Python** | Lenguaje del backend. |
-| **FastAPI** | API asíncrona con streaming nativo. |
-| **Groq API** | Acceso a LLaMA 3.3 70B y LLaMA 3.1 8B. |
-| **DuckDuckGo Search** | Búsqueda web en tiempo real. |
-| **Pollinations.ai** | Generación de imágenes con Flux. |
-| **Pydantic** | Validación de esquemas de request. |
+| **Python** | Backend language. |
+| **FastAPI** | Async API with native streaming. |
+| **Groq API** | Access to LLaMA 3.3 70B and LLaMA 3.1 8B. |
+| **DuckDuckGo Search** | Real-time web search. |
+| **Pollinations.ai** | Image generation with Flux. |
+| **Pydantic** | Request schema validation. |
 
-### Despliegue
+### Deployment
 
-| Servicio | Rol |
+| Service | Role |
 |:---|:---|
-| **Vercel** | Frontend — deploy automático desde GitHub. |
-| **Render** | Backend — API con streaming y cold start en plan gratuito. |
+| **Vercel** | Frontend — automatic deploy from GitHub. |
+| **Render** | Backend — API with streaming and cold start on free plan. |
 
 ---
 
-## Arquitectura
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                     Frontend (Vercel)                    │
+│                   Frontend (Vercel)                      │
 │                                                         │
 │   Next.js 14  ──►  React 18  ──►  Three.js / Canvas    │
 │        │                │                │               │
@@ -119,41 +124,41 @@ El orbe no es decoración. Es una esfera metálica con *iridiscencia*, *clearcoa
 ┌─────────────────────────────────────────────────────────┐
 │                    Backend (Render)                      │
 │                                                         │
-│   FastAPI  ──►  Orquestador de Agentes                  │
+│   FastAPI  ──►  Agent Orchestrator                      │
 │                    │                                    │
 │        ┌───────────┼───────────────┐                    │
 │        ▼           ▼               ▼                    │
 │   Groq API    DuckDuckGo     Pollinations.ai            │
-│   (LLaMA)    (Búsqueda)     (Imágenes Flux)            │
+│   (LLaMA)     (Search)      (Flux Images)              │
 │                                                         │
-│   Idioma  ─►  Ambigüedad  ─►  Decisión  ─►  Stream    │
+│   Language ─► Ambiguity ─► Decision ─► Stream           │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Flujo de una conversación
+### Conversation flow
 
-1. El usuario escribe una pregunta en el chat.
-2. El frontend envía un `POST` con streaming al endpoint `/ask`.
-3. El backend **detecta el idioma** de la pregunta.
-4. Analiza si la pregunta es **ambigua** y decide si pedir clarificación.
-5. Evalúa si requiere **búsqueda web**, **generación de imagen** o **respuesta directa**.
-6. Selecciona el modelo adecuado: **LLaMA 3.3 70B** para tareas complejas, **LLaMA 3.1 8B** para rápidas.
-7. La respuesta se transmite **chunk por chunk** de vuelta al frontend.
-8. El orbe 3D reacciona visualmente al contenido siendo generado.
+1. The user types a question in the chat.
+2. The frontend sends a streaming `POST` to the `/ask` endpoint.
+3. The backend **detects the language** of the question.
+4. It analyzes whether the question is **ambiguous** and decides whether to ask for clarification.
+5. It evaluates whether it requires **web search**, **image generation**, or a **direct answer**.
+6. It selects the appropriate model: **LLaMA 3.3 70B** for complex tasks, **LLaMA 3.1 8B** for quick ones.
+7. The response is streamed **chunk by chunk** back to the frontend.
+8. The 3D orb reacts visually to the content being generated.
 
 ---
 
 ## Getting started
 
-### Requisitos
+### Requirements
 
 - Node.js >= 18.17.0
 - Python 3.10+
-- Una API key de [Groq](https://console.groq.com)
+- An API key from [Groq](https://console.groq.com)
 
-### Instalación
+### Installation
 
-**1. Clonar el repositorio**
+**1. Clone the repository**
 
 ```bash
 git clone https://github.com/sebastianvasquezechavarria1234/python-api-render.git
@@ -164,39 +169,39 @@ cd python-api-render
 
 ```bash
 npm install
-cp .env.local.example .env.local   # configurar variables
+cp .env.local.example .env.local   # configure variables
 npm run dev
 ```
 
-El servidor de desarrollo estará disponible en `http://localhost:3000`.
+The development server will be available at `http://localhost:3000`.
 
 **3. Backend**
 
 ```bash
 pip install -r requirements.txt
-cp .env.example .env               # configurar variables
+cp .env.example .env               # configure variables
 uvicorn api.main:app --reload --port 8000
 ```
 
-La API estará disponible en `http://localhost:8000`.
+The API will be available at `http://localhost:8000`.
 
-> **Nota:** La API desplegada en Render entra en reposo tras inactividad. La primera petición puede tardar 30–60 segundos mientras se reactiva el servidor.
+> **Note:** The API deployed on Render enters sleep mode after inactivity. The first request may take 30–60 seconds while the server reactivates.
 
 ---
 
-## Variables de entorno
+## Environment variables
 
 ### Frontend (`.env.local`)
 
-| Variable | Descripción | Ejemplo |
+| Variable | Description | Example |
 |:---|:---|:---|
-| `NEXT_PUBLIC_API_URL` | URL del endpoint `/ask` del backend | `https://python-api-render-ubr9.onrender.com/ask` |
+| `NEXT_PUBLIC_API_URL` | URL of the backend `/ask` endpoint | `https://python-api-render-ubr9.onrender.com/ask` |
 
 ### Backend (`.env`)
 
-| Variable | Descripción |
+| Variable | Description |
 |:---|:---|
-| `GROQ_API_KEY` | Tu API key de Groq Console |
+| `GROQ_API_KEY` | Your Groq Console API key |
 
 ---
 
@@ -204,49 +209,49 @@ La API estará disponible en `http://localhost:8000`.
 
 ### `POST /ask`
 
-Endpoint principal. Recibe una pregunta y retorna la respuesta en **streaming** (texto plano chunk por chunk).
+Main endpoint. Receives a question and returns the response as a **stream** (plain text chunk by chunk).
 
 **Request body:**
 
 ```json
 {
   "name": "Sebastian",
-  "question": "¿Qué es la inteligencia artificial?",
+  "question": "What is artificial intelligence?",
   "personality": "casual",
   "history": [
-    { "t": "u", "x": "Hola" },
-    { "t": "b", "x": "¡Hola Sebastian! ¿En qué puedo ayudarte?" }
+    { "t": "u", "x": "Hello" },
+    { "t": "b", "x": "Hey Sebastian! How can I help you?" }
   ]
 }
 ```
 
-| Campo | Tipo | Requerido | Descripción |
+| Field | Type | Required | Description |
 |:---|:---|:---|:---|
-| `name` | `string` | Sí | Nombre del usuario. |
-| `question` | `string` | Sí | Pregunta o mensaje del usuario. |
-| `personality` | `string` | No | Modo de personalidad. Ver tabla abajo. |
-| `history` | `array` | No | Historial previo de mensajes. |
+| `name` | `string` | Yes | User's name. |
+| `question` | `string` | Yes | User's question or message. |
+| `personality` | `string` | No | Personality mode. See table below. |
+| `history` | `array` | No | Previous message history. |
 
-**Personalidades disponibles:**
+**Available personalities:**
 
-| Valor | Descripción |
+| Value | Description |
 |:---|:---|
-| `casual` | Tono amigable y conversacional. |
-| `tutor` | Explicaciones con método socrático y analogías. |
-| `profesional` | Ejecutivo, formal, con datos concretos. |
-| `tecnico` | Arquitectura de software, código limpio, markdown. |
+| `casual` | Friendly and conversational tone. |
+| `tutor` | Explanations using the Socratic method and analogies. |
+| `profesional` | Executive, formal, with concrete data. |
+| `tecnico` | Software architecture, clean code, markdown. |
 
-**Respuesta:**
+**Response:**
 
-Stream de texto plano. Si se generó una imagen, se adjunta al final como markdown:
+Plain text stream. If an image was generated, it is attached at the end as markdown:
 
 ```markdown
-![Imagen Generada](https://pollinations.ai/p/...)
+![Generated Image](https://pollinations.ai/p/...)
 ```
 
 ### `GET /health`
 
-Verifica el estado del servidor.
+Checks the server status.
 
 ```json
 { "status": "ok" }
@@ -254,32 +259,32 @@ Verifica el estado del servidor.
 
 ---
 
-## Estructura del proyecto
+## Project structure
 
 ```
 zenith-gpt/
 ├── api/
-│   ├── main.py              # FastAPI — endpoints /ask y /health
-│   ├── groq_service.py      # Orquestador de agentes y lógica de IA
-│   ├── schemas.py           # Modelos Pydantic para requests
-│   └── personality.py       # Definición de personalidades
+│   ├── main.py              # FastAPI — /ask and /health endpoints
+│   ├── groq_service.py      # Agent orchestrator and AI logic
+│   ├── schemas.py           # Pydantic models for requests
+│   └── personality.py       # Personality definitions
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx         # Página principal — chat completo
-│   │   ├── layout.tsx       # Layout raíz con metadata
-│   │   ├── globals.css      # Estilos globales y tipografía
+│   │   ├── page.tsx         # Main page — full chat
+│   │   ├── layout.tsx       # Root layout with metadata
+│   │   ├── globals.css      # Global styles and typography
 │   │   └── preview/
-│   │       └── page.tsx     # Vista previa animada del orbe
+│   │       └── page.tsx     # Animated orb preview page
 │   └── components/
-│       ├── AIOrb.tsx        # Orbe 3D con shaders, partículas y TTS
-│       ├── ChatMessages.tsx  # Renderizado de mensajes con markdown
-│       ├── InputBar.tsx     # Barra de entrada con selector de personalidad
-│       ├── NewSidebars.tsx  # Sidebar de chats y navegación
-│       ├── Suggestions.tsx  # Pantalla de bienvenida con prompts sugeridos
-│       ├── WelcomeModal.tsx # Modal de registro de nombre
-│       ├── InfoModal.tsx    # Modal de documentación del proyecto
-│       ├── StatsModal.tsx   # Modal de estadísticas de uso
-│       └── types.ts         # Tipos compartidos (Chat, Message)
+│       ├── AIOrb.tsx        # 3D orb with shaders, particles, and TTS
+│       ├── ChatMessages.tsx  # Message rendering with markdown
+│       ├── InputBar.tsx     # Input bar with personality selector
+│       ├── NewSidebars.tsx  # Chat sidebar and navigation
+│       ├── Suggestions.tsx  # Welcome screen with suggested prompts
+│       ├── WelcomeModal.tsx # Name registration modal
+│       ├── InfoModal.tsx    # Project documentation modal
+│       ├── StatsModal.tsx   # Usage statistics modal
+│       └── types.ts         # Shared types (Chat, Message)
 ├── public/
 │   ├── favicon.png
 │   ├── logo.png
@@ -293,20 +298,20 @@ zenith-gpt/
 
 ---
 
-## Personalización
+## Customization
 
-### Cambiar el modelo de IA
+### Change the AI model
 
-En `api/groq_service.py` puedes modificar los modelos utilizados:
+In `api/groq_service.py` you can modify the models used:
 
 ```python
-MODEL_FAST = "llama-3.1-8b-instant"    # Respuestas rápidas
-MODEL_POWER = "llama-3.3-70b-versatile"  # Tareas complejas
+MODEL_FAST = "llama-3.1-8b-instant"      # Quick responses
+MODEL_POWER = "llama-3.3-70b-versatile"  # Complex tasks
 ```
 
-### Agregar una nueva personalidad
+### Add a new personality
 
-Edita el diccionario `personalidades` en `api/groq_service.py`:
+Edit the `personalidades` dictionary in `api/groq_service.py`:
 
 ```python
 personalidades = {
@@ -314,33 +319,42 @@ personalidades = {
     "tutor": "...",
     "profesional": "...",
     "tecnico": "...",
-    "mi_nueva_personalidad": "Eres Zenith, ...",
+    "my_new_personality": "You are Zenith, ...",
 }
 ```
 
-Y agrega el botón correspondiente en `src/components/InputBar.tsx`.
+And add the corresponding button in `src/components/InputBar.tsx`.
 
-### Ajustar la temperatura
+### Adjust the temperature
 
 ```python
-TEMPERATURE = 0.8  # Rango: 0.0 (determinista) a 1.0 (creativo)
+TEMPERATURE = 0.8  # Range: 0.0 (deterministic) to 1.0 (creative)
 ```
 
 ---
 
-## Autor
+## Author
 
-**Sebastian Vasquez Echavarria**
+<div align="center">
 
-- [Portafolio](https://sebas-dev.vercel.app/)
-- [GitHub](https://github.com/sebastianvasquezechavarria1234)
+*Sebastian Vasquez Echavarria*
+
+[Portfolio](https://sebas-dev.vercel.app/) · [GitHub](https://github.com/sebastianvasquezechavarria1234)
+
+</div>
 
 ---
 
-## Licencia
+## License
 
-Este proyecto está bajo la licencia [MIT](LICENSE).
+<div align="center">
+
+This project is under the [MIT](LICENSE) license.
 
 ```
 MIT License — Copyright (c) 2026 Sebastian Vasquez Echavarria
 ```
+
+Made with ❤️ by Sebastian V
+
+</div>
