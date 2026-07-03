@@ -3,10 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Menu, X, ExternalLink, ArrowDownToLine, Mic } from 'lucide-react';
+import { Sparkles, Menu, X, ExternalLink, ArrowDownToLine } from 'lucide-react';
 import { MiniSidebar, ChatSidebar } from '@/components/NewSidebars';
 import AIOrb, { playTTS } from '@/components/AIOrb';
-import VoiceSessionModal from '@/components/VoiceSessionModal';
 import ChatMessages from '@/components/ChatMessages';
 import InputBar from '@/components/InputBar';
 import Suggestions from '@/components/Suggestions';
@@ -32,7 +31,6 @@ export default function Home() {
   const [showStats, setShowStats] = useState(false);
   const [searchTrigger, setSearchTrigger] = useState(0);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
-  const [showVoiceModal, setShowVoiceModal] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [stats, setStats] = useState<UserStats>({
     totalMessages: 0,
@@ -298,7 +296,6 @@ export default function Home() {
         userName={userName} 
         onToggleTheme={toggleTheme} 
         onToggleStats={() => setShowStats(true)} 
-        onVoiceClick={() => setShowVoiceModal(true)}
       />
       <ChatSidebar 
         chats={chats} 
@@ -355,27 +352,6 @@ export default function Home() {
               <Sparkles size={12} className="fill-white dark:fill-zinc-900" strokeWidth={1.5} />
               <span className="hidden sm:inline">Nuevo Chat</span>
             </button>
-            <div className="relative group ml-1">
-              {/* Resplandor sutil alineado con la marca */}
-              <div className="absolute -inset-0.5 bg-indigo-500/30 rounded-full blur animate-pulse group-hover:opacity-100 transition duration-500"></div>
-              
-              <button 
-                onClick={() => setShowVoiceModal(true)}
-                className="relative flex items-center gap-2 px-3 py-1.5 bg-[#0F172A] dark:bg-white text-white dark:text-zinc-900 rounded-full text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-all duration-300 border border-indigo-500/30 shadow-sm"
-              >
-                <div className="relative flex items-center justify-center">
-                  <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-indigo-400 opacity-75"></span>
-                  <Mic size={12} strokeWidth={2} className="text-indigo-400 dark:text-indigo-600 relative z-10" />
-                </div>
-                
-                <span className="hidden sm:inline">Modo Voz</span>
-                
-                {/* Etiqueta flotante rotada */}
-                <span className="absolute -top-2 -right-3 rotate-12 flex items-center px-1.5 py-[1px] rounded bg-indigo-500 text-white text-[9px] font-bold shadow-sm border border-indigo-400">
-                  Nuevo
-                </span>
-              </button>
-            </div>
           </div>
         </header>
 
@@ -426,10 +402,6 @@ export default function Home() {
           </AnimatePresence>
         </div>
         <InputBar onSend={sendMessage} disabled={sending} />
-
-        <AnimatePresence>
-          {showVoiceModal && <VoiceSessionModal userName={userName} onClose={() => setShowVoiceModal(false)} />}
-        </AnimatePresence>
       </main>
 
       <AnimatePresence>
