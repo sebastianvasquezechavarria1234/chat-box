@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Chat IA | Inteligencia Artificial Avanzada',
+  title: 'Zenith GPT',
   description: 'Chatbot inteligente con IA potenciado por LLaMA 3.3 y FastAPI.',
   keywords: 'AI, Chatbot, LLaMA, FastAPI, Python, Groq',
   icons: {
-    icon: '/favicon.webp',
+    icon: '/favicon.png',
   },
 };
 

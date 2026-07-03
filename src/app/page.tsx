@@ -274,9 +274,9 @@ export default function Home() {
               initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               transition={{ delay: 0.5, duration: 0.6 }}
-              className="mt-8 text-zinc-500 dark:text-zinc-400 font-bold tracking-[0.2em] uppercase text-[10px]"
+              className="mt-8 text-zinc-500 dark:text-zinc-400 font-light text-sm"
             >
-              Iniciando Zenith
+              Iniciando zenith
             </motion.p>
           </motion.div>
         )}
